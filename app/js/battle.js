@@ -1500,7 +1500,13 @@
         it.sx += (sx - it.sx) * 0.3;
         it.sy += (sy - it.sy) * 0.3;
         sx = it.sx; sy = it.sy;
+        /* far camera: unit labels fade out, landmarks stay */
         var vis = v.z < 1 && sy > 56 && sy < h - 170;
+        var dist = isUnit ? camera.position.distanceTo(it.u.group.position) : 0;
+        if (isUnit && dist > 95) vis = false;
+        var op = isUnit ? (dist > 62 ? Math.max(0, 1 - (dist - 62) / 33) : 1) : 1;
+        if (op < 0.08) vis = false;
+        it.el.style.opacity = op === 1 ? '' : op.toFixed(2);
         if (vis) {
           var lw = it.el.offsetWidth || 60, lh = it.el.offsetHeight || 20;
           var l = sx - lw / 2 - 3, r = sx + lw / 2 + 3, t = sy - lh - 8, b = sy + 2;
