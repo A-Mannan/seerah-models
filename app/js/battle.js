@@ -1356,19 +1356,46 @@
     orbit.pol = Math.acos(Math.max(-1, Math.min(1, o.y / orbit.r)));
     orbit.az = Math.atan2(o.z, o.x);
   }
+  /* pinch zoom: two pointers, spread/pinch maps to radius (coin-model inertia) */
+  var pointers = {};
+  var pinchBase = 0, pinchR0 = 0;
+  function pinchDist() {
+    var ids = Object.keys(pointers);
+    if (ids.length < 2) return 0;
+    var a = pointers[ids[0]], b = pointers[ids[1]];
+    return Math.hypot(a.x - b.x, a.y - b.y);
+  }
   canvas.addEventListener('pointerdown', function (e) {
     if (clock.playing) return;
-    if (camState.mode !== 'orbit') { camState.mode = 'orbit'; orbitFromCam(); }
-    dragging = true;
-    canvas.classList.add('is-dragging');
-    dragDownX = e.clientX; dragDownY = e.clientY;
-    dragBaseAz = orbit.az; dragBasePol = orbit.pol;
-    dragLastX = e.clientX; dragLastT = performance.now();
-    flingV = 0;
+    pointers[e.pointerId] = { x: e.clientX, y: e.clientY };
+    if (Object.keys(pointers).length === 2) {
+      /* second finger: switch to pinch mode, freeze orbit drag */
+      dragging = false;
+      pinchBase = pinchDist();
+      pinchR0 = orbit.r;
+      canvas.classList.remove('is-dragging');
+    } else if (Object.keys(pointers).length === 1) {
+      if (camState.mode !== 'orbit') { camState.mode = 'orbit'; orbitFromCam(); }
+      dragging = true;
+      canvas.classList.add('is-dragging');
+      dragDownX = e.clientX; dragDownY = e.clientY;
+      dragBaseAz = orbit.az; dragBasePol = orbit.pol;
+      dragLastX = e.clientX; dragLastT = performance.now();
+      flingV = 0;
+    }
     lastInteract = performance.now();
     canvas.setPointerCapture(e.pointerId);
   });
   canvas.addEventListener('pointermove', function (e) {
+    if (pointers[e.pointerId] !== undefined) pointers[e.pointerId] = { x: e.clientX, y: e.clientY };
+    if (Object.keys(pointers).length >= 2) {
+      var d = pinchDist();
+      if (pinchBase > 0 && d > 0) {
+        orbit.r = Math.max(9, Math.min(240, pinchR0 * (pinchBase / d)));
+        lastInteract = performance.now();
+      }
+      return;
+    }
     if (!dragging) return;
     var dx = e.clientX - dragDownX, dy = e.clientY - dragDownY;
     orbit.az = dragBaseAz + dx * 0.011; /* 1:1 with the hand */
@@ -1379,12 +1406,24 @@
     dragLastX = e.clientX; dragLastT = tnow;
     lastInteract = tnow;
   });
-  ['pointerup', 'pointercancel'].forEach(function (ev) {
-    canvas.addEventListener(ev, function () {
+  function dropPointer(e) {
+    delete pointers[e.pointerId];
+    if (Object.keys(pointers).length === 0) {
       dragging = false;
       canvas.classList.remove('is-dragging');
       lastInteract = performance.now();
-    });
+    } else if (Object.keys(pointers).length === 1) {
+      /* back to one finger: rebase the drag so there is no jump */
+      var id = Object.keys(pointers)[0], p = pointers[id];
+      dragging = true;
+      dragDownX = p.x; dragDownY = p.y;
+      dragBaseAz = orbit.az; dragBasePol = orbit.pol;
+      dragLastX = p.x; dragLastT = performance.now();
+      flingV = 0;
+    }
+  }
+  ['pointerup', 'pointercancel'].forEach(function (ev) {
+    canvas.addEventListener(ev, dropPointer);
   });
   /* zoom toward the point under the cursor; pivot follows when you zoom deep,
      so the focus becomes the new centre of rotation */
