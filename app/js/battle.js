@@ -485,8 +485,9 @@
 
   /* campfire smoke */
   var SMOKE = [];
+  var smokeDot = softDot();
   function smoke(x, z) {
-    var n = 22;
+    var n = MOBILE ? 10 : 22;
     var geo = new THREE.BufferGeometry();
     var pos = new Float32Array(n * 3);
     for (var i = 0; i < n; i++) {
@@ -495,7 +496,7 @@
       pos[i * 3 + 2] = z + (Math.random() - 0.5) * 0.5;
     }
     geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
-    var mat = new THREE.PointsMaterial({ color: 0xcbbca6, size: 0.8, map: softDot(), transparent: true, opacity: 0.13, depthWrite: false });
+    var mat = new THREE.PointsMaterial({ color: 0xcbbca6, size: 0.8, map: smokeDot, transparent: true, opacity: 0.13, depthWrite: false });
     var pts = new THREE.Points(geo, mat);
     scene.add(pts);
     SMOKE.push({ pts: pts, x: x, z: z });
@@ -1487,11 +1488,13 @@
     requestAnimationFrame(frame);
     var dt = Math.min(0.05, (now - clock.last) / 1000);
     clock.last = now;
-    clock.dt = dt;
+    clock.dt = dt || 0.016;
     if (clock.playing) {
       clock.frac += dt * clock.speed / TOTAL;
       if (clock.frac >= 1) { clock.frac = 1; clock.playing = false; }
       if (tickCb) tickCb(clock.frac, phaseInfo(clock.frac));
+      applyFrac(clock.frac);
+      if ((massTick++ % (MOBILE ? 4 : 2)) === 0) updateMass();
     }
     applyFrac(clock.frac);
     /* paused: turntable drift happens inside the orbit block; only mode-switch here */
@@ -1564,17 +1567,16 @@
     }
     place(ULABS, true);
     place(LANDL, false);
-    if ((massTick++ % (MOBILE ? 4 : 2)) === 0) updateMass();
-    if (!reduce) {
+    if (!clock.playing && (massTick++ % (MOBILE ? 4 : 2)) === 0) updateMass();
+    if (!reduce && !MOBILE) {
       var mp = motes.geometry.attributes.position;
       for (var mj = 0; mj < MOTES; mj++) {
         mp.setX(mj, mp.getX(mj) + (clock.dt || 0) * 0.35);
         if (mp.getX(mj) > 42) mp.setX(mj, -42);
       }
       mp.needsUpdate = true;
-      updateCloth(now / (MOBILE ? 2000 : 1000));
+      updateCloth(now / 1000);
       for (var pw = 0; pw < PALMS.length; pw++) {
-        if (MOBILE && (pw % 2) !== (Math.floor(now / 100) % 2)) continue; /* half the crowns per frame on mobile */
         var pp = PALMS[pw];
         pp.crown.rotation.z = Math.sin(now / 1600 + pp.phase) * 0.035;
         pp.crown.rotation.x = Math.cos(now / 2100 + pp.phase) * 0.022;
@@ -1590,6 +1592,9 @@
         }
         sp2.needsUpdate = true;
       }
+    } else if (MOBILE && (massTick % 8 === 0)) {
+      /* a light breath of cloth on mobile: update the largest banners only */
+      updateCloth(now / 2500);
     }
     renderer.render(scene, camera);
   }
