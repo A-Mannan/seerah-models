@@ -19,10 +19,11 @@
   }
   if (!window.THREE || !canvas) { fail(); return; }
 
-  var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
-  renderer.setPixelRatio(window.innerWidth < 700 ? Math.min(window.devicePixelRatio || 1, 1.7) : Math.min(window.devicePixelRatio || 1, 2));
+  var MOBILE = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) || window.innerWidth < 700;
+  var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: !MOBILE });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, MOBILE ? 1.5 : 2));
   renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.shadowMap.type = THREE.PCFShadowMap;
   renderer.setClearColor(0x232936, 1);
 
   var scene = new THREE.Scene();
@@ -87,7 +88,7 @@
   var moonLight = new THREE.DirectionalLight(0xffc27d, 0.9);
   moonLight.position.set(64, 34, -46);
   moonLight.castShadow = true;
-  moonLight.shadow.mapSize.set(2048, 2048);
+  moonLight.shadow.mapSize.set(MOBILE ? 1024 : 2048, MOBILE ? 1024 : 2048);
   moonLight.shadow.camera.left = -72;
   moonLight.shadow.camera.right = 72;
   moonLight.shadow.camera.top = 72;
@@ -1121,7 +1122,7 @@
     am.visible = false; scene.add(am);
     arrows.push({ m: am, live: false, t: 0, from: new THREE.Vector3(), to: new THREE.Vector3(), dir: new THREE.Vector3() });
   }
-  var DN = 1400;
+  var DN = MOBILE ? 700 : 1400;
   var dustGeo = new THREE.BufferGeometry();
   var dustP = new Float32Array(DN * 3), dustS = new Float32Array(DN), dustB = new Float32Array(DN * 3);
   for (var di = 0; di < DN; di++) { dustS[di] = Math.random(); resetDust(di); }
@@ -1524,7 +1525,7 @@
     }
     place(ULABS, true);
     place(LANDL, false);
-    if ((massTick++ & 1) === 0) updateMass();
+    if ((massTick++ % (MOBILE ? 4 : 2)) === 0) updateMass();
     if (!reduce) {
       var mp = motes.geometry.attributes.position;
       for (var mj = 0; mj < MOTES; mj++) {
@@ -1532,8 +1533,9 @@
         if (mp.getX(mj) > 42) mp.setX(mj, -42);
       }
       mp.needsUpdate = true;
-      updateCloth(now / 1000);
+      updateCloth(now / (MOBILE ? 2000 : 1000));
       for (var pw = 0; pw < PALMS.length; pw++) {
+        if (MOBILE && (pw % 2) !== (Math.floor(now / 100) % 2)) continue; /* half the crowns per frame on mobile */
         var pp = PALMS[pw];
         pp.crown.rotation.z = Math.sin(now / 1600 + pp.phase) * 0.035;
         pp.crown.rotation.x = Math.cos(now / 2100 + pp.phase) * 0.022;
