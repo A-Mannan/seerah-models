@@ -741,7 +741,7 @@
       g.add(collar);
     }
     /* shields standing at the front, faces toward the enemy */
-    var nSh = champion ? 1 : (side ? 2 : 0);
+    var nSh = champion ? 1 : (side ? 2 : 1);
     for (var sh = 0; sh < nSh; sh++) {
       var shm = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.05, 14), side ? shieldQ : shieldM);
       shm.position.set(-0.55 + sh * 0.85, 0.5, 0.55 - sh * 0.18);
@@ -759,6 +759,12 @@
         helm.position.set(0.3 + hl * 0.3, 0.13, -0.5 - hl * 0.25);
         g.add(helm);
       }
+    } else if (!side && !champion) {
+      /* a helm rest by the standard: the believers' kit */
+      var rest = new THREE.Mesh(new THREE.SphereGeometry(0.14, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2), ironM);
+      rest.position.set(0.75, 0.14, -0.45);
+      rest.rotation.y = 0.8;
+      g.add(rest);
     }
     if (!side && !champion) {
       /* one water-skin: the light kit of the believers */
@@ -1167,8 +1173,8 @@
   ];
   var TOTAL = 0; PHASES.forEach(function (p) { TOTAL += p.dur; });
   var CAMS = {
-    ground:  { a: { p: [0, 37, 50], l: [0, 1.1, 3] },  b: { p: [4, 34, 46], l: [0, 1.1, 2] } },
-    duel:    { a: { p: [17, 7, 13], l: [0, 1.2, 2] }, b: { p: [10, 3.8, 6], l: [0, 1.2, 1.4] } },
+    ground:  { a: { p: [0, 30, 44], l: [0, 1.4, 0] },  b: { p: [4, 27, 40], l: [0, 1.4, -1] } },
+    duel:    { a: { p: [15, 6, 10], l: [0, 1.2, 1.6] }, b: { p: [9, 3.4, 4.5], l: [0, 1.3, 1.2] } },
     advance: { a: { p: [34, 20, 22], l: [-2, 1, 0] }, b: { p: [24, 15, 8], l: [-4, 1, -2] } },
     clash:   { a: { p: [30, 13, 20], l: [-2, 1, 0] }, b: { p: [20, 9, 8], l: [-4, 1, -2] } },
     turn:    { a: { p: [24, 16, 26], l: [-4, 1, -4] }, b: { p: [12, 13, 18], l: [-8, 1, -8] } },
@@ -1176,7 +1182,7 @@
     quiet:   { a: { p: [32, 18, 30], l: [0, 0.6, 0] }, b: { p: [18, 14, 22], l: [-4, 0.6, -2] } }
   };
   var PRESETS = {
-    ground:  { p: [0, 37, 50], l: [0, 1.1, 3] },
+    ground:  { p: [0, 30, 44], l: [0, 1.4, 0] },
     aerial:  { p: [0, 80, 16], l: [0, 0, 6] },
     duel:    { p: [10, 4.6, 8], l: [0, 1, 0] },
     line:    { p: [24, 5, 18], l: [0, 0.6, 8] },
