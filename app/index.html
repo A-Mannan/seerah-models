@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Badr — the battle in 3D · seerah models</title>
+<meta name="description" content="The battle of Badr as an interactive 3D model: the ground, the 3-versus-3 champions' duel, the full-scale battle, the rout.">
+<link rel="preconnect" href="https://api.fontshare.com">
+<link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Spectral:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+
+<canvas id="gl" aria-label="Interactive 3D model of the battle of Badr: valley, wells, the basin, the Prophet's hut, the standards of both armies. No human figures are depicted."></canvas>
+
+<header class="bar">
+  <h1 class="brand">
+    <svg class="mark" viewBox="0 0 20 22" aria-hidden="true"><rect x="8.6" y="1" width="1.8" height="20" fill="currentColor"/><rect x="10.4" y="3" width="8.6" height="6" fill="currentColor"/></svg>
+    <span class="brand-name" data-i18n="brand">badr <em>· the battle in 3D</em></span>
+  </h1>
+  <nav class="bar-tools" aria-label="Experience tools">
+    <button id="langBtn" class="tool" aria-pressed="false">اردو</button>
+    <button id="soundBtn" class="tool" aria-pressed="false">sound off</button>
+  </nav>
+</header>
+
+<div class="labels" id="labels"></div>
+
+<div class="legend">
+  <p class="legend-row legend-m"><span class="swatch"></span><span data-i18n="legendM"><b>Muslims</b> · about 313, lightly equipped</span></p>
+  <p class="legend-row legend-q"><span class="swatch"></span><span data-i18n="legendQ"><b>Quraysh</b> · about 1,000, fully equipped</span></p>
+</div>
+
+<footer class="deck" id="deck">
+  <div class="deck-row">
+    <button id="playBtn" class="deck-btn" aria-pressed="false"><span class="glyph">▶</span><span class="txt">play the battle</span></button>    <div class="timeline" id="timeline" aria-label="Battle timeline: drag to scrub">
+      <div class="segs" id="segs"></div>
+      <div class="scrub-head" id="scrubHead"></div>
+    </div>
+    <button id="speedBtn" class="deck-btn slim" aria-pressed="false" title="Playback speed">1×</button>
+    <span class="deck-count" id="deckCount" dir="ltr" aria-hidden="true">01 / 07</span>
+    <button id="resetBtn" class="deck-btn slim" title="Back to the start">⟲</button>
+  </div>
+  <div class="deck-row sub">
+    <div class="cams" id="cams" role="group" aria-label="Camera views">
+      <button data-cam="ground" class="cam is-on">the ground</button>
+      <button data-cam="aerial" class="cam">aerial · map</button>
+      <button data-cam="duel" class="cam">the duel</button>
+      <button data-cam="line" class="cam">our line</button>
+      <button data-cam="far" class="cam">their line</button>
+      <button data-cam="wells" class="cam">the wells</button>
+    </div>
+  </div>
+</footer>
+
+<div class="hint" id="hint"><span class="dot"></span><span data-i18n="hint">drag to look around · scroll to zoom</span></div>
+
+<noscript>
+  <p class="noscript-note">The 3D battle needs JavaScript and WebGL. The model replays the day in seven phases: the ground; the
+  3-versus-3 champions’ duel (Ḥamzah, ʻAlī, ʻUbaydah against ʻUtbah, Shaybah, al-Walīd); both lines advance; the clash
+  at the wells; the gravel and the sand; the rout; the field gone quiet. No human figure is drawn.</p>
+</noscript>
+
+<script src="assets/three.min.js"></script>
+<script>window.THREE || document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\\/script>')</script>
+<script src="assets/data.js"></script>
+<script src="js/audio.js" defer></script>
+<script src="js/battle.js" defer></script>
+<script src="js/main.js" defer></script>
+</body>
+</html>

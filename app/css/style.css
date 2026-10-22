@@ -1,0 +1,251 @@
+/* Badr — the battle in 3D · app shell
+   Direction: the dawn maquette — one dark field, brass instrument panel, editorial type.
+   Type: Fraunces (display) · Instrument Sans (UI) · Noto Nastaliq Urdu (Urdu)
+   One radius: 10px · quiet borders only. */
+
+:root {
+  --bg: #14120f;
+  --sheet: #1c1915;
+  --ink: #ece8df;
+  --muted: rgba(236, 232, 223, 0.62);
+  --faint: rgba(236, 232, 223, 0.38);
+  --brass: #c8a84b;
+  --line: rgba(236, 232, 223, 0.14);
+  --radius: 10px;
+  --bar-h: 64px;
+  --deck-h: 46px;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "IBM Plex Sans", "Helvetica Neue", sans-serif;
+  font-weight: 400;
+  letter-spacing: 0;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+h1, h2, p { margin: 0; }
+::selection { background: var(--brass); color: #14120f; }
+:focus-visible { outline: 2px solid var(--brass); outline-offset: 2px; }
+[hidden] { display: none !important; }
+
+#gl { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; cursor: grab; }
+#gl.is-dragging { cursor: grabbing; }
+#gl.is-playing { cursor: default; }
+
+/* the idle hint: how to explore, until it's learned */
+.hint {
+  position: fixed; left: 22px; bottom: calc(2 * var(--deck-h) + 34px); z-index: 9;
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12.5px; color: var(--muted);
+  background: rgba(16, 14, 12, 0.72);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 12px;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.hint .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--brass); flex: none; }
+.hint.is-gone { opacity: 0; transform: translateY(6px); pointer-events: none; }
+@media (max-width: 700px) { .hint { display: none; } }
+
+/* ------------------------------ top bar */
+.bar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 10;
+  height: var(--bar-h);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 22px;
+  background: rgba(16, 14, 12, 0.28);
+  border-bottom: 1px solid rgba(236, 232, 223, 0.08);
+  pointer-events: none;
+}
+.bar > * { pointer-events: auto; }
+.brand { display: flex; align-items: baseline; gap: 12px; font-family: "Spectral", Georgia, serif; font-size: 29px; font-weight: 500; letter-spacing: -0.025em; line-height: 1; }
+.brand .mark { width: 12px; height: 15px; color: var(--brass); flex: none; align-self: center; }
+.brand em { font-family: "IBM Plex Sans", sans-serif; font-style: normal; color: var(--muted); font-size: 12px; letter-spacing: 0.02em; }
+.bar-tools { display: flex; align-items: center; gap: 4px; }
+.tool, .cam { letter-spacing: 0.01em; }
+.tool {
+  font-size: 13px; padding: 8px 10px; border-radius: 8px;
+  color: var(--muted); background: transparent;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+.tool:hover { color: var(--ink); background: rgba(236, 232, 223, 0.06); }
+.tool[aria-pressed="true"] { color: var(--brass); }
+
+/* ------------------------------ legend */
+.legend {
+  position: fixed; top: calc(var(--bar-h) + 10px); right: 22px; z-index: 9;
+  display: flex; flex-direction: column; gap: 7px;
+  padding: 12px 14px;
+  background: rgba(16, 14, 12, 0.6);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  max-width: 300px;
+}
+.legend-row { font-size: 12.5px; line-height: 1.4; color: var(--muted); display: flex; align-items: center; gap: 9px; }
+.legend-row b { color: var(--ink); font-weight: 500; }
+.legend-row .swatch { width: 9px; height: 9px; flex: none; border-radius: 2px; }
+.legend-m .swatch { background: #ece5d3; }
+.legend-q .swatch { background: #3a3328; border: 1px solid rgba(236, 232, 223, 0.25); }
+
+/* ------------------------------ labels */
+.labels { position: fixed; inset: 0; z-index: 5; pointer-events: none; overflow: hidden; }
+.hud-label {
+  position: absolute; transform: translate(-50%, -130%);
+  font-size: 12.5px; color: var(--ink); font-family: inherit;
+  background: rgba(14, 12, 10, 0.72);
+  border: 1px solid rgba(236, 232, 223, 0.1);
+  padding: 4px 9px; border-radius: 8px;
+  white-space: nowrap; will-change: left, top;
+}
+.hud-label.is-side { background: rgba(200, 168, 75, 0.94); border-color: transparent; color: #14120f; font-weight: 500; }
+.hud-label.is-land { background: none; border: none; color: var(--faint); padding: 2px 4px; font-size: 11.5px; letter-spacing: 0.01em; }
+.hud-label.is-land-name { background: rgba(14, 12, 10, 0.5); border-color: transparent; color: var(--muted); }
+
+/* ------------------------------ deck */
+.deck {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 11;
+  display: flex; flex-direction: column; gap: 4px;
+  padding: 10px 22px 12px;
+  background: rgba(16, 14, 12, 0.94);
+  border-top: 1px solid var(--line);
+}
+.deck-row { display: flex; align-items: center; gap: 14px; }
+.deck-row.sub { justify-content: space-between; gap: 10px; }
+
+#playBtn {
+  display: inline-flex; align-items: center; gap: 9px; flex: none;
+  height: var(--deck-h); padding: 0 18px;
+  border-radius: var(--radius);
+  background: var(--brass); color: #14120f;
+  font-size: 14px; font-weight: 500;
+  transition: background 0.2s ease;
+}
+#playBtn:hover { background: #d6b75a; }
+#playBtn[aria-pressed="true"] { background: rgba(236, 232, 223, 0.12); color: var(--ink); }
+.glyph { font-size: 11px; width: 12px; text-align: center; }
+
+.deck-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px; flex: none;
+  height: var(--deck-h); padding: 0 10px;
+  font-size: 13px; color: var(--muted);
+  background: transparent; border-radius: 8px;
+  transition: color 0.2s ease, background 0.2s ease;
+  white-space: nowrap;
+}
+.deck-btn:hover { color: var(--ink); background: rgba(236, 232, 223, 0.06); }
+.deck-btn.slim { min-width: 34px; font-variant-numeric: tabular-nums; }
+.deck-btn[aria-pressed="true"] { color: var(--brass); }
+.deck-count { font-size: 11.5px; color: var(--faint); font-variant-numeric: tabular-nums; padding: 0 2px; flex: none; letter-spacing: 0.04em; }
+
+/* timeline: labels above a hairline track */
+.timeline {
+  position: relative; flex: 1 1 auto; min-width: 0;
+  height: var(--deck-h);
+  cursor: ew-resize; touch-action: none;
+}
+.segs { position: absolute; inset: 0; display: flex; }
+.seg {
+  position: relative; height: 100%; flex-basis: 0; flex-grow: var(--w, 1);
+  background: transparent; border: 0; padding: 0;
+}
+.seg::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: 7px; height: 1.5px;
+  background: rgba(236, 232, 223, 0.12);
+  transition: background 0.25s ease;
+}
+.seg::before {
+  content: ''; position: absolute; left: 0; bottom: 4px; width: 1px; height: 8px;
+  background: rgba(236, 232, 223, 0.16);
+}
+.seg:first-child::before { display: none; }
+.seg .name {
+  position: absolute; inset: 4px 0 auto; display: flex; align-items: center; justify-content: center;
+  font-size: 11.5px; color: var(--faint); padding: 0 8px;
+  overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+  transition: color 0.25s ease;
+}
+.seg.is-past::after { background: rgba(200, 168, 75, 0.45); }
+.seg.is-today::after { background: var(--brass); height: 2px; }
+.seg.is-today .name { color: var(--ink); }
+.seg:hover .name { color: var(--muted); }
+.scrub-head {
+  position: absolute; bottom: 4px; width: 9px; height: 9px;
+  transform: translateX(-50%);
+  background: var(--brass); border-radius: 50%; pointer-events: none;
+}
+
+.cams { display: flex; gap: 2px; flex: none; overflow-x: auto; scrollbar-width: none; }
+.cams::-webkit-scrollbar { display: none; }
+.cam {
+  font-size: 13px; padding: 6px 9px; border-radius: 8px; white-space: nowrap;
+  color: var(--faint); background: transparent;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+.cam:hover { color: var(--ink); background: rgba(236, 232, 223, 0.06); }
+.cam.is-on { color: var(--brass); background: rgba(200, 168, 75, 0.1); }
+
+.noscript-note {
+  position: fixed; inset: auto 16px 16px; z-index: 40;
+  font-size: 14px; line-height: 1.6; color: var(--ink);
+  background: var(--sheet); border-radius: var(--radius); padding: 16px 18px;
+}
+
+/* ------------------------------ phone */
+@media (max-width: 700px) {
+  :root { --deck-h: 44px; --bar-h: 54px; }
+  .bar { padding: 0 14px; }
+  .brand { font-size: 22px; gap: 8px; }
+  .brand em { display: none; }
+  .tool { font-size: 12px; padding: 7px 8px; }
+  #langBtn { font-size: 13.5px; padding: 4px 10px; }
+  .legend { top: calc(var(--bar-h) + 8px); right: 12px; left: auto; max-width: 226px; padding: 8px 10px; }
+  .legend-row { font-size: 11px; line-height: 1.35; gap: 7px; }
+  .legend-row .swatch { width: 8px; height: 8px; }
+  .deck { padding: 8px 12px 12px; gap: 3px; }
+  .deck-row { gap: 8px; }
+  #playBtn { height: 46px; padding: 0 16px; font-size: 14px; }
+  #playBtn .txt { display: none; }
+  .deck-btn { padding: 0 9px; font-size: 12.5px; height: 40px; }
+  .deck-count { font-size: 11px; }
+  .timeline { height: 44px; }
+  .seg .name { display: none; }
+  .seg.is-today .name { display: none; }
+  .cams { max-width: none; }
+  .cam[data-cam="line"], .cam[data-cam="far"], .cam[data-cam="wells"] { display: none; }
+  .cam { font-size: 12.5px; padding: 9px 10px; }
+  .hud-label.is-q, .hud-label.is-far { display: none; }
+  .hud-label { font-size: 11px; padding: 4px 8px; }
+}
+@media (max-width: 360px) {
+  .brand { font-size: 19px; }
+  .legend { max-width: 196px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition-duration: 0.01ms !important; }
+}
+
+/* ------------------------------ Urdu (RTL, Nastaliq) */
+body.is-ur { font-family: "Noto Nastaliq Urdu", "IBM Plex Sans", serif; }
+body.is-ur .brand,
+body.is-ur .brand em,
+body.is-ur .tool,
+body.is-ur .deck-btn,
+body.is-ur #playBtn,
+body.is-ur .cam,
+body.is-ur .seg .name,
+body.is-ur .legend-row,
+body.is-ur .deck-count { font-family: "Noto Nastaliq Urdu", "IBM Plex Sans", serif; }
+body.is-ur .brand { font-size: 24px; }
+body.is-ur .brand em { font-size: 11px; }
+body.is-ur .tool, body.is-ur .cam { font-size: 12px; line-height: 2; padding-top: 2px; padding-bottom: 2px; }
+body.is-ur #playBtn, body.is-ur .deck-btn { line-height: 2; }
+body.is-ur .seg .name { font-size: 11.5px; line-height: 2.2; }
+body.is-ur .legend-row { line-height: 1.9; font-size: 11.5px; }
+body.is-ur .hud-label { font-family: "Noto Nastaliq Urdu", serif; line-height: 1.9; padding: 6px 10px; font-size: 12px; }
