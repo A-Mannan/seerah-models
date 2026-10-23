@@ -236,7 +236,13 @@
   });
 
   /* ------------------------------ boot */
-  console.log('[badr] build 2026-10-23n · event markers + angels + Ansar trio');
+  console.log('[badr] build 2026-10-23o · aftermath counts, angels, persistent event labels');
+  if (/[?&]debug=1/.test(location.search)) {
+    var dbg = document.createElement('div');
+    dbg.className = 'debug-build';
+    dbg.textContent = 'build o';
+    document.body.appendChild(dbg);
+  }
   setPlayState(false);
   setScrub(B.frac());
   segEls[0].classList.add('is-today');

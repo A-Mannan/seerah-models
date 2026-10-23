@@ -110,6 +110,9 @@ h1, h2, p { margin: 0; }
   white-space: nowrap; will-change: left, top;
 }
 .hud-label.is-side { background: rgba(200, 168, 75, 0.94); border-color: transparent; color: #14120f; font-weight: 500; }
+.hud-label.is-event { border-color: rgba(200, 168, 75, 0.55); font-weight: 600; }
+.hud-label.is-event.is-side { border-color: rgba(20, 18, 15, 0.35); }
+.debug-build { position: fixed; left: 8px; bottom: calc(var(--deck-h) + 10px); z-index: 60; font: 10px/1 "Archivo", sans-serif; letter-spacing: 0.08em; color: rgba(236, 232, 223, 0.55); background: rgba(14, 12, 10, 0.65); padding: 4px 6px; border-radius: 4px; pointer-events: none; }
 .hud-label.is-land { background: none; border: none; color: var(--faint); padding: 2px 4px; font-size: 11.5px; letter-spacing: 0.01em; }
 .hud-label.is-land-name { background: rgba(14, 12, 10, 0.5); border-color: transparent; color: var(--muted); }
 

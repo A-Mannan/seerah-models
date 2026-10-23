@@ -46,6 +46,16 @@ silhouette-first standards, brass instrument-panel UI. Not attempting photoreal 
 - The ʻarish is labelled `the ʻarish · the Prophet’s station (PBUH)`; landmark labels clamp on-screen on phones.
 - Scope: battlefield events only. Ransom/prisoners, Madinah news and Abu Lahab's death are excluded.
 
+### Latest pass — aftermath counts and visible event layer (build o)
+- Event labels are persistent and full-strength in the map view: Muʿādh & Muʿawwidh (Muslim side),
+  Ikrimah (Quraysh side), Bilāl (Muslim side), ʻUmayyah (Quraysh side), the Anṣār trio, and the
+  Quraysh refusal at the first challenge.
+- The angels: gold shimmer over the Muslim line at the clash, labelled `the angels · 8:9`.
+- Aftermath (rout/reckoning only): 14 graves (BADR-047), 70 Quraysh dead (BADR-048), 70 unarmed
+  captives (BADR-048/050), captured standards/shields/spears/armour/chest/camels (spoils, BADR-052),
+  and the 24 leaders at al-Qalib (BADR-049).
+- `?debug=1` shows a tiny build tag for cache diagnosis; the public UI stays clean.
+
 ### Verification (latest)
 - `lint.mjs --app`: 0 FAIL / 0 WARN.
 - `inspect.mjs --app`: 0 FAIL, 2 WARN (font-load timing) at 1440 / 768 / 390.

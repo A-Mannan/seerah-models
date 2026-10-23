@@ -294,7 +294,46 @@
   dune.position.set(58, -0.4, -54);
   dune.receiveShadow = true;
   scene.add(dune);
+  var aftermathGroup = new THREE.Group();
+  aftermathGroup.userData.keep = true;
+  aftermathGroup.visible = false;
+  scene.add(aftermathGroup);
+
   var well24 = wellAt(36, 8, true);
+  /* the Quraysh leaders thrown into al-Qalib: wrapped bodies at the well, no figures */
+  var bodyM = new THREE.MeshLambertMaterial({ color: 0x3a332a });
+  function bodyBundle(x, z, rot, parent) {
+    var g = new THREE.Group();
+    var body = new THREE.Mesh(new THREE.CylinderGeometry(0.17, 0.23, 1.15, 6), bodyM);
+    body.rotation.z = Math.PI / 2; body.position.y = 0.2; g.add(body);
+    var head = new THREE.Mesh(new THREE.SphereGeometry(0.16, 6, 5), bodyM);
+    head.position.set(0.62, 0.18, 0); g.add(head);
+    g.position.set(x, 0, z); g.rotation.y = rot;
+    g.traverse(function (o) { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+    (parent || scene).add(g);
+    return g;
+  }
+  [[34.4,6.5,0.4],[35.2,5.9,1.1],[36.6,5.7,2.0],[37.9,6.3,2.6],[38.3,7.7,0.7],[37.7,9.1,1.5],[36.2,9.7,2.4],[34.8,9.1,0.2]].forEach(function (b) { bodyBundle(b[0], b[1], b[2], aftermathGroup); });
+
+  /* the seventy Quraysh dead on the field (BADR-048) */
+  for (var kd = 0; kd < 70; kd++) {
+    var kx = -24 + (kd % 14) * 3.6 + (Math.random() - 0.5) * 1.8;
+    var kz = -19.5 - Math.floor(kd / 14) * 1.35 + (Math.random() - 0.5) * 0.7;
+    bodyBundle(kx, kz, Math.random() * Math.PI, aftermathGroup);
+  }
+
+  /* fourteen graves on the near bank (BADR-047) */
+  var graveM = new THREE.MeshLambertMaterial({ color: 0x6b6254 });
+  var moundM = new THREE.MeshLambertMaterial({ color: 0xb09a78 });
+  for (var gm = 0; gm < 14; gm++) {
+    var gx = -6.5 + gm;
+    var mound = new THREE.Mesh(new THREE.SphereGeometry(0.52, 6, 4, 0, Math.PI * 2, 0, Math.PI / 2), moundM);
+    mound.scale.set(1, 0.22, 0.72); mound.position.set(gx, 0.02, 22);
+    mound.receiveShadow = true; aftermathGroup.add(mound);
+    var stone = new THREE.Mesh(new THREE.BoxGeometry(0.32, 0.55, 0.18), graveM);
+    stone.position.set(gx, 0.28, 22.55); stone.rotation.y = (Math.random() - 0.5) * 0.18;
+    stone.castShadow = true; stone.receiveShadow = true; aftermathGroup.add(stone);
+  }
 
   /* framing dunes at the near corners: the field sits inside the valley */
   [[-28, 36, 16, 2.4, 10], [28, 34, 18, 2.2, 11]].forEach(function (d) {
@@ -566,7 +605,7 @@
     horse(h[0], h[1], h[2], true);
   });
 
-  function camel(x, z, ry) {
+  function camel(x, z, ry, parent) {
     var g = new THREE.Group();
     var m = new THREE.MeshLambertMaterial({ color: 0xb59a6d });
     var darkM = new THREE.MeshLambertMaterial({ color: 0x7a6446 });
@@ -610,7 +649,7 @@
     tuft.position.set(-1.14, 1.28, 0); g.add(tuft);
     g.position.set(x, 0, z); g.rotation.y = ry;
     g.traverse(function (o) { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
-    scene.add(g);
+    (parent || scene).add(g);
   }
   camel(-6.5, 26.5, 0.4); camel(-1, 27.5, -0.2); camel(4.5, 26.8, 0.2); camel(9, 28.4, -0.5);
   /* the Quraysh baggage train behind their camp */
@@ -912,22 +951,22 @@
 
   /* ------------------------------ battlefield event markers.
      Named individuals are never figured: a standard or a spear marks the spot. */
-  function eventStandard(x, z, side, tilt, fallen) {
+  function eventStandard(x, z, side, tilt, fallen, parent) {
     var g = new THREE.Group();
-    var pole = new THREE.Mesh(new THREE.CylinderGeometry(0.032, 0.032, 2.7, 6), woodM);
-    pole.position.y = 1.35;
+    var pole = new THREE.Mesh(new THREE.CylinderGeometry(0.032, 0.032, 3.2, 6), woodM);
+    pole.position.y = 1.6;
     g.add(pole);
-    var cloth = new THREE.Mesh(new THREE.PlaneGeometry(0.7, 0.48),
+    var cloth = new THREE.Mesh(new THREE.PlaneGeometry(0.85, 0.6),
       new THREE.MeshLambertMaterial({ color: side ? 0x2b2620 : 0xe8e2d2, side: THREE.DoubleSide }));
-    cloth.position.set(0.38, 2.28, 0);
+    cloth.position.set(0.46, 2.72, 0);
     g.add(cloth);
-    var tip = new THREE.Mesh(new THREE.ConeGeometry(0.055, 0.16, 4), brassM);
-    tip.position.y = 2.78;
+    var tip = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.18, 4), brassM);
+    tip.position.y = 3.3;
     g.add(tip);
     g.traverse(function (o) { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
     if (fallen) { g.rotation.z = 1.25; g.position.set(x, 0.18, z); }
     else { g.rotation.z = tilt || 0; g.position.set(x, 0, z); }
-    scene.add(g);
+    (parent || scene).add(g);
     return g;
   }
   /* Muʿādh (RA) loses an arm to Ikrimah's blow and fights on; Bilāl (RA) runs
@@ -938,11 +977,15 @@
   var bilalMark = eventStandard(8.5, 5.0, 0, 0, false);
   var umayyahMark = eventStandard(13.2, -5.8, 1, 0, true);
   var EVENT_MARKS = [
-    { group: muadhMark, side: 0, label: 'Muʿādh (RA) & Muʿawwidh (RA)', k: 'muadhMuawwidh', labelY: 3.5, ph: [3, 4, 5] },
-    { group: ikrimahMark, side: 1, label: 'Ikrimah ibn Abi Jahl', k: 'ikrimah', labelY: 3.3, ph: [3, 4, 5] },
-    { group: bilalMark, side: 0, label: 'Bilāl (RA)', k: 'bilal', labelY: 3.5, ph: [4, 5] },
-    { group: umayyahMark, side: 1, label: 'ʻUmayyah ibn Khalaf', k: 'umayyah', labelY: 2.2, ph: [4, 5] }
+    { group: muadhMark, side: 0, label: 'Muʿādh (RA) & Muʿawwidh (RA)', k: 'muadhMuawwidh', labelY: 3.9, event: true, priority: 1, labelAlways: true },
+    { group: ikrimahMark, side: 1, label: 'Ikrimah ibn Abi Jahl', k: 'ikrimah', labelY: 3.7, event: true, priority: 1, labelAlways: true },
+    { group: bilalMark, side: 0, label: 'Bilāl (RA)', k: 'bilal', labelY: 3.9, event: true, priority: 1, labelAlways: true },
+    { group: umayyahMark, side: 1, label: 'ʻUmayyah ibn Khalaf', k: 'umayyah', labelY: 2.4, event: true, priority: 1, labelAlways: true }
   ];
+  /* the refusal is the point of the first challenge: say it plainly, then hide it */
+  var refuseMark = new THREE.Group();
+  refuseMark.position.set(-6, 0, -12.5);
+  EVENT_MARKS.push({ group: refuseMark, side: 1, label: 'the Quraysh refuse', k: 'qurayshRefuse', labelY: 6.2, event: true, priority: 1, labelAlways: true, ph: [1], tRange: [0.03, 0.42] });
   /* Before the Hashimi champions, the first Ansari trio steps out: ʻAwf and
      Muʿawwidh (sons of al-Harith / Afraʾ) and ʿAbdullah ibn Rawahah (RA).
      Quraysh refuses them as not their equals; the trio withdraws. */
@@ -952,7 +995,45 @@
   var ANSAR_MARKS = [ansarA, ansarB, ansarC];
   /* these three standards move, so keep them out of the static merge */
   ANSAR_MARKS.forEach(function (g) { g.userData.dynamicRoot = true; });
-  EVENT_MARKS.push({ group: ansarB, side: 0, label: 'the Anṣār trio (RA)', k: 'ansarTrio', labelY: 3.6, ph: [1], tRange: [0.02, 0.44], priority: 1 });
+  EVENT_MARKS.push({ group: ansarB, side: 0, label: 'the Anṣār trio (RA)', k: 'ansarTrio', labelY: 4.0, event: true, priority: 1, labelAlways: true });
+
+  /* ------------------------------ spoils and the aftermath counts.
+     The captives and spoils are on the field; the counts follow BADR-047/048/050. */
+  eventStandard(21.5, 9.0, 1, 0, true, aftermathGroup);
+  eventStandard(23.8, 10.2, 1, 0, true, aftermathGroup);
+  eventStandard(25.6, 8.6, 1, 0, true, aftermathGroup);
+  var spoilShieldM = new THREE.MeshLambertMaterial({ color: 0x5a4f3c });
+  for (var ss = 0; ss < 6; ss++) {
+    var sh = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.34, 0.05, 12), spoilShieldM);
+    sh.rotation.x = Math.PI / 2; sh.rotation.z = (ss % 3) * 0.4;
+    sh.position.set(21 + ss * 1.1, 0.08, 11.5 + (ss % 2) * 0.9);
+    sh.castShadow = true; sh.receiveShadow = true; aftermathGroup.add(sh);
+  }
+  for (var sp = 0; sp < 8; sp++) {
+    var shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.025, 2.2, 5), woodM);
+    shaft.rotation.z = Math.PI / 2; shaft.rotation.y = (sp % 4) * 0.28;
+    shaft.position.set(21.5 + sp * 0.9, 0.07, 13.4 + (sp % 3) * 0.4);
+    shaft.castShadow = true; aftermathGroup.add(shaft);
+  }
+  for (var sa = 0; sa < 3; sa++) {
+    var ar = new THREE.Mesh(new THREE.BoxGeometry(0.6, 0.42, 0.5), new THREE.MeshLambertMaterial({ color: 0x4a4236 }));
+    ar.position.set(23 + sa * 1.2, 0.21, 14.5);
+    ar.castShadow = true; ar.receiveShadow = true; aftermathGroup.add(ar);
+  }
+  var chest = new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.5, 0.55), new THREE.MeshLambertMaterial({ color: 0x6b5236 }));
+  chest.position.set(26.5, 0.25, 11.5); chest.castShadow = true; chest.receiveShadow = true; aftermathGroup.add(chest);
+  camel(23.5, 13.2, 0.6, aftermathGroup); camel(26.5, 12.4, -0.4, aftermathGroup);
+
+  var martyrsMark = new THREE.Group(); martyrsMark.position.set(0, 0, 18);
+  var killedMark = new THREE.Group(); killedMark.position.set(-18, 0, -16);
+  var captivesMark = new THREE.Group(); captivesMark.position.set(-30, 0, 10);
+  var spoilsMark = new THREE.Group(); spoilsMark.position.set(24, 0, 12);
+  EVENT_MARKS.push(
+    { group: martyrsMark, side: 0, label: 'the 14 martyrs (RA)', k: 'martyrs', labelY: 3.6, event: true, priority: 1, labelAlways: true, ph: [5, 6] },
+    { group: killedMark, side: 1, label: '70 Quraysh killed', k: 'killed', labelY: 4.2, event: true, priority: 1, labelAlways: true, ph: [5, 6] },
+    { group: captivesMark, side: 0, label: '70 captives', k: 'captives', labelY: 3.6, event: true, priority: 1, labelAlways: true, ph: [5, 6] },
+    { group: spoilsMark, side: 0, label: 'the spoils', k: 'spoils', labelY: 3.6, event: true, priority: 1, labelAlways: true, ph: [5, 6] }
+  );
 
   /* ------------------------------ squads and platoons.
      A squad is eight men: each is a hooded body holding an upright spear,
@@ -1063,6 +1144,27 @@
   buildMass(0, 313, 9, 2.2, 1.9, 12.2, 1.9);
   buildMass(1, 1000, 21, 2.0, 1.9, -14.2, 2.15);
 
+  /* the seventy captives, unarmed, on the Muslim side (BADR-048/050) */
+  function buildCaptives(count, x0, z0, cols, dx, dz) {
+    var bodyGeo = new THREE.CylinderGeometry(0.16, 0.2, 1.05, 6);
+    var headGeo = new THREE.SphereGeometry(0.13, 8, 6);
+    var geo = mergeParts([
+      { geo: bodyGeo, p: [0, 0.53, 0], c: new THREE.Color(0x6a5a45) },
+      { geo: headGeo, p: [0, 1.19, 0], c: new THREE.Color(0x554838) }
+    ]);
+    var mesh = new THREE.InstancedMesh(geo, new THREE.MeshLambertMaterial({ vertexColors: true }), count);
+    mesh.castShadow = true;
+    var m = new THREE.Matrix4();
+    for (var i = 0; i < count; i++) {
+      var r = Math.floor(i / cols), c = i % cols;
+      m.makeTranslation(x0 + c * dx + (Math.random() - 0.5) * 0.12, 0, z0 + r * dz + (Math.random() - 0.5) * 0.12);
+      mesh.setMatrixAt(i, m);
+    }
+    mesh.instanceMatrix.needsUpdate = true;
+    aftermathGroup.add(mesh);
+  }
+  buildCaptives(70, -27, 6, 7, 1.05, 1.05);
+
   function updateMass() {
     var dm = new THREE.Object3D();
     for (var m = 0; m < MASS.length; m++) {
@@ -1139,15 +1241,15 @@
     { w: [-24, 0.4, -32], t: 'al-Quswa · the far bank', e: 'BADR-019', k: 'far', cls: 'is-land-name is-far' },
     { w: [-6.9, 1.2, 1.2], t: 'wells of Badr', e: 'BADR-019', k: 'wells', cls: 'is-tap' },
     { w: [-17.5, 2.6, 13.1], t: 'the ʻarish · the Prophet’s station (PBUH)', e: 'BADR-020', k: 'arish', cls: 'is-tap' },
-    { w: [36, 1.3, 8], t: 'al-Qalib · the well of the twenty-four', e: 'BADR-049', k: 'well24', cls: 'is-tap' },
-    { w: [0, 8.4, 1], t: 'the angels · 8:9', e: 'BADR-031', k: 'angels', cls: 'is-land-name', ph: [3], tRange: [0.12, 0.9] }
+    { w: [36, 2.6, 8], t: 'al-Qalib · the 24 leaders thrown into the well', e: 'BADR-049', k: 'well24', cls: 'is-tap is-event', ph: [5, 6] },
+    { w: [0, 8.4, 1], t: 'the angels · 8:9', e: 'BADR-031', k: 'angels', cls: 'is-land-name is-event', ph: [3, 4, 5], tRange: [0.12, 0.9] }
   ];
   var LANDL = LAND.map(function (l) {
     var el = mkLabel(l.t, l.cls);
     return { el: el, v: new THREE.Vector3(l.w[0], l.w[1], l.w[2]), k: l.k, ph: l.ph, tRange: l.tRange };
   });
   var ULABS = [jabal].concat(champs, [musab], EVENT_MARKS).map(function (u) {
-    var el = mkLabel(u.label, u.side ? '' : 'is-side');
+    var el = mkLabel(u.label, (u.side ? '' : 'is-side') + (u.event ? ' is-event' : ''));
     if (u === jabal) el.classList.add('is-q');
     return { el: el, u: u, k: u.k };
   });
@@ -1162,9 +1264,11 @@
       musab: 'Musʻab’s white standard (RA)', command: 'Abū Jahl’s standard',
       near: 'al-ʻUdwat ad-Dunya · the near bank', far: 'al-Quswa · the far bank',
       basin: 'the basin', wells: 'wells of Badr', arish: 'the ʻarish · the Prophet’s station (PBUH)',
-      well24: 'al-Qalib · the well of the twenty-four', katheeb: 'Katheeb al-Hannan (a modern name)',
+      well24: 'al-Qalib · the 24 leaders thrown into the well', katheeb: 'Katheeb al-Hannan (a modern name)',
       muadhMuawwidh: 'Muʿādh (RA) & Muʿawwidh (RA)', ikrimah: 'Ikrimah ibn Abi Jahl',
-      bilal: 'Bilāl (RA)', umayyah: 'ʻUmayyah ibn Khalaf', ansarTrio: 'the Anṣār trio (RA)', angels: 'the angels · 8:9'
+      bilal: 'Bilāl (RA)', umayyah: 'ʻUmayyah ibn Khalaf', ansarTrio: 'the Anṣār trio (RA)', angels: 'the angels · 8:9',
+      qurayshRefuse: 'the Quraysh refuse', martyrs: 'the 14 martyrs (RA)', killed: '70 Quraysh killed',
+      captives: '70 captives', spoils: 'the spoils'
     },
     ur: {
       hamzah: 'حمزہ رضی اللہ عنہ', ali: 'علی رضی اللہ عنہ', ubaydah: 'عبیدہ رضی اللہ عنہ',
@@ -1172,9 +1276,11 @@
       musab: 'مصعب کا سفید پرچم رضی اللہ عنہ', command: 'ابو جہل کا پرچم',
       near: 'العدوۃ الدنیا · قریب کا کنارہ', far: 'القصوی · دور کا کنارہ',
       basin: 'حوض', wells: 'بدر کے کنویں', arish: 'عرش · مقامِ نبوی ﷺ',
-      well24: 'القليب · چوبیس کا کنواں', katheeb: 'کتیبة الحنان (جدید نام)',
+      well24: 'القليب · ۲۴ سردار کنویں میں ڈالے گئے', katheeb: 'کتیبة الحنان (جدید نام)',
       muadhMuawwidh: 'معاذ و معوذ رضی اللہ عنہما', ikrimah: 'عکرمہ بن ابی جہل',
-      bilal: 'بلال رضی اللہ عنہ', umayyah: 'امیہ بن خلف', ansarTrio: 'تین انصاری (رضی اللہ عنہم)', angels: 'فرشتے · ۸:۹'
+      bilal: 'بلال رضی اللہ عنہ', umayyah: 'امیہ بن خلف', ansarTrio: 'تین انصاری (رضی اللہ عنہم)', angels: 'فرشتے · ۸:۹',
+      qurayshRefuse: 'قریش نے انکار کیا', martyrs: '۱۴ شہید (رضی اللہ عنہم)', killed: '۷۰ قریشی مارے گئے',
+      captives: '۷۰ قیدی', spoils: 'مالِ غنیمت'
     }
   };
   function setLang(lang) {
@@ -1305,6 +1411,7 @@
     mergeMeshList(statics, scene, false);
   }
   mergeStaticScene();
+  mergeMeshList(collectMergeable(aftermathGroup), aftermathGroup, true);
   var DN = MOBILE ? 700 : 1400;
   var dustGeo = new THREE.BufferGeometry();
   var dustP = new Float32Array(DN * 3), dustS = new Float32Array(DN), dustB = new Float32Array(DN * 3);
@@ -1333,7 +1440,7 @@
   scene.add(dust);
 
   /* the angels' help: a gold shimmer, never a figure (Qur'an 8:9; BADR-031/032) */
-  var AN = MOBILE ? 80 : 150;
+  var AN = MOBILE ? 110 : 220;
   var angelGeo = new THREE.BufferGeometry();
   var angelP = new Float32Array(AN * 3), angelS = new Float32Array(AN);
   for (var ag = 0; ag < AN; ag++) {
@@ -1344,7 +1451,7 @@
   }
   angelGeo.setAttribute('position', new THREE.BufferAttribute(angelP, 3));
   var angels = new THREE.Points(angelGeo, new THREE.PointsMaterial({
-    color: 0xffe2a8, size: 2.6, map: softDot(), transparent: true, opacity: 0,
+    color: 0xffe2a8, size: 3.2, map: softDot(), transparent: true, opacity: 0,
     depthWrite: false, blending: THREE.AdditiveBlending
   }));
   scene.add(angels);
@@ -1464,6 +1571,9 @@
     }
     ANSAR_MARKS.forEach(function (m) { m.position.z = ansarZ; });
 
+    /* the aftermath (graves, dead, captives, spoils, the pit) belongs to the rout and reckoning */
+    aftermathGroup.visible = i >= 5;
+
     /* arrows: late advance into clash; in-flight arrows keep flying after the window closes */
     var arrowWindow = (i === 2 && t > 0.35) || (i === 3 && t < 0.9);
     if (arrowWindow && !reduce) spawnArrows(clock.dt || 0);
@@ -1487,7 +1597,7 @@
 
     /* the angels: gold motes over the Muslim line through the clash */
     var angelAmt = (i === 3) ? Math.sin(clamp01(t) * Math.PI) : (i === 4 && t < 0.45 ? (1 - t / 0.45) : 0);
-    angels.material.opacity = angelAmt * 0.55;
+    angels.material.opacity = angelAmt * 0.7;
     if (angelAmt > 0.02) {
       var ap = angels.geometry.attributes.position;
       var nowA = performance.now();
