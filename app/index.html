@@ -10,10 +10,20 @@
 <link href="https://fonts.googleapis.com/css2?family=Spectral:wght@400;500&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=20261023a">
+<link rel="stylesheet" href="css/style.css?v=20261023e">
 <script>document.documentElement.classList.add('js')</script>
 </head>
 <body>
+
+<div id="errBanner" class="err-banner" hidden></div>
+<script>
+  window.addEventListener('error', function (e) {
+    var b = document.getElementById('errBanner');
+    if (!b) return;
+    b.hidden = false;
+    b.textContent = 'Script error: ' + (e.message || 'unknown') + (e.filename ? ' \u2014 ' + e.filename.split('/').pop() + ':' + e.lineno : '');
+  });
+</script>
 
 <canvas id="gl" aria-label="Interactive 3D model of the battle of Badr: valley, wells, the basin, the Prophet's hut, the standards of both armies. No human figures are depicted."></canvas>
 
@@ -33,6 +43,7 @@
 <div class="legend">
   <p class="legend-row legend-m"><span class="swatch"></span><span data-i18n="legendM"><b>Muslims</b> · about 313, lightly equipped</span></p>
   <p class="legend-row legend-q"><span class="swatch"></span><span data-i18n="legendQ"><b>Quraysh</b> · about 1,000, fully equipped</span></p>
+  <p class="build" aria-hidden="true">v2026.10.23e</p>
 </div>
 
 <footer class="deck" id="deck">
@@ -65,11 +76,11 @@
   at the wells; the gravel and the sand; the rout; the field gone quiet. No human figure is drawn.</p>
 </noscript>
 
-<script src="assets/three.min.js?v=20261023a"></script>
+<script src="assets/three.min.js?v=20261023e"></script>
 <script>window.THREE || document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\\/script>')</script>
-<script src="assets/data.js?v=20261023a"></script>
-<script src="js/audio.js?v=20261023a" defer></script>
-<script src="js/battle.js?v=20261023a" defer></script>
-<script src="js/main.js?v=20261023a" defer></script>
+<script src="assets/data.js?v=20261023e"></script>
+<script src="js/audio.js?v=20261023e" defer></script>
+<script src="js/battle.js?v=20261023e" defer></script>
+<script src="js/main.js?v=20261023e" defer></script>
 </body>
 </html>

@@ -149,13 +149,18 @@
   var lastPlayTap = 0;
   function requestToggle() {
     var t = Date.now();
-    if (t - lastPlayTap < 350) return;
+    if (t - lastPlayTap < 900) return; /* a slow phone can deliver the synthesized click late */
     lastPlayTap = t;
     togglePlay();
   }
-  playBtn.addEventListener('click', requestToggle);
   playBtn.addEventListener('pointerup', function (e) {
-    if (e.pointerType && e.pointerType !== 'mouse') requestToggle();
+    if (e.isPrimary === false) return;
+    if (e.button !== undefined && e.button !== 0) return;
+    if (e.pointerType) requestToggle();
+  });
+  /* keyboard / assistive activation arrives as a click with no pointerType */
+  playBtn.addEventListener('click', function (e) {
+    if (!e.pointerType) requestToggle();
   });
   resetBtn.addEventListener('click', function () { B.seek(0); B.play(); setPlayState(true); });
 
@@ -200,6 +205,7 @@
   });
 
   /* ------------------------------ tick */
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var lastPhase = -1;
   var clangT = 0, volleyT = 0;
   B.onTick(function (frac, info) {
@@ -226,7 +232,7 @@
   });
 
   /* ------------------------------ boot */
-  console.log('[badr] build 2026-10-23 · mobile play fix');
+  console.log('[badr] build 2026-10-23e · mobile play fix');
   setPlayState(false);
   scrubHead.style.left = '0%';
   segEls[0].classList.add('is-today');

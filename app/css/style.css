@@ -90,6 +90,13 @@ h1, h2, p { margin: 0; }
 .legend-row { font-size: 12.5px; line-height: 1.4; color: var(--muted); display: flex; align-items: center; gap: 9px; }
 .legend-row b { color: var(--ink); font-weight: 500; }
 .legend-row .swatch { width: 9px; height: 9px; flex: none; border-radius: 2px; }
+.build { font-size: 10px; color: var(--faint); letter-spacing: 0.02em; margin-top: 2px; }
+.err-banner {
+  position: fixed; top: 10px; left: 50%; transform: translateX(-50%); z-index: 60;
+  max-width: min(92vw, 640px); padding: 8px 12px; border-radius: 6px;
+  background: #3a1512; color: #f3d9c9; border: 1px solid #7a3b2e;
+  font: 12px/1.45 var(--sans);
+}
 .legend-m .swatch { background: #ece5d3; }
 .legend-q .swatch { background: #3a3328; border: 1px solid rgba(236, 232, 223, 0.25); }
 
@@ -207,7 +214,7 @@ h1, h2, p { margin: 0; }
   .legend { top: calc(var(--bar-h) + 8px); right: 12px; left: auto; max-width: 226px; padding: 8px 10px; }
   .legend-row { font-size: 11px; line-height: 1.35; gap: 7px; }
   .legend-row .swatch { width: 8px; height: 8px; }
-  .deck { padding: 8px 12px 12px; gap: 3px; }
+  .deck { padding: 8px 12px calc(12px + env(safe-area-inset-bottom, 0px)); gap: 3px; }
   .deck-row { gap: 8px; }
   #playBtn { height: 46px; padding: 0 16px; font-size: 14px; }
   #playBtn .txt { display: none; }

@@ -1336,12 +1336,15 @@
     lerpCam(tgt, reduce ? 0.22 : 0.09);
   }
   function lerpCam(tgt, k) {
-    curCam.p.x += (tgt.p[0] - curCam.p.x) * k;
-    curCam.p.y += (tgt.p[1] - curCam.p.y) * k;
-    curCam.p.z += (tgt.p[2] - curCam.p.z) * k;
-    curCam.l.x += (tgt.l[0] - curCam.l.x) * k;
-    curCam.l.y += (tgt.l[1] - curCam.l.y) * k;
-    curCam.l.z += (tgt.l[2] - curCam.l.z) * k;
+    /* frame-rate independent: a slow phone must still reach the phase camera */
+    var f = Math.min(6, (clock.dt || 0.016) * 60);
+    var kk = 1 - Math.pow(1 - k, f);
+    curCam.p.x += (tgt.p[0] - curCam.p.x) * kk;
+    curCam.p.y += (tgt.p[1] - curCam.p.y) * kk;
+    curCam.p.z += (tgt.p[2] - curCam.p.z) * kk;
+    curCam.l.x += (tgt.l[0] - curCam.l.x) * kk;
+    curCam.l.y += (tgt.l[1] - curCam.l.y) * kk;
+    curCam.l.z += (tgt.l[2] - curCam.l.z) * kk;
     camera.position.copy(curCam.p);
     camera.lookAt(curCam.l);
   }
@@ -1486,13 +1489,17 @@
   }
   function frame(now) {
     requestAnimationFrame(frame);
-    var dt = Math.min(0.05, (now - clock.last) / 1000);
+    lastRaf = now;
+    /* follow wall-clock time even on slow devices: a 50 ms cap made playback
+       crawl to a near-stop at phone frame rates */
+    var dt = Math.min(0.5, (now - clock.last) / 1000);
     clock.last = now;
     clock.dt = dt || 0.016;
+    perfTick(now);
     if (clock.playing) {
       clock.frac += dt * clock.speed / TOTAL;
       if (clock.frac >= 1) { clock.frac = 1; clock.playing = false; }
-      if (tickCb) tickCb(clock.frac, phaseInfo(clock.frac));
+      if (tickCb) { try { tickCb(clock.frac, phaseInfo(clock.frac)); } catch (err) { console.error('[badr] tick', err); } }
       applyFrac(clock.frac);
       if ((massTick++ % (MOBILE ? 4 : 2)) === 0) updateMass();
     }
@@ -1600,6 +1607,52 @@
   requestAnimationFrame(frame);
   applyFrac(0);
 
+  /* fallback ticker: if the device throttles RAF, keep the clock and render alive */
+  var lastRaf = 0;
+  setInterval(function () {
+    if (!clock.playing) return;
+    if (performance.now() - lastRaf < 120) return; /* RAF healthy */
+    var now = performance.now();
+    var dt = Math.min(0.5, (now - clock.last) / 1000);
+    clock.last = now;
+    clock.dt = dt;
+    clock.frac += dt * clock.speed / TOTAL;
+    if (clock.frac >= 1) { clock.frac = 1; clock.playing = false; }
+    applyFrac(clock.frac);
+    updateMass();
+    if (tickCb) { try { tickCb(clock.frac, phaseInfo(clock.frac)); } catch (err) { console.error('[badr] tick', err); } }
+    renderer.render(scene, camera);
+  }, 33);
+
+  /* pause when the tab is hidden, and never fast-forward on return */
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) {
+      if (clock.playing) {
+        clock.playing = false;
+        if (tickCb) tickCb(clock.frac, phaseInfo(clock.frac));
+      }
+    } else {
+      clock.last = performance.now();
+    }
+  });
+
+  /* adaptive quality: if the device cannot hold ~22 fps, drop to 1x pixels */
+  var perfT0 = 0, perfN = 0, perfDone = false;
+  function perfTick(now) {
+    if (perfDone || !clock.playing) return;
+    if (!perfT0) { perfT0 = now; perfN = 0; return; }
+    perfN++;
+    var el = now - perfT0;
+    if (el < 3000) return;
+    perfDone = true;
+    var fps = perfN / (el / 1000);
+    if (MOBILE && fps < 22) {
+      renderer.setPixelRatio(1);
+      renderer.setSize(window.innerWidth, window.innerHeight, false);
+      console.log('[badr] adaptive quality: fps ' + fps.toFixed(1) + ', pixel ratio -> 1');
+    }
+  }
+
   /* ------------------------------ public clock/camera API */
   window.BATTLE = {
     total: TOTAL,
@@ -1611,7 +1664,14 @@
       applyFrac(clock.frac);
       if (tickCb) tickCb(clock.frac, phaseInfo(clock.frac));
     },
-    play: function () { clock.playing = true; camState.mode = 'phase'; canvas.classList.remove('is-dragging'); },
+    play: function () {
+      clock.playing = true;
+      clock.last = performance.now();
+      camState.mode = 'phase';
+      canvas.classList.remove('is-dragging');
+      applyFrac(clock.frac);
+      updateMass();
+    },
     pause: function () { clock.playing = false; },
     isPlaying: function () { return clock.playing; },
     setSpeed: function (x) { clock.speed = x; },
