@@ -446,7 +446,9 @@
   }
   [-22, -18].forEach(function (x) { tent(x, 18.5, false); });
   [18, 22].forEach(function (x) { tent(x, 18.5, false); });
-  [-14, -6, 2, 10, 18].forEach(function (x) { tent(x, -26.5, true); });
+  /* Quraysh: ten tents in the front row and five behind, scaled to the army */
+  [-23, -18, -13, -8, -3, 2, 7, 12, 17, 22].forEach(function (x) { tent(x, -26.5, true); });
+  [-19, -9, 1, 11, 21].forEach(function (x) { tent(x, -31.6, true); });
 
   /* camp clutter: sacks, jars, stacked spears and a fire ring */
   var sackM = new THREE.MeshLambertMaterial({ color: 0x9a8462 });
@@ -481,7 +483,8 @@
     scene.add(g);
   }
   campClutter(-19, 17.2); campClutter(20.6, 17.4);
-  campClutter(-11.5, -25.2); campClutter(6.5, -25.6); campClutter(16.5, -25.4);
+  campClutter(-21.5, -25.2); campClutter(-6.5, -25.4); campClutter(9.5, -25.2); campClutter(21.5, -25.5);
+  campClutter(-14.5, -31.2); campClutter(4.5, -31.4);
 
   /* campfire smoke */
   var SMOKE = [];
@@ -611,7 +614,7 @@
   }
   camel(-6.5, 26.5, 0.4); camel(-1, 27.5, -0.2); camel(4.5, 26.8, 0.2); camel(9, 28.4, -0.5);
   /* the Quraysh baggage train behind their camp */
-  camel(-12, -29.5, 0.5); camel(-6, -30.5, -0.3); camel(1, -29.8, 0.2); camel(8, -30.6, -0.4); camel(14, -29.6, 0.3);
+  camel(-12, -35.5, 0.5); camel(-6, -36.5, -0.3); camel(1, -35.8, 0.2); camel(8, -36.6, -0.4); camel(14, -35.6, 0.3);
 
   /* arrows: shaft, iron head, three fletchings */
   function makeArrow() {
@@ -824,7 +827,7 @@
   var musab = mBands[1], jabal = qBands[10];
   musab.label = 'Musʻab’s white standard (RA)'; musab.entry = 'BADR-013'; musab.home = [-0.2, 18.2];
   musab.group.position.set(musab.home[0], 0, musab.home[1]);
-  jabal.label = 'the Quraysh command'; jabal.entry = 'BADR-037';
+  jabal.label = 'Abū Jahl’s standard'; jabal.entry = 'BADR-037';
 
   /* champions: Ḥamzah/ʻAlī/ʻUbaydah vs Shaybah/al-Walīd/ʻUtbah (Bukhari 3965 pairing; both versions on the card) */
   var chH, chA, chU, chS, chW, chB;
@@ -836,16 +839,17 @@
   chB = champion(1, 5.5, -13.8, 'ʻUtbah', 'BADR-028');
   var champs = [chH, chA, chU, chS, chW, chB];
 
-  /* division banners: one standard each for the Quraysh left, centre and right (marked with a brass pennant) */
-  function divisionBanner(x, z) {
-    var u = band(1, x, z, null, null);
-    var penn = new THREE.Mesh(new THREE.ConeGeometry(0.16, 0.5, 4), brassM);
-    penn.position.y = 4.5;
+  /* Division standards: mark the three front-rank bands at the division centres with a brass
+     pennant seated on the pole top, rather than adding duplicate banners beside them. */
+  function markDivision(u) {
+    var penn = new THREE.Mesh(new THREE.ConeGeometry(0.14, 0.42, 4), brassM);
+    penn.position.y = 3.86; /* base sits on the pole tip (3.65), no floating */
     u.group.add(penn);
     return u;
   }
-  var dvL = divisionBanner(-18, -17.2), dvC = divisionBanner(0, -13.6), dvR = divisionBanner(18, -17.2);
-  qBands.push(dvL, dvC, dvR);
+  markDivision(qBands[4]);  /* left division, x -17.4 */
+  markDivision(qBands[8]);  /* centre division, x 0 */
+  markDivision(qBands[12]); /* right division, x +17.4 */
 
   /* unit plans: pose per phase {p, rot, tilt, fallAt?, hold?} */
   var PH = ['ground', 'duel', 'advance', 'clash', 'turn', 'rout', 'quiet'];
@@ -858,6 +862,7 @@
     u.plan = plan;
   }
   champs.forEach(initUnit);
+  champs.forEach(function (u) { u._stag = 0.18; });
   mBands.concat(qBands).forEach(initUnit);
 
   /* champions walk to the middle ground; both trios meet on the same line, not in either camp */
@@ -888,22 +893,10 @@
   /* two Muslim bands fall in the mêlée — fourteen men died (BADR-047); the count lives on the phase card */
   mBands[4].plan[3].fallAt = 0.62;
   mBands[6].plan[5] = P(mBands[6].plan[4].x, mBands[6].plan[4].z, { fallAt: 0.34 });
-  /* Quraysh: three ranks close to the wells */
-  var qDivCount = 0;
+  /* Quraysh: three ranks close to the wells.
+     qBands is pushed two per x (front, back), so index maps column-major. */
   qBands.forEach(function (u, idx) {
-    if (u === dvL || u === dvC || u === dvR) {
-      /* the three division banners keep their own posts */
-      var home = u.home;
-      u.plan[2] = P(home[0] * 0.9, -4.2);
-      u.plan[3] = P(home[0] * 0.9, 0.4);
-      u.plan[4] = P(home[0] * 0.86, 0.2);
-      u.plan[5] = P(home[0] * 0.6 - 34, -18);
-      u.plan[6] = u.plan[5];
-      u._stag = qDivCount * 0.06;
-      qDivCount++;
-      return;
-    }
-    var row = Math.floor(idx / 9), col = idx % 9;
+    var col = Math.floor(idx / 2), row = idx % 2;
     var x = q3[col], z = (col >= 3 && col <= 5 ? -13.2 : -15.4) - row * 4.2;
     u.plan[2] = P(x, -4.5 - row * 2.4);
     u.plan[3] = P(x * 0.98, 1.2 - row * 2.2);
@@ -916,6 +909,50 @@
   /* Abū Jahl stays on the field: his banner falls here (BADR-037), it does not flee */
   jabal.plan[2] = P(-6.8, -3.2); jabal.plan[3] = P(-5.4, -1.4); jabal.plan[4] = P(-5.4, -1.4);
   jabal.plan[5] = P(-5.4, -1.4, { fallAt: 0.55 }); jabal.plan[6] = jabal.plan[5];
+
+  /* ------------------------------ battlefield event markers.
+     Named individuals are never figured: a standard or a spear marks the spot. */
+  function eventStandard(x, z, side, tilt, fallen) {
+    var g = new THREE.Group();
+    var pole = new THREE.Mesh(new THREE.CylinderGeometry(0.032, 0.032, 2.7, 6), woodM);
+    pole.position.y = 1.35;
+    g.add(pole);
+    var cloth = new THREE.Mesh(new THREE.PlaneGeometry(0.7, 0.48),
+      new THREE.MeshLambertMaterial({ color: side ? 0x2b2620 : 0xe8e2d2, side: THREE.DoubleSide }));
+    cloth.position.set(0.38, 2.28, 0);
+    g.add(cloth);
+    var tip = new THREE.Mesh(new THREE.ConeGeometry(0.055, 0.16, 4), brassM);
+    tip.position.y = 2.78;
+    g.add(tip);
+    g.traverse(function (o) { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+    if (fallen) { g.rotation.z = 1.25; g.position.set(x, 0.18, z); }
+    else { g.rotation.z = tilt || 0; g.position.set(x, 0, z); }
+    scene.add(g);
+    return g;
+  }
+  /* Muʿādh (RA) loses an arm to Ikrimah's blow and fights on; Bilāl (RA) runs
+     down ʻUmayyah ibn Khalaf. The props are standards/spears, never figures. */
+  var muadhMark = eventStandard(-3.4, 2.4, 0, 0.16, false);
+  var muawwidhMark = eventStandard(-1.2, 2.8, 0, 0.12, false);
+  var ikrimahMark = eventStandard(3.4, -2.4, 1, 0, false);
+  var bilalMark = eventStandard(8.5, 5.0, 0, 0, false);
+  var umayyahMark = eventStandard(13.2, -5.8, 1, 0, true);
+  var EVENT_MARKS = [
+    { group: muadhMark, side: 0, label: 'Muʿādh (RA) & Muʿawwidh (RA)', k: 'muadhMuawwidh', labelY: 3.5, ph: [3, 4, 5] },
+    { group: ikrimahMark, side: 1, label: 'Ikrimah ibn Abi Jahl', k: 'ikrimah', labelY: 3.3, ph: [3, 4, 5] },
+    { group: bilalMark, side: 0, label: 'Bilāl (RA)', k: 'bilal', labelY: 3.5, ph: [4, 5] },
+    { group: umayyahMark, side: 1, label: 'ʻUmayyah ibn Khalaf', k: 'umayyah', labelY: 2.2, ph: [4, 5] }
+  ];
+  /* Before the Hashimi champions, the first Ansari trio steps out: ʻAwf and
+     Muʿawwidh (sons of al-Harith / Afraʾ) and ʿAbdullah ibn Rawahah (RA).
+     Quraysh refuses them as not their equals; the trio withdraws. */
+  var ansarA = eventStandard(-6.0, 10.5, 0, 0, false);
+  var ansarB = eventStandard(-4.2, 10.5, 0, 0, false);
+  var ansarC = eventStandard(-2.4, 10.5, 0, 0, false);
+  var ANSAR_MARKS = [ansarA, ansarB, ansarC];
+  /* these three standards move, so keep them out of the static merge */
+  ANSAR_MARKS.forEach(function (g) { g.userData.dynamicRoot = true; });
+  EVENT_MARKS.push({ group: ansarB, side: 0, label: 'the Anṣār trio (RA)', k: 'ansarTrio', labelY: 3.6, ph: [1], tRange: [0.02, 0.44], priority: 1 });
 
   /* ------------------------------ squads and platoons.
      A squad is eight men: each is a hooded body holding an upright spear,
@@ -1101,38 +1138,43 @@
     { w: [20, 0.6, 17], t: 'al-ʻUdwat ad-Dunya · the near bank', e: 'BADR-019', k: 'near', cls: 'is-land-name is-far' },
     { w: [-24, 0.4, -32], t: 'al-Quswa · the far bank', e: 'BADR-019', k: 'far', cls: 'is-land-name is-far' },
     { w: [-6.9, 1.2, 1.2], t: 'wells of Badr', e: 'BADR-019', k: 'wells', cls: 'is-tap' },
-    { w: [-17.5, 2.6, 13.1], t: 'the ʻarish', e: 'BADR-020', k: 'arish', cls: 'is-tap' },
-    { w: [36, 1.3, 8], t: 'the well of the twenty-four', e: 'BADR-049', k: 'well24', cls: 'is-tap' }
+    { w: [-17.5, 2.6, 13.1], t: 'the ʻarish · the Prophet’s station (PBUH)', e: 'BADR-020', k: 'arish', cls: 'is-tap' },
+    { w: [36, 1.3, 8], t: 'al-Qalib · the well of the twenty-four', e: 'BADR-049', k: 'well24', cls: 'is-tap' },
+    { w: [0, 8.4, 1], t: 'the angels · 8:9', e: 'BADR-031', k: 'angels', cls: 'is-land-name', ph: [3], tRange: [0.12, 0.9] }
   ];
   var LANDL = LAND.map(function (l) {
     var el = mkLabel(l.t, l.cls);
-    return { el: el, v: new THREE.Vector3(l.w[0], l.w[1], l.w[2]), k: l.k };
+    return { el: el, v: new THREE.Vector3(l.w[0], l.w[1], l.w[2]), k: l.k, ph: l.ph, tRange: l.tRange };
   });
-  var ULABS = champs.concat([musab, jabal]).map(function (u) {
+  var ULABS = [jabal].concat(champs, [musab], EVENT_MARKS).map(function (u) {
     var el = mkLabel(u.label, u.side ? '' : 'is-side');
     if (u === jabal) el.classList.add('is-q');
     return { el: el, u: u, k: u.k };
   });
   chH.k = 'hamzah'; chA.k = 'ali'; chU.k = 'ubaydah';
   chS.k = 'shaybah'; chW.k = 'walid'; chB.k = 'utbah';
-  musab.k = 'musab'; jabal.k = 'command';
+  musab.k = 'musab'; jabal.k = 'command'; jabal.labelAlways = true; jabal.priority = 2;
 
   var LABELS = {
     en: {
       hamzah: 'Ḥamzah (RA)', ali: 'ʻAlī (RA)', ubaydah: 'ʻUbaydah (RA)',
       shaybah: 'Shaybah', walid: 'al-Walīd', utbah: 'ʻUtbah',
-      musab: 'Musʻab’s white standard (RA)', command: 'the Quraysh command',
+      musab: 'Musʻab’s white standard (RA)', command: 'Abū Jahl’s standard',
       near: 'al-ʻUdwat ad-Dunya · the near bank', far: 'al-Quswa · the far bank',
-      basin: 'the basin', wells: 'wells of Badr', arish: 'the ʻarish',
-      well24: 'the well of the twenty-four', katheeb: 'Katheeb al-Hannan (a modern name)'
+      basin: 'the basin', wells: 'wells of Badr', arish: 'the ʻarish · the Prophet’s station (PBUH)',
+      well24: 'al-Qalib · the well of the twenty-four', katheeb: 'Katheeb al-Hannan (a modern name)',
+      muadhMuawwidh: 'Muʿādh (RA) & Muʿawwidh (RA)', ikrimah: 'Ikrimah ibn Abi Jahl',
+      bilal: 'Bilāl (RA)', umayyah: 'ʻUmayyah ibn Khalaf', ansarTrio: 'the Anṣār trio (RA)', angels: 'the angels · 8:9'
     },
     ur: {
       hamzah: 'حمزہ رضی اللہ عنہ', ali: 'علی رضی اللہ عنہ', ubaydah: 'عبیدہ رضی اللہ عنہ',
       shaybah: 'شیبہ', walid: 'ولید', utbah: 'عتبہ',
-      musab: 'مصعب کا سفید پرچم رضی اللہ عنہ', command: 'قریش کی قیادت',
+      musab: 'مصعب کا سفید پرچم رضی اللہ عنہ', command: 'ابو جہل کا پرچم',
       near: 'العدوۃ الدنیا · قریب کا کنارہ', far: 'القصوی · دور کا کنارہ',
-      basin: 'حوض', wells: 'بدر کے کنویں', arish: 'عرش',
-      well24: 'چوبیس کا کنواں', katheeb: 'کتیبة الحنان (جدید نام)'
+      basin: 'حوض', wells: 'بدر کے کنویں', arish: 'عرش · مقامِ نبوی ﷺ',
+      well24: 'القليب · چوبیس کا کنواں', katheeb: 'کتیبة الحنان (جدید نام)',
+      muadhMuawwidh: 'معاذ و معوذ رضی اللہ عنہما', ikrimah: 'عکرمہ بن ابی جہل',
+      bilal: 'بلال رضی اللہ عنہ', umayyah: 'امیہ بن خلف', ansarTrio: 'تین انصاری (رضی اللہ عنہم)', angels: 'فرشتے · ۸:۹'
     }
   };
   function setLang(lang) {
@@ -1290,6 +1332,23 @@
   var dust = new THREE.Points(dustGeo, new THREE.PointsMaterial({ color: 0xd0bd99, size: 3.2, map: softDot(), transparent: true, opacity: 0, depthWrite: false }));
   scene.add(dust);
 
+  /* the angels' help: a gold shimmer, never a figure (Qur'an 8:9; BADR-031/032) */
+  var AN = MOBILE ? 80 : 150;
+  var angelGeo = new THREE.BufferGeometry();
+  var angelP = new Float32Array(AN * 3), angelS = new Float32Array(AN);
+  for (var ag = 0; ag < AN; ag++) {
+    angelP[ag * 3] = -12 + Math.random() * 24;
+    angelP[ag * 3 + 1] = 1.6 + Math.random() * 7.2;
+    angelP[ag * 3 + 2] = -5 + Math.random() * 12;
+    angelS[ag] = Math.random();
+  }
+  angelGeo.setAttribute('position', new THREE.BufferAttribute(angelP, 3));
+  var angels = new THREE.Points(angelGeo, new THREE.PointsMaterial({
+    color: 0xffe2a8, size: 2.6, map: softDot(), transparent: true, opacity: 0,
+    depthWrite: false, blending: THREE.AdditiveBlending
+  }));
+  scene.add(angels);
+
   /* slow motes in the air: the field breathes */
   var MOTES = 160;
   var moteGeo = new THREE.BufferGeometry();
@@ -1321,7 +1380,7 @@
     clash:   { a: { p: [30, 13, 20], l: [-2, 1, 0] }, b: { p: [20, 9, 8], l: [-4, 1, -2] } },
     turn:    { a: { p: [24, 16, 26], l: [-4, 1, -4] }, b: { p: [12, 13, 18], l: [-8, 1, -8] } },
     rout:    { a: { p: [14, 22, 34], l: [-14, 0, -18] },  b: { p: [2, 20, 30], l: [-18, 0, -22] } },
-    quiet:   { a: { p: [32, 18, 30], l: [0, 0.6, 0] }, b: { p: [18, 14, 22], l: [-4, 0.6, -2] } }
+    quiet:   { a: { p: [32, 18, 30], l: [0, 0.6, 0] }, b: { p: [30, 9, 19], l: [36, 1.2, 8] } }
   };
   var PRESETS = {
     ground:  { p: [0, 30, 44], l: [0, 1.4, 0] },
@@ -1358,10 +1417,12 @@
   /* ------------------------------ applying a global frame */
   var UNITS = champs.concat(mBands, qBands);
   var curPhaseIdx = 0;
+  var curPhaseT = 0;
   function applyFrac(frac) {
     var info = phaseInfo(frac);
     var i = info.i, t = info.t;
     curPhaseIdx = i;
+    curPhaseT = t;
 
     /* units: within phase i we move from plan[i-1] (start pose) toward plan[i] (end pose) */
     for (var k = 0; k < UNITS.length; k++) {
@@ -1394,6 +1455,15 @@
       applyPose(u, p, fallen);
     }
 
+    /* the Ansari trio steps out, is refused, and withdraws before the champions engage */
+    var ansarZ = 10.5;
+    if (i === 1) {
+      var ansarAdv = clamp01((t - 0.04) / 0.16);
+      var ansarBack = clamp01((t - 0.30) / 0.14);
+      ansarZ = 10.5 - 6.0 * ansarAdv + 6.0 * ansarBack;
+    }
+    ANSAR_MARKS.forEach(function (m) { m.position.z = ansarZ; });
+
     /* arrows: late advance into clash; in-flight arrows keep flying after the window closes */
     var arrowWindow = (i === 2 && t > 0.35) || (i === 3 && t < 0.9);
     if (arrowWindow && !reduce) spawnArrows(clock.dt || 0);
@@ -1413,6 +1483,21 @@
         dp.setY(dj, dustB[dj * 3 + 1] + (Math.sin(sw * 0.6) + 1) * 0.35);
       }
       dp.needsUpdate = true;
+    }
+
+    /* the angels: gold motes over the Muslim line through the clash */
+    var angelAmt = (i === 3) ? Math.sin(clamp01(t) * Math.PI) : (i === 4 && t < 0.45 ? (1 - t / 0.45) : 0);
+    angels.material.opacity = angelAmt * 0.55;
+    if (angelAmt > 0.02) {
+      var ap = angels.geometry.attributes.position;
+      var nowA = performance.now();
+      for (var aj = 0; aj < AN; aj++) {
+        var swA = nowA / 2200 + angelS[aj] * 6.28;
+        ap.setX(aj, angelP[aj * 3] + Math.sin(swA) * 0.5);
+        ap.setY(aj, angelP[aj * 3 + 1] + Math.cos(swA * 0.7) * 0.4);
+        ap.setZ(aj, angelP[aj * 3 + 2] + Math.cos(swA * 0.5) * 0.4);
+      }
+      ap.needsUpdate = true;
     }
 
     /* spent arrows stay in the sand after the volleys */
@@ -1693,6 +1778,10 @@
         var it = list[q];
         /* the champions' names belong to the duel; afterwards the field keeps the standards only */
         if (isUnit && it.u.isChampion && curPhaseIdx > 1) { it.el.style.visibility = 'hidden'; continue; }
+        if (isUnit && it.u.ph && it.u.ph.indexOf(curPhaseIdx) < 0) { it.el.style.visibility = 'hidden'; continue; }
+        if (isUnit && it.u.tRange && (curPhaseT < it.u.tRange[0] || curPhaseT > it.u.tRange[1])) { it.el.style.visibility = 'hidden'; continue; }
+        if (!isUnit && it.ph && it.ph.indexOf(curPhaseIdx) < 0) { it.el.style.visibility = 'hidden'; continue; }
+        if (!isUnit && it.tRange && (curPhaseT < it.tRange[0] || curPhaseT > it.tRange[1])) { it.el.style.visibility = 'hidden'; continue; }
         var lY = isUnit ? (it.u.labelY !== undefined ? it.u.labelY : (it.u.isChampion ? 4.95 : 4.0)) : 0;
         var v = (isUnit ? it.u.group.position.clone().add(new THREE.Vector3(0, lY, 0)) : it.v).clone();
         v = v.project ? v.project(camera) : v;
@@ -1702,13 +1791,18 @@
         it.sx += (sx - it.sx) * 0.3;
         it.sy += (sy - it.sy) * 0.3;
         sx = it.sx; sy = it.sy;
+        /* landmarks near the edge (the ʻarish on a phone) keep their label on screen */
+        if (!isUnit) {
+          var lw0 = it.el.offsetWidth || 60;
+          sx = Math.max(lw0 / 2 + 26, Math.min(w - lw0 / 2 - 26, sx));
+        }
         /* far camera: unit labels fade out, landmarks stay */
         var vis = v.z < 1 && sy > 56 && sy < h - 170;
         var dist = isUnit ? camera.position.distanceTo(it.u.group.position) : 0;
         /* phones: names belong to the close shot, not the pulled-back map */
         var far = MOBILE ? 58 : 95, fade = MOBILE ? 40 : 62, span = MOBILE ? 18 : 33;
-        if (isUnit && dist > far) vis = false;
-        var op = isUnit ? (dist > fade ? Math.max(0, 1 - (dist - fade) / span) : 1) : 1;
+        if (isUnit && dist > far && !it.u.labelAlways) vis = false;
+        var op = isUnit ? (it.u.labelAlways ? 1 : (dist > fade ? Math.max(0, 1 - (dist - fade) / span) : 1)) : 1;
         if (op < 0.08) vis = false;
         it.el.style.opacity = op === 1 ? '' : op.toFixed(2);
         if (vis) {
@@ -1726,7 +1820,8 @@
         if (it.visState !== vis) { it.visState = vis; it.el.style.visibility = vis ? 'visible' : 'hidden'; }
       }
     }
-    place(ULABS, true);
+    var ordered = ULABS.slice().sort(function (a, b) { return (b.u.priority || 0) - (a.u.priority || 0); });
+    place(ordered, true);
     place(LANDL, false);
     if (!reduce && !MOBILE) {
       var mp = motes.geometry.attributes.position;

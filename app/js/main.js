@@ -28,7 +28,7 @@
     en: {
       play: 'play', pause: 'pause', replay: 'replay',
       soundOn: 'sound on', soundOff: 'sound off', lang: 'اردو',
-      brand: 'badr <em>· the battle in 3D</em>',
+      brand: 'badr <em>· the battle</em>',
       legendM: '<b>Muslims</b> · about 313, lightly equipped',
       legendQ: '<b>Quraysh</b> · about 1,000, fully equipped',
       cams: { ground: 'the ground', aerial: 'aerial · map', duel: 'the duel', line: 'our line', far: 'their line', wells: 'the wells' },
@@ -236,7 +236,7 @@
   });
 
   /* ------------------------------ boot */
-  console.log('[badr] build 2026-10-23m · merge pass + champion standards');
+  console.log('[badr] build 2026-10-23n · event markers + angels + Ansar trio');
   setPlayState(false);
   setScrub(B.frac());
   segEls[0].classList.add('is-today');

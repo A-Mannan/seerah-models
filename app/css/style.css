@@ -64,7 +64,7 @@ h1, h2, p { margin: 0; }
   pointer-events: none;
 }
 .bar > * { pointer-events: auto; }
-.brand { display: flex; align-items: baseline; gap: 12px; font-family: "EB Garamond", Georgia, serif; font-size: 31px; font-weight: 500; letter-spacing: -0.012em; line-height: 1; }
+.brand { display: flex; align-items: baseline; gap: 12px; font-family: "Cormorant Garamond", Georgia, serif; font-size: 34px; font-weight: 600; letter-spacing: -0.004em; line-height: 1; }
 .brand .mark { width: 12px; height: 15px; color: var(--brass); flex: none; align-self: center; }
 .brand em { font-family: "Archivo", sans-serif; font-style: normal; color: var(--muted); font-size: 12px; letter-spacing: 0.02em; }
 .bar-tools { display: flex; align-items: center; gap: 4px; }
@@ -206,7 +206,7 @@ h1, h2, p { margin: 0; }
 @media (max-width: 700px) {
   :root { --deck-h: 44px; --bar-h: 54px; }
   .bar { padding: 0 14px; }
-  .brand { font-size: 23px; gap: 8px; }
+  .brand { font-size: 25px; gap: 8px; }
   .brand em { display: none; }
   .tool { font-size: 12px; padding: 7px 8px; }
   #langBtn { font-size: 13.5px; padding: 4px 10px; }
@@ -225,11 +225,11 @@ h1, h2, p { margin: 0; }
   .cams { max-width: none; }
   .cam[data-cam="line"], .cam[data-cam="far"], .cam[data-cam="wells"] { display: none; }
   .cam { font-size: 12.5px; padding: 9px 10px; }
-  .hud-label.is-q, .hud-label.is-far { display: none; }
+  .hud-label.is-far { display: none; }
   .hud-label { font-size: 11px; padding: 4px 8px; }
 }
 @media (max-width: 360px) {
-  .brand { font-size: 20px; }
+  .brand { font-size: 22px; }
   .legend { max-width: 196px; }
 }
 

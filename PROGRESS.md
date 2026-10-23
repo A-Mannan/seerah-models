@@ -15,7 +15,7 @@ silhouette-first standards, brass instrument-panel UI. Not attempting photoreal 
 - `app/index.html` — full-screen field; masthead; army legend with swatches; full-width instrument
   deck (play, hairline phase timeline, speed, counter, replay, camera presets, free orbit); sound;
   English / اردو language toggle.
-- `app/css/style.css` — dawn palette; **Spectral** display + **IBM Plex Sans** UI; Nastaliq Urdu +
+- `app/css/style.css` — dawn palette; **Cormorant Garamond** display + **Archivo** UI; Nastaliq Urdu +
   RTL; quiet borders, one radius; phone composition.
 - `app/js/battle.js` — Three.js r128:
   - dawn sun with soft shadows, sky dome, moon, warm lamps; textured sand (albedo + bump),
@@ -30,6 +30,21 @@ silhouette-first standards, brass instrument-panel UI. Not attempting photoreal 
   - phase cameras + presets (aerial = map), orbit, label collision culling; labels in EN/UR.
 - `app/js/main.js` — clock, scrub, cameras, sound, keyboard, language switching.
 - `app/js/audio.js` — procedural wind bed, clash rumble, gravel crack.
+
+### Latest pass — event layer, camp and type (build n)
+- Quraysh camp doubled to 15 tents (10 front, 5 back) plus extra clutter; baggage train moved behind it.
+- The three division pennants now sit on the existing front-rank standards; duplicate division banners
+  removed; qBands index mapping corrected so standards stay with their divisions.
+- Brand reads **badr · the battle**; display face is **Cormorant Garamond** (clearly distinct from the
+  old Spectral), UI is **Archivo**.
+- Abu Jahl's standard labelled on the Quraysh side; Muʿādh/Muʿawwidh markers on the Muslim side;
+  Ikrimah on the Quraysh side; Bilāl on the Muslim side, ʻUmayyah's fallen standard on the Quraysh side.
+- The first Ansari trio (ʻAwf, Muʿawwidh, Ibn Rawāḥah) steps out, is refused, and withdraws before the
+  Hashimi champions engage; label `the Anṣār trio (RA)`.
+- Angels: a gold shimmer over the Muslim line at the clash, labelled `the angels · 8:9`; no figures.
+- The reckoning camera now ends on **al-Qalib · the well of the twenty-four** (Bukhari 3976/4026).
+- The ʻarish is labelled `the ʻarish · the Prophet’s station (PBUH)`; landmark labels clamp on-screen on phones.
+- Scope: battlefield events only. Ransom/prisoners, Madinah news and Abu Lahab's death are excluded.
 
 ### Verification (latest)
 - `lint.mjs --app`: 0 FAIL / 0 WARN.
