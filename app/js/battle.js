@@ -675,11 +675,15 @@
     var iron = side ? ironQ : ironM;
     var clothMat = side ? clothQ : clothM;
     var poleH = champion ? 4.15 : 3.45;
-    var pole = new THREE.Mesh(new THREE.CylinderGeometry(champion ? 0.055 : 0.05, 0.085, poleH, 7), ph);
+    var pole = new THREE.Mesh(new THREE.CylinderGeometry(champion ? 0.13 : 0.08, champion ? 0.18 : 0.11, poleH, 7), ph);
     pole.position.y = poleH / 2;
     g.add(pole);
+    /* a brass shoe anchors the standard: at distance the cloth reads, the pole must too */
+    var shoe = new THREE.Mesh(new THREE.CylinderGeometry(champion ? 0.18 : 0.12, champion ? 0.24 : 0.15, champion ? 0.18 : 0.1, 7), brassM);
+    shoe.position.y = champion ? 0.09 : 0.05;
+    g.add(shoe);
     /* finial */
-    var fin = new THREE.Mesh(new THREE.SphereGeometry(champion ? 0.1 : 0.075, 8, 6), brassM);
+    var fin = new THREE.Mesh(new THREE.SphereGeometry(champion ? 0.14 : 0.075, 8, 6), brassM);
     fin.position.y = poleH + 0.05;
     g.add(fin);
     var tip = new THREE.Mesh(new THREE.ConeGeometry(0.045, 0.22, 6), brassM);
@@ -688,7 +692,7 @@
     /* short crossbar with cloth loops; the cloth drapes from it */
     var cw = champion ? 2.05 : 1.65, chh = champion ? 1.2 : 0.95;
     var barLen = cw * 0.62;
-    var bar = new THREE.Mesh(new THREE.CylinderGeometry(0.024, 0.024, barLen, 5), ph);
+    var bar = new THREE.Mesh(new THREE.CylinderGeometry(champion ? 0.052 : 0.04, champion ? 0.052 : 0.04, barLen, 5), ph);
     bar.rotation.z = Math.PI / 2;
     bar.position.set(0.18 + barLen / 2, poleH - 0.1, 0);
     g.add(bar);
@@ -727,7 +731,7 @@
     var nSp = champion ? 3 : (side ? 7 : 3);
     for (var k = 0; k < nSp; k++) {
       var h = (champion ? 2.5 : 1.9) + rnd() * 0.4;
-      var sp = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.03, h, 5), iron);
+      var sp = new THREE.Mesh(new THREE.CylinderGeometry(champion ? 0.055 : 0.035, champion ? 0.075 : 0.045, h, 5), iron);
       var a = rnd() * Math.PI * 2, rr = 0.15 + rnd() * 0.5;
       sp.position.set(Math.cos(a) * rr, h / 2, Math.sin(a) * rr);
       sp.rotation.set((rnd() - 0.5) * 0.08, 0, (rnd() - 0.5) * 0.08);
@@ -735,7 +739,7 @@
       g.add(sp);
       /* iron tips: forged blades on every shaft */
       var tipH = 0.2;
-      var tip = new THREE.Mesh(new THREE.BoxGeometry(0.035, tipH, 0.012), iron);
+      var tip = new THREE.Mesh(new THREE.BoxGeometry(champion ? 0.09 : 0.06, tipH, champion ? 0.03 : 0.022), iron);
       tip.position.set(sp.position.x, h + tipH / 2, sp.position.z);
       g.add(tip);
       var collar = new THREE.Mesh(new THREE.CylinderGeometry(0.026, 0.03, 0.05, 5), brassM);
@@ -840,7 +844,7 @@
     u.group.add(penn);
     return u;
   }
-  var dvL = divisionBanner(-20, -17.2), dvC = divisionBanner(0, -13.6), dvR = divisionBanner(20, -17.2);
+  var dvL = divisionBanner(-18, -17.2), dvC = divisionBanner(0, -13.6), dvR = divisionBanner(18, -17.2);
   qBands.push(dvL, dvC, dvR);
 
   /* unit plans: pose per phase {p, rot, tilt, fallAt?, hold?} */
@@ -918,15 +922,57 @@
      tip seated on the shaft. Front-rank men carry shields facing the enemy;
      every fourth man holds a sword at his side. Nothing floats. */
   var MASS = [];
+  /* merge body, head, spear and tip into one instanced geometry: one matrix
+     per man per frame instead of four — this is what makes mobile smooth */
+  function mergeParts(parts) {
+    var pos = [], norm = [], col = [], idx = [], off = 0;
+    var m = new THREE.Matrix4(), nm = new THREE.Matrix3(), v = new THREE.Vector3();
+    parts.forEach(function (part) {
+      var g = part.geo;
+      m.compose(
+        new THREE.Vector3(part.p[0], part.p[1], part.p[2]),
+        new THREE.Quaternion().setFromEuler(new THREE.Euler(part.r ? part.r[0] : 0, part.r ? part.r[1] : 0, part.r ? part.r[2] : 0)),
+        new THREE.Vector3(1, 1, 1)
+      );
+      nm.getNormalMatrix(m);
+      var p = g.attributes.position, n = g.attributes.normal;
+      for (var i = 0; i < p.count; i++) {
+        v.fromBufferAttribute(p, i).applyMatrix4(m);
+        pos.push(v.x, v.y, v.z);
+        v.fromBufferAttribute(n, i).applyMatrix3(nm).normalize();
+        norm.push(v.x, v.y, v.z);
+        col.push(part.c.r, part.c.g, part.c.b);
+      }
+      if (g.index) {
+        for (var k = 0; k < g.index.count; k++) idx.push(g.index.array[k] + off);
+      } else {
+        for (var k2 = 0; k2 < p.count; k2++) idx.push(k2 + off);
+      }
+      off += p.count;
+    });
+    var out = new THREE.BufferGeometry();
+    out.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+    out.setAttribute('normal', new THREE.Float32BufferAttribute(norm, 3));
+    out.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+    out.setIndex(idx);
+    return out;
+  }
   function buildMass(side, count, cols, dxS, dzS, z0, h) {
     var blocks = side ? qBands : mBands;
     var squadSize = 8;
     var squads = Math.ceil(count / squadSize);
     var bodyGeo = new THREE.CylinderGeometry(0.16, 0.2, 1.05, 6);
-    var bodies = new THREE.InstancedMesh(bodyGeo, new THREE.MeshLambertMaterial({ color: side ? 0x4a4234 : 0xcfc6b2 }), count);
-    var heads = new THREE.InstancedMesh(new THREE.SphereGeometry(0.13, 8, 6), new THREE.MeshLambertMaterial({ color: side ? 0x39322a : 0xbfb49d }), count);
-    var shafts = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.02, 0.028, h, 5), new THREE.MeshLambertMaterial({ color: 0x6b5c42 }), count);
-    var tips = new THREE.InstancedMesh(new THREE.BoxGeometry(0.035, 0.2, 0.014), side ? ironQ : ironM, count);
+    var headGeo = new THREE.SphereGeometry(0.13, 8, 6);
+    var shaftGeo = new THREE.CylinderGeometry(0.02, 0.028, h, 5);
+    var tipGeo = new THREE.BoxGeometry(0.035, 0.2, 0.014);
+    var manGeo = mergeParts([
+      { geo: bodyGeo, p: [0, 0.53, 0], c: new THREE.Color(side ? 0x5f5544 : 0xcfc6b2) },
+      { geo: headGeo, p: [0, 1.19, 0], c: new THREE.Color(side ? 0x463d32 : 0xbfb49d) },
+      { geo: shaftGeo, p: [0.2, 0.95, 0.06], c: new THREE.Color(0x6b5c42) },
+      { geo: tipGeo, p: [0.2, 0.95 + h / 2 + 0.1, 0.06], c: (side ? ironQ : ironM).color }
+    ]);
+    var men = new THREE.InstancedMesh(manGeo, new THREE.MeshLambertMaterial({ vertexColors: true }), count);
+    men.castShadow = true;
     var shieldsPer = side ? 3 : 2;
     var shields = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.34, 0.34, 0.04, 12), new THREE.MeshLambertMaterial({ color: 0xffffff }), squads * shieldsPer);
     if (shields.setColorAt) {
@@ -941,16 +987,16 @@
     var swords = new THREE.InstancedMesh(new THREE.BoxGeometry(0.045, 0.72, 0.013), new THREE.MeshLambertMaterial({ color: 0xc9c4b6 }), squads);
     var guards = new THREE.InstancedMesh(new THREE.BoxGeometry(0.2, 0.03, 0.05), side ? ironQ : brassM, squads);
     var helms = new THREE.InstancedMesh(new THREE.SphereGeometry(0.145, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2), side ? ironQ : ironM, squads);
-    shafts.castShadow = true; tips.castShadow = true; shields.castShadow = true; swords.castShadow = true;
-    bodies.castShadow = true; heads.castShadow = true;
+    shields.castShadow = true; swords.castShadow = true;
     var sq = [], recs = [], idx = 0;
     for (var s = 0; s < squads; s++) {
       var rk = Math.floor(s / cols), cl = s % cols;
       var hsh = Math.abs(Math.sin(s * 12.9898) * 43758.5453) % 1;
       var cx;
       if (side && cols === 21) {
+        /* three divisions of seven files: 1,000 men read as one army */
         var seg = cl < 7 ? -1 : (cl < 14 ? 0 : 1);
-        cx = seg * 20 + ((cl % 7) - 3) * 2.0 + (rk % 2 ? 1.0 : 0);
+        cx = seg * 18 + ((cl % 7) - 3) * 2.0 + (rk % 2 ? 1.0 : 0);
       } else {
         cx = (cl - (cols - 1) / 2) * dxS + (rk % 2 ? dxS * 0.5 : 0);
       }
@@ -974,17 +1020,14 @@
         });
       }
     }
-    scene.add(bodies); scene.add(heads); scene.add(shafts); scene.add(tips); scene.add(shields); scene.add(rims); scene.add(swords); scene.add(guards); scene.add(helms);
-    MASS.push({ bodies: bodies, heads: heads, shafts: shafts, tips: tips, shields: shields, rims: rims, swords: swords, guards: guards, helms: helms, shieldsPer: shieldsPer, sq: sq, recs: recs, blocks: blocks, h: h, side: side });
+    scene.add(men); scene.add(shields); scene.add(rims); scene.add(swords); scene.add(guards); scene.add(helms);
+    MASS.push({ men: men, shields: shields, rims: rims, swords: swords, guards: guards, helms: helms, shieldsPer: shieldsPer, sq: sq, recs: recs, blocks: blocks, h: h, side: side });
   }
-  buildMass(0, 313, 9, 2.5, 1.9, 12.2, 1.9);
+  buildMass(0, 313, 9, 2.2, 1.9, 12.2, 1.9);
   buildMass(1, 1000, 21, 2.0, 1.9, -14.2, 2.15);
 
   function updateMass() {
     var dm = new THREE.Object3D();
-    var zero = new THREE.Object3D();
-    zero.scale.set(0.0001, 0.0001, 0.0001);
-    zero.updateMatrix();
     for (var m = 0; m < MASS.length; m++) {
       var M = MASS[m];
       var anchors = [];
@@ -996,25 +1039,12 @@
       for (var i = 0; i < M.recs.length; i++) {
         var rec = M.recs[i], a = anchors[rec.s];
         var px = a[0] + rec.ox, pz = a[1] + rec.oz;
-        /* the man */
-        dm.position.set(px, 0.53 * rec.hs, pz);
+        /* the man: body, head, spear and tip are one baked geometry */
+        dm.position.set(px, 0, pz);
         dm.rotation.set(0, rec.ry, 0);
         dm.scale.set(1, rec.hs, 1);
         dm.updateMatrix();
-        M.bodies.setMatrixAt(i, dm.matrix);
-        dm.position.y = 1.06 * rec.hs + 0.13;
-        dm.updateMatrix();
-        M.heads.setMatrixAt(i, dm.matrix);
-        /* his spear, held upright beside him; tip seated on the shaft */
-        var shY = 0.95 * rec.hs;
-        dm.rotation.set(rec.tilt, rec.ry, 0);
-        dm.scale.set(1, rec.hs, 1);
-        dm.position.set(px + 0.2, shY, pz + 0.06);
-        dm.updateMatrix();
-        M.shafts.setMatrixAt(i, dm.matrix);
-        dm.position.y = shY + (M.h / 2 + 0.1) * rec.hs;
-        dm.updateMatrix();
-        M.tips.setMatrixAt(i, dm.matrix);
+        M.men.setMatrixAt(i, dm.matrix);
       }
       var si = 0;
       for (var s2 = 0; s2 < M.sq.length; s2++) {
@@ -1049,10 +1079,7 @@
         dm.updateMatrix();
         M.guards.setMatrixAt(s2, dm.matrix);
       }
-      M.bodies.instanceMatrix.needsUpdate = true;
-      M.heads.instanceMatrix.needsUpdate = true;
-      M.shafts.instanceMatrix.needsUpdate = true;
-      M.tips.instanceMatrix.needsUpdate = true;
+      M.men.instanceMatrix.needsUpdate = true;
       M.shields.instanceMatrix.needsUpdate = true;
       M.rims.instanceMatrix.needsUpdate = true;
       M.swords.instanceMatrix.needsUpdate = true;
@@ -1123,6 +1150,119 @@
     am.visible = false; scene.add(am);
     arrows.push({ m: am, live: false, t: 0, from: new THREE.Vector3(), to: new THREE.Vector3(), dir: new THREE.Vector3() });
   }
+
+  /* ------------------------------ static merge.
+     The palms alone were ~200 meshes each and the camp ~1,700 draw calls. Merge every
+     rigid mesh into a handful of vertex-coloured batches; keep only what animates
+     (banner cloth, palm crowns, arrows, the men) separate. */
+  function isMergeable(o) {
+    var mm = o.material;
+    if (!mm || Array.isArray(mm) || !mm.isMeshLambertMaterial) return false;
+    if (mm.map || mm.transparent || mm.opacity < 1) return false;
+    if (!o.geometry || !o.geometry.attributes.position) return false;
+    return true;
+  }
+  function collectMergeable(root) {
+    var out = [];
+    root.traverse(function (o) {
+      if (!o.isMesh || o.isInstancedMesh) return;
+      var p = o;
+      while (p && p !== root) { if (p.userData && (p.userData.keep || p.userData.dynamicRoot)) return; p = p.parent; }
+      if (isMergeable(o)) out.push(o);
+    });
+    return out;
+  }
+  function mergeMeshList(items, root, local) {
+    if (!items.length) return;
+    var inv = new THREE.Matrix4();
+    if (local) { root.updateMatrixWorld(true); inv.copy(root.matrixWorld).invert(); }
+    var groups = {};
+    items.forEach(function (o) {
+      var mm = o.material;
+      var sig = [mm.emissive ? mm.emissive.getHex() : 0, mm.side, mm.flatShading ? 1 : 0, o.castShadow ? 1 : 0, o.receiveShadow ? 1 : 0].join('|');
+      if (!groups[sig]) groups[sig] = { mat: mm, cast: o.castShadow, recv: o.receiveShadow, list: [] };
+      groups[sig].list.push(o);
+    });
+    Object.keys(groups).forEach(function (sig) {
+      var G = groups[sig];
+      var pos = [], norm = [], col = [], idx = [], off = 0;
+      var m = new THREE.Matrix4(), v = new THREE.Vector3(), nv = new THREE.Vector3();
+      G.list.forEach(function (o) {
+        o.updateMatrixWorld(true);
+        if (local) m.multiplyMatrices(inv, o.matrixWorld); else m.copy(o.matrixWorld);
+        var g = o.geometry, p = g.attributes.position;
+        if (!g.attributes.normal) g.computeVertexNormals();
+        var n = g.attributes.normal;
+        var c = o.material.color;
+        for (var i = 0; i < p.count; i++) {
+          v.fromBufferAttribute(p, i).applyMatrix4(m);
+          pos.push(v.x, v.y, v.z);
+          nv.fromBufferAttribute(n, i).transformDirection(m);
+          norm.push(nv.x, nv.y, nv.z);
+          col.push(c.r, c.g, c.b);
+        }
+        if (g.index) {
+          for (var j = 0; j < g.index.count; j++) idx.push(g.index.array[j] + off);
+        } else {
+          for (var j2 = 0; j2 < p.count; j2++) idx.push(j2 + off);
+        }
+        off += p.count;
+      });
+      var bg = new THREE.BufferGeometry();
+      bg.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+      bg.setAttribute('normal', new THREE.Float32BufferAttribute(norm, 3));
+      bg.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+      bg.setIndex(idx);
+      var mat = new THREE.MeshLambertMaterial({
+        vertexColors: true,
+        emissive: G.mat.emissive ? G.mat.emissive.clone() : new THREE.Color(0x000000),
+        side: G.mat.side,
+        flatShading: !!G.mat.flatShading
+      });
+      var mesh = new THREE.Mesh(bg, mat);
+      mesh.castShadow = G.cast; mesh.receiveShadow = G.recv;
+      mesh.frustumCulled = false;
+      root.add(mesh);
+      G.list.forEach(function (o) { if (o.parent) o.parent.remove(o); });
+    });
+  }
+  function mergeStaticScene() {
+    scene.updateMatrixWorld(true);
+    /* banner cloth is vertex-animated */
+    WAVERS.forEach(function (w) { w.mesh.userData.keep = true; });
+    /* arrows fly as groups: bake each one to a single mesh */
+    arrows.forEach(function (a) {
+      a.m.updateMatrixWorld(true);
+      mergeMeshList(collectMergeable(a.m), a.m, true);
+      a.m.userData.keep = true;
+    });
+    stuckArrows.updateMatrixWorld(true);
+    mergeMeshList(collectMergeable(stuckArrows), stuckArrows, true);
+    stuckArrows.userData.keep = true;
+    /* banners ride on moving unit blocks: merge each block's rigid parts locally */
+    champs.concat(mBands, qBands).forEach(function (b) {
+      var bg = b.group || b;
+      bg.updateMatrixWorld(true);
+      mergeMeshList(collectMergeable(bg), bg, true);
+      bg.userData.dynamicRoot = true;
+    });
+    /* palm crowns sway: merge each crown locally, leave its trunk to the world batch */
+    PALMS.forEach(function (p) {
+      p.crown.updateMatrixWorld(true);
+      mergeMeshList(collectMergeable(p.crown), p.crown, true);
+      p.crown.userData.keep = true;
+    });
+    /* everything else rigid, in world space */
+    var statics = [];
+    scene.traverse(function (o) {
+      if (!o.isMesh || o.isInstancedMesh) return;
+      var p = o;
+      while (p) { if (p.userData && (p.userData.keep || p.userData.dynamicRoot)) return; p = p.parent; }
+      if (isMergeable(o)) statics.push(o);
+    });
+    mergeMeshList(statics, scene, false);
+  }
+  mergeStaticScene();
   var DN = MOBILE ? 700 : 1400;
   var dustGeo = new THREE.BufferGeometry();
   var dustP = new Float32Array(DN * 3), dustS = new Float32Array(DN), dustB = new Float32Array(DN * 3);
@@ -1322,7 +1462,7 @@
   var acc = { arr: 0 };
 
   /* ------------------------------ camera */
-  function applyCamera(i, t) {
+  function applyCamera(i, t, snap) {
     var tgt;
     if (camState.mode === 'orbit') return; /* orbit handled below */
     if (camState.mode === 'preset') { tgt = camState.preset; }
@@ -1333,7 +1473,17 @@
         l: [ca.l[0] + (cb.l[0] - ca.l[0]) * t, ca.l[1] + (cb.l[1] - ca.l[1]) * t, ca.l[2] + (cb.l[2] - ca.l[2]) * t]
       };
     }
-    lerpCam(tgt, reduce ? 0.22 : 0.09);
+    /* portrait phones see a narrow horizontal slice: back the camera off and
+       lift it so all three Quraysh divisions stay in frame */
+    if (camera.aspect < 1) {
+      var k = Math.min(2.1, Math.pow(1 / camera.aspect, 0.9));
+      tgt.p = [
+        tgt.l[0] + (tgt.p[0] - tgt.l[0]) * k,
+        tgt.l[1] + (tgt.p[1] - tgt.l[1]) * k * 1.12,
+        tgt.l[2] + (tgt.p[2] - tgt.l[2]) * k
+      ];
+    }
+    lerpCam(tgt, snap ? 1 : (reduce ? 0.22 : 0.09));
   }
   function lerpCam(tgt, k) {
     /* frame-rate independent: a slow phone must still reach the phase camera */
@@ -1359,6 +1509,10 @@
     orbit.r = Math.max(12, o.length());
     orbit.pol = Math.acos(Math.max(-1, Math.min(1, o.y / orbit.r)));
     orbit.az = Math.atan2(o.z, o.x);
+    /* hand over without a jump: the turntable starts exactly where the shot left off */
+    orbit.target.copy(curCam.l);
+    camSm.p.copy(camera.position);
+    camSm.l.copy(curCam.l);
   }
   /* pinch zoom: two pointers, spread/pinch maps to radius (coin-model inertia) */
   var pointers = {};
@@ -1473,7 +1627,6 @@
   size();
 
   var tickCb = null;
-  var massTick = 0;
   function updateCloth(time) {
     for (var w = 0; w < WAVERS.length; w++) {
       var it = WAVERS[w];
@@ -1501,7 +1654,7 @@
       if (clock.frac >= 1) { clock.frac = 1; clock.playing = false; }
       if (tickCb) { try { tickCb(clock.frac, phaseInfo(clock.frac)); } catch (err) { console.error('[badr] tick', err); } }
       applyFrac(clock.frac);
-      if ((massTick++ % (MOBILE ? 4 : 2)) === 0) updateMass();
+      updateMass();
     }
     /* paused: turntable drift happens inside the orbit block; only mode-switch here */
     if (!clock.playing && !dragging && camState.mode !== 'orbit') {
@@ -1552,8 +1705,10 @@
         /* far camera: unit labels fade out, landmarks stay */
         var vis = v.z < 1 && sy > 56 && sy < h - 170;
         var dist = isUnit ? camera.position.distanceTo(it.u.group.position) : 0;
-        if (isUnit && dist > 95) vis = false;
-        var op = isUnit ? (dist > 62 ? Math.max(0, 1 - (dist - 62) / 33) : 1) : 1;
+        /* phones: names belong to the close shot, not the pulled-back map */
+        var far = MOBILE ? 58 : 95, fade = MOBILE ? 40 : 62, span = MOBILE ? 18 : 33;
+        if (isUnit && dist > far) vis = false;
+        var op = isUnit ? (dist > fade ? Math.max(0, 1 - (dist - fade) / span) : 1) : 1;
         if (op < 0.08) vis = false;
         it.el.style.opacity = op === 1 ? '' : op.toFixed(2);
         if (vis) {
@@ -1573,7 +1728,6 @@
     }
     place(ULABS, true);
     place(LANDL, false);
-    if (!clock.playing && (massTick++ % (MOBILE ? 4 : 2)) === 0) updateMass();
     if (!reduce && !MOBILE) {
       var mp = motes.geometry.attributes.position;
       for (var mj = 0; mj < MOTES; mj++) {
@@ -1598,7 +1752,7 @@
         }
         sp2.needsUpdate = true;
       }
-    } else if (MOBILE && (massTick % 8 === 0)) {
+    } else if (MOBILE && (Math.floor(now / 140) % 2 === 0)) {
       /* a light breath of cloth on mobile: update the largest banners only */
       updateCloth(now / 2500);
     }
@@ -1606,6 +1760,7 @@
   }
   requestAnimationFrame(frame);
   applyFrac(0);
+  applyCamera(0, 0, true);
 
   /* fallback ticker: if the device throttles RAF, keep the clock and render alive */
   var lastRaf = 0;
@@ -1662,6 +1817,7 @@
     seek: function (f) {
       clock.frac = clamp01(f);
       applyFrac(clock.frac);
+      updateMass();
       if (tickCb) tickCb(clock.frac, phaseInfo(clock.frac));
     },
     play: function () {
@@ -1693,6 +1849,41 @@
       }
     },
     setLang: setLang,
-    isExplore: function () { return camState.mode === 'orbit'; }
+    info: function () { return { calls: renderer.info.render.calls, tris: renderer.info.render.triangles, geoms: renderer.info.memory.geometries }; },
+    sceneStats: function () {
+      var meshes = 0, inst = 0, points = 0, mats = {}, geos = {};
+      scene.traverse(function (o) {
+        if (o.isMesh) {
+          if (o.isInstancedMesh) { inst++; return; }
+          meshes++;
+          var mm = o.material;
+          var key = mm ? (mm.type + ' · #' + (mm.color ? mm.color.getHexString() : '----') + (mm.map ? ' · map' : '')) : 'none';
+          mats[key] = (mats[key] || 0) + 1;
+          var gk = o.geometry ? o.geometry.type : 'none';
+          geos[gk] = (geos[gk] || 0) + 1;
+        } else if (o.isPoints) points++;
+      });
+      return {
+        meshes: meshes, instanced: inst, points: points,
+        topMats: Object.keys(mats).map(function (k) { return [k, mats[k]]; }).sort(function (a, b) { return b[1] - a[1]; }).slice(0, 12),
+        topGeos: Object.keys(geos).map(function (k) { return [k, geos[k]]; }).sort(function (a, b) { return b[1] - a[1]; }).slice(0, 10)
+      };
+    },
+    benchMass: function (n) { var t0 = performance.now(); for (var i = 0; i < (n || 10); i++) updateMass(); return (performance.now() - t0) / (n || 10); },
+    isExplore: function () { return camState.mode === 'orbit'; },
+    snapCam: function (name) {
+      if (name) { camState.mode = 'preset'; camState.preset = PRESETS[name] || PRESETS.ground; }
+      else { camState.mode = 'phase'; }
+      var ph = phaseInfo(clock.frac);
+      applyCamera(ph.i, ph.t, true);
+    },
+    debugChamp: function () {
+      return champs.map(function (u) {
+        var n = 0, types = [];
+        u.group.traverse(function (o) { if (o.isMesh) { n++; if (types.length < 6) types.push(o.geometry.type); } });
+        return { label: u.label, pos: u.group.position.toArray().map(function (v) { return +v.toFixed(2); }), meshes: n, types: types };
+      });
+    },
+    camInfo: function () { return { fov: camera.fov, aspect: +camera.aspect.toFixed(3), p: camera.position.toArray().map(function (n) { return +n.toFixed(1); }), l: curCam.l.toArray().map(function (n) { return +n.toFixed(1); }), mode: camState.mode }; },
   };
 })();

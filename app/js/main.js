@@ -67,6 +67,7 @@
     document.querySelectorAll('[data-i18n]').forEach(function (n) { n.innerHTML = t[n.dataset.i18n]; });
     nameEls.forEach(function (n, i) { n.textContent = t.phases[i]; });
     if (B.setLang) B.setLang(lang);
+    if (typeof setScrub === 'function') setScrub(B.frac());
     var hintEl = $('#hint');
     if (hintEl && B.isPlaying()) hintEl.classList.add('is-gone');
   }
@@ -166,9 +167,14 @@
 
   /* ------------------------------ scrub */
   var scrubbing = false;
+  /* the rail runs with the reading direction: in Urdu 0 is the right edge */
+  function setScrub(frac) {
+    scrubHead.style.left = ((lang === 'ur' ? 1 - frac : frac) * 100).toFixed(2) + '%';
+  }
   function fracFromEvent(e) {
     var r = timeline.getBoundingClientRect();
-    return Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
+    var f = Math.max(0, Math.min(1, (e.clientX - r.left) / r.width));
+    return lang === 'ur' ? 1 - f : f;
   }
   timeline.addEventListener('pointerdown', function (e) {
     scrubbing = true;
@@ -177,10 +183,7 @@
     B.seek(fracFromEvent(e));
   });
   timeline.addEventListener('pointermove', function (e) {
-    if (scrubbing) {
-      var f = fracFromEvent(e);
-      B.seek(lang === 'ur' ? 1 - f : f);
-    }
+    if (scrubbing) B.seek(fracFromEvent(e));
   });
   ['pointerup', 'pointercancel'].forEach(function (ev) {
     timeline.addEventListener(ev, function () { scrubbing = false; });
@@ -199,8 +202,10 @@
   document.addEventListener('keydown', function (e) {
     if (e.target && /BODY/.test(e.target.tagName)) {
       if (e.code === 'Space') { e.preventDefault(); togglePlay(); }
-      if (e.code === 'ArrowRight') B.seek(Math.min(1, B.frac() + 0.02));
-      if (e.code === 'ArrowLeft') B.seek(Math.max(0, B.frac() - 0.02));
+      var back = lang === 'ur' ? 'ArrowRight' : 'ArrowLeft';
+      var fwd = lang === 'ur' ? 'ArrowLeft' : 'ArrowRight';
+      if (e.code === fwd) B.seek(Math.min(1, B.frac() + 0.02));
+      if (e.code === back) B.seek(Math.max(0, B.frac() - 0.02));
     }
   });
 
@@ -209,8 +214,7 @@
   var lastPhase = -1;
   var clangT = 0, volleyT = 0;
   B.onTick(function (frac, info) {
-  /* the scrub head runs with the reading direction of the current language */
-  scrubHead.style.left = lang === 'ur' ? ((1 - frac) * 100).toFixed(2) + '%' : (frac * 100).toFixed(2) + '%';
+    setScrub(frac);
     deckCount.textContent = lang === 'ur'
       ? urNum(info.i + 1) + ' / ' + urNum(B.phases.length)
       : ('0' + (info.i + 1)).slice(-2) + ' / 0' + B.phases.length;
@@ -232,9 +236,9 @@
   });
 
   /* ------------------------------ boot */
-  console.log('[badr] build 2026-10-23e · mobile play fix');
+  console.log('[badr] build 2026-10-23j · merge pass + champion standards');
   setPlayState(false);
-  scrubHead.style.left = '0%';
+  setScrub(B.frac());
   segEls[0].classList.add('is-today');
   speedLabel();
   applySound();
