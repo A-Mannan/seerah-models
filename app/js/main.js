@@ -236,7 +236,7 @@
   });
 
   /* ------------------------------ boot */
-  console.log('[badr] build 2026-10-23l · merge pass + champion standards');
+  console.log('[badr] build 2026-10-23m · merge pass + champion standards');
   setPlayState(false);
   setScrub(B.frac());
   segEls[0].classList.add('is-today');
