@@ -90,7 +90,6 @@ h1, h2, p { margin: 0; }
 .legend-row { font-size: 12.5px; line-height: 1.4; color: var(--muted); display: flex; align-items: center; gap: 9px; }
 .legend-row b { color: var(--ink); font-weight: 500; }
 .legend-row .swatch { width: 9px; height: 9px; flex: none; border-radius: 2px; }
-.build { font-size: 10px; color: var(--faint); letter-spacing: 0.02em; margin-top: 2px; }
 .err-banner {
   position: fixed; top: 10px; left: 50%; transform: translateX(-50%); z-index: 60;
   max-width: min(92vw, 640px); padding: 8px 12px; border-radius: 6px;
