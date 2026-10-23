@@ -1496,7 +1496,6 @@
       applyFrac(clock.frac);
       if ((massTick++ % (MOBILE ? 4 : 2)) === 0) updateMass();
     }
-    applyFrac(clock.frac);
     /* paused: turntable drift happens inside the orbit block; only mode-switch here */
     if (!clock.playing && !dragging && camState.mode !== 'orbit') {
       camState.mode = 'orbit';
@@ -1599,6 +1598,7 @@
     renderer.render(scene, camera);
   }
   requestAnimationFrame(frame);
+  applyFrac(0);
 
   /* ------------------------------ public clock/camera API */
   window.BATTLE = {

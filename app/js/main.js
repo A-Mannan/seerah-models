@@ -145,7 +145,18 @@
     setPlayState(true);
     if (soundOn) S.start();
   }
-  playBtn.addEventListener('click', togglePlay);
+  /* touch fires pointerup then a synthesized click: dedupe so play never double-toggles */
+  var lastPlayTap = 0;
+  function requestToggle() {
+    var t = Date.now();
+    if (t - lastPlayTap < 350) return;
+    lastPlayTap = t;
+    togglePlay();
+  }
+  playBtn.addEventListener('click', requestToggle);
+  playBtn.addEventListener('pointerup', function (e) {
+    if (e.pointerType && e.pointerType !== 'mouse') requestToggle();
+  });
   resetBtn.addEventListener('click', function () { B.seek(0); B.play(); setPlayState(true); });
 
   /* ------------------------------ scrub */
@@ -215,6 +226,7 @@
   });
 
   /* ------------------------------ boot */
+  console.log('[badr] build 2026-10-23 · mobile play fix');
   setPlayState(false);
   scrubHead.style.left = '0%';
   segEls[0].classList.add('is-today');
