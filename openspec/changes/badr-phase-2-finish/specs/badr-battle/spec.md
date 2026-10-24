@@ -99,3 +99,42 @@ The model SHALL remain usable on a portrait phone: the field, active labels and 
 - **WHEN** the scene is measured at the clash
 - **THEN** the massed armies still render through instanced meshes
 - **AND** draw calls stay in the low hundreds, not one per soldier
+### Requirement: Named duel and Anṣār figures
+The six champions and the first three Anṣār SHALL be represented by faceless figures at their standards, not by banners alone. Each figure SHALL move and fall with its standard. No figure SHALL have facial features, and the Prophet ﷺ SHALL never be depicted.
+
+#### Scenario: The duel shows six figures
+- **WHEN** the 3v3 phase plays
+- **THEN** six faceless champion figures stand at their standards
+- **AND** the three Anṣār figures step out and withdraw with their standards in the first challenge
+
+#### Scenario: A champion falls
+- **WHEN** a champion's standard falls
+- **THEN** the figure falls with it
+
+### Requirement: Dispersing advance
+During the advance and clash the massed ranks SHALL loosen and spread within their divisions rather than moving as rigid blocks. The three Quraysh divisions SHALL remain legible.
+
+#### Scenario: The advance
+- **WHEN** the advance begins
+- **THEN** squads and men spread laterally and unevenly
+- **AND** the three Quraysh divisions remain readable
+
+### Requirement: Detailed aftermath bodies
+The 70 captives, the 70 Quraysh dead and the 24 leaders at al-Qalib SHALL be faceless figures with bodies, heads, arms, legs and feet, not featureless cylinders.
+
+#### Scenario: The reckoning
+- **WHEN** the aftermath is shown
+- **THEN** captives and dead have limbs and heads
+- **AND** no face is present
+
+### Requirement: Clear field layout
+The wells SHALL sit clear of the duel and the command plinth. The ʿarish SHALL sit behind the Muslim line. The command plinth SHALL be hidden during the duel and advance and appear for the sand beat.
+
+#### Scenario: The duel layout
+- **WHEN** the 3v3 plays
+- **THEN** no well or command plinth overlaps the champions
+- **AND** the ʿarish reads as a rear headquarters
+
+#### Scenario: The command
+- **WHEN** the sand phase plays
+- **THEN** the plinth is visible under the five figures

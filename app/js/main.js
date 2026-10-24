@@ -223,11 +223,11 @@
   });
 
   /* ------------------------------ boot */
-  console.log('[badr] build 2026-10-23p · action vignette, detailed mass, camera story');
+  console.log('[badr] build 2026-10-23q · named figures, layout audit, dispersion, refined aftermath');
   if (/[?&]debug=1/.test(location.search)) {
     var dbg = document.createElement('div');
     dbg.className = 'debug-build';
-    dbg.textContent = 'build p';
+    dbg.textContent = 'build q';
     document.body.appendChild(dbg);
   }
   setPlayState(false);

@@ -77,3 +77,14 @@ Rollback: revert the build-p commit; the previous build **o** remains the live b
 ## Open Questions
 
 - None blocking. The shared-engine split and the Uhud/Khandaq ledgers are deliberately deferred to separate changes.
+## Build q follow-up — named figures, layout and dispersion
+
+**Named figures at standards.** The six champions and the first three Anṣār now carry faceless figures at the foot of their existing standards rather than relying on banners alone. The standard remains the unit marker; the figure moves and falls with the group. The figures are merged locally into the standard group, so the extra detail costs draw calls only once per champion/trio, not per frame.
+
+**Field layout.** The wells moved east into the gap between the Quraysh centre and right divisions, clear of the duel and the command lane. The ʿarish moved behind the Muslim line, where the ledger's headquarters/guards description reads correctly. The command plinth is grouped and hidden during the duel and advance, then shown for the sand beat.
+
+**Dispersion.** Per-squad and per-man offsets are driven by the phase: the advance loosens the ranks, the clash keeps a smaller ripple, and the rout scatters. The three Quraysh divisions stay legible as divisions.
+
+**Aftermath bodies.** The 70 captives, 70 dead and 24 leaders are rebuilt with bodies, heads, arms, legs and feet; the captives remain unarmed. No faces. The 70 dead/24 leaders use the existing merged aftermath batch; the captives stay one instanced mesh.
+
+**Camera trade-off.** The 3v3 remains a wide side view because the champion standards are tall and the wells/plinth constrain the close angles; the figures and labels are present, but the six are not all hero-framed at once.

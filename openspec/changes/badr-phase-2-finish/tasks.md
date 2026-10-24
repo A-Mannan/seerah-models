@@ -53,3 +53,11 @@ Some of this work is already in the working tree (plinth and five figures, mass 
 
 - Archive this change after the owner accepts build p.
 - Do not push the resulting commit unless the owner explicitly approves.
+## 8. Named figures, field layout, dispersion, aftermath bodies
+
+- [x] 8.1 Move the wells east of the duel and the ʿarish behind the Muslim line; verify with `c-duel`, `c-advance` and `c-quiet` stills.
+- [x] 8.2 Add six faceless champion figures and three Anṣār figures at their standards; verify the duel and first-challenge beats.
+- [x] 8.3 Disperse the advancing mass within the divisions; verify the advance still.
+- [x] 8.4 Refine the 70 captives, 70 dead and 24 leaders with bodies, arms, legs and feet; verify the reckoning still.
+- [x] 8.5 Hide the command plinth during the duel/advance and clear the stage shadow checker; verify the phone command still.
+- [x] 8.6 Run `node --check`, lint and inspect; bump build **q**; update `PROGRESS.md`; commit locally.

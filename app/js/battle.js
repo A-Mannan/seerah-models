@@ -107,7 +107,7 @@
   scene.add(rim);
 
   var brassLight = new THREE.PointLight(0xffb54d, 0.5, 14, 2);
-  brassLight.position.set(-17.5, 2.6, 12.5); /* the lamp at the ʻarish */
+  brassLight.position.set(-7.5, 2.6, 20.5); /* the lamp at the ʻarish */
   scene.add(brassLight);
   var wellLight = new THREE.PointLight(0xffb54d, 0.3, 11, 2);
   wellLight.position.set(-5.8, 1.8, 2.6);
@@ -246,7 +246,7 @@
     }
     g.position.set(wx, 0, wz); scene.add(g); return g;
   }
-  [[-5.2, 3.0], [-3.4, 4.0], [-2.0, 3.2]].forEach(function (w, wi) { wellAt(w[0], w[1], wi === 0); });
+  [[8.0, 3.2], [9.5, 4.2], [10.8, 3.4]].forEach(function (w, wi) { wellAt(w[0], w[1], wi === 0); });
   var basin = new THREE.Group();
   var basinBed = new THREE.Mesh(new THREE.CircleGeometry(1.6, 24), waterM);
   basinBed.rotation.x = -Math.PI / 2; basinBed.position.y = 0.1; basin.add(basinBed);
@@ -258,10 +258,10 @@
     bst.castShadow = true; bst.receiveShadow = true;
     basin.add(bst);
   }
-  basin.position.set(-6.2, 0.02, 3.4);
+  basin.position.set(9.0, 0.02, 3.8);
   scene.add(basin);
   var trough = new THREE.Mesh(new THREE.BoxGeometry(1.3, 0.34, 0.52), stoneM);
-  trough.position.set(-4.4, 0.17, 2.2);
+  trough.position.set(7.0, 0.17, 2.8);
   trough.castShadow = true; trough.receiveShadow = true;
   scene.add(trough);
 
@@ -285,7 +285,7 @@
   var lamp = new THREE.Mesh(new THREE.SphereGeometry(0.15, 10, 8), new THREE.MeshLambertMaterial({ color: 0xffc766, emissive: 0xffa93c, emissiveIntensity: 0.9 }));
   lamp.position.set(0.5, 2.0, 1.15);
   arish.add(lamp);
-  arish.position.set(-17.5, 0, 12.5);
+  arish.position.set(-7.5, 0, 20.5);
   scene.add(arish);
 
   var dune = new THREE.Mesh(new THREE.SphereGeometry(30, 22, 14, 0, Math.PI * 2, 0, Math.PI / 2),
@@ -304,10 +304,23 @@
   var bodyM = new THREE.MeshLambertMaterial({ color: 0x3a332a });
   function bodyBundle(x, z, rot, parent) {
     var g = new THREE.Group();
-    var body = new THREE.Mesh(new THREE.CylinderGeometry(0.17, 0.23, 1.15, 6), bodyM);
-    body.rotation.z = Math.PI / 2; body.position.y = 0.2; g.add(body);
+    var body = new THREE.Mesh(new THREE.CylinderGeometry(0.17, 0.23, 0.78, 6), bodyM);
+    body.rotation.z = Math.PI / 2; body.position.set(0.02, 0.2, 0); g.add(body);
     var head = new THREE.Mesh(new THREE.SphereGeometry(0.16, 6, 5), bodyM);
-    head.position.set(0.62, 0.18, 0); g.add(head);
+    head.position.set(0.5, 0.19, 0); g.add(head);
+    var armGeo = new THREE.CylinderGeometry(0.055, 0.06, 0.46, 5);
+    var legGeo = new THREE.CylinderGeometry(0.07, 0.08, 0.56, 5);
+    var footGeo = new THREE.BoxGeometry(0.11, 0.055, 0.18);
+    [-1, 1].forEach(function (side) {
+      var arm = new THREE.Mesh(armGeo, bodyM);
+      arm.rotation.z = Math.PI / 2; arm.rotation.y = side * 0.38;
+      arm.position.set(0.2, 0.13, side * 0.2); g.add(arm);
+      var leg = new THREE.Mesh(legGeo, bodyM);
+      leg.rotation.z = Math.PI / 2; leg.rotation.y = side * 0.18;
+      leg.position.set(-0.33, 0.12, side * 0.15); g.add(leg);
+      var foot = new THREE.Mesh(footGeo, bodyM);
+      foot.position.set(-0.62, 0.06, side * 0.18); foot.rotation.y = side * 0.18; g.add(foot);
+    });
     g.position.set(x, 0, z); g.rotation.y = rot;
     g.traverse(function (o) { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
     (parent || scene).add(g);
@@ -874,10 +887,10 @@
   /* champions: Ḥamzah/ʻAlī/ʻUbaydah vs Shaybah/al-Walīd/ʻUtbah (Bukhari 3965 pairing; both versions on the card) */
   var chH, chA, chU, chS, chW, chB;
   chH = champion(0, -3.2, 11.5, 'Ḥamzah (RA)', 'BADR-028');
-  chA = champion(0, 0, 11.2, 'ʻAlī (RA)', 'BADR-029'); chA.labelY = 4.9;
+  chA = champion(0, 0, 11.2, 'ʻAlī (RA)', 'BADR-029'); chA.labelY = 3.9;
   chU = champion(0, 3.2, 11.5, 'ʻUbaydah (RA)', 'BADR-028');
   chS = champion(1, -5.5, -13.8, 'Shaybah', 'BADR-028');
-  chW = champion(1, 0, -13.4, 'al-Walīd', 'BADR-029'); chW.labelY = 4.9;
+  chW = champion(1, 0, -13.4, 'al-Walīd', 'BADR-029'); chW.labelY = 3.9;
   chB = champion(1, 5.5, -13.8, 'ʻUtbah', 'BADR-028');
   var champs = [chH, chA, chU, chS, chW, chB];
 
@@ -1046,31 +1059,34 @@
 
   /* the plinth: a shallow, trampled sand stage, wide enough for the five figures */
   var STAGE = { x: -9.0, z: -0.3, y: 0.07, r: 3.5 };
+  var stageGroup = new THREE.Group();
+  stageGroup.userData.keep = true;
+  scene.add(stageGroup);
   var stage = new THREE.Mesh(new THREE.CylinderGeometry(STAGE.r, STAGE.r + 0.25, STAGE.y, 30),
     new THREE.MeshLambertMaterial({ color: 0xc7b184 }));
   stage.position.set(STAGE.x, STAGE.y / 2, STAGE.z);
-  stage.receiveShadow = true;
-  scene.add(stage);
+  stage.receiveShadow = false;
+  stageGroup.add(stage);
   var stageRim = new THREE.Mesh(new THREE.TorusGeometry(STAGE.r + 0.05, 0.035, 5, 30),
     new THREE.MeshLambertMaterial({ color: 0xa8916a }));
   stageRim.rotation.x = Math.PI / 2;
   stageRim.position.set(STAGE.x, STAGE.y + 0.005, STAGE.z);
-  stageRim.receiveShadow = true;
-  scene.add(stageRim);
+  stageRim.receiveShadow = false;
+  stageGroup.add(stageRim);
   /* dropped kit at the edge of the stage: a shield, two spears, a helmet */
   var dropShield = new THREE.Mesh(new THREE.CylinderGeometry(0.33, 0.33, 0.04, 12), new THREE.MeshLambertMaterial({ color: 0x5a4f3c }));
   dropShield.rotation.x = Math.PI / 2; dropShield.rotation.z = 0.4;
   dropShield.position.set(STAGE.x - 2.5, STAGE.y + 0.03, STAGE.z + 2.2);
-  dropShield.castShadow = true; scene.add(dropShield);
+  dropShield.castShadow = true; stageGroup.add(dropShield);
   for (var dsi = 0; dsi < 2; dsi++) {
     var dShaft = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.026, 2.1, 5), woodM);
     dShaft.rotation.z = Math.PI / 2; dShaft.rotation.y = dsi * 0.7;
     dShaft.position.set(STAGE.x + 1.9 + dsi * 0.5, STAGE.y + 0.04, STAGE.z - 2.1);
-    dShaft.castShadow = true; scene.add(dShaft);
+    dShaft.castShadow = true; stageGroup.add(dShaft);
   }
   var dropHelm = new THREE.Mesh(new THREE.SphereGeometry(0.16, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2), steelM);
   dropHelm.position.set(STAGE.x + 2.2, STAGE.y + 0.04, STAGE.z + 1.4);
-  dropHelm.castShadow = true; scene.add(dropHelm);
+  dropHelm.castShadow = true; stageGroup.add(dropHelm);
 
   function vPart(parent, geo, mat, x, y, z, rx, ry, rz) {
     var m = new THREE.Mesh(geo, mat);
@@ -1171,6 +1187,32 @@
     scene.add(g);
     return { group: g, armR: armR, armL: armL, weaponR: weaponR, weaponL: weaponL, stump: stump, stepLeg: stepLeg, scale: sc, baseY: o.y || 0 };
   }
+  /* The named duel and the Ansar trio get faceless figures too; the standard
+     remains as the unit marker while the figure stands at its foot. */
+  function attachFigure(group, opts) {
+    var f = makeFighter({
+      x: 0, y: 0, z: 0.35, ry: opts.ry || 0,
+      robe: opts.robe, robeDark: opts.robeDark,
+      weapon: opts.weapon, leftWeapon: opts.leftWeapon,
+      shield: opts.shield, helmet: opts.helmet, scale: opts.scale || 1.2
+    });
+    group.add(f.group);
+    f.group.position.set(0, 0, 0.35);
+    f.stump.visible = false; f.stump.userData.keep = true;
+    f.stepLeg.visible = false; f.stepLeg.userData.keep = true;
+    return f;
+  }
+  [
+    [chH, { ry: Math.PI, robe: 0xcfc6b2, robeDark: 0x8a7a60, weapon: 'sword', shield: true }],
+    [chA, { ry: Math.PI, robe: 0xcfc6b2, robeDark: 0x8a7a60, weapon: 'sword', shield: true }],
+    [chU, { ry: Math.PI, robe: 0xcfc6b2, robeDark: 0x8a7a60, weapon: 'spear', shield: true }],
+    [chS, { ry: 0, robe: 0x3a332a, robeDark: 0x241f19, weapon: 'sword', shield: true, helmet: true }],
+    [chW, { ry: 0, robe: 0x3a332a, robeDark: 0x241f19, weapon: 'sword', shield: true, helmet: true }],
+    [chB, { ry: 0, robe: 0x3a332a, robeDark: 0x241f19, weapon: 'spear', shield: true, helmet: true }]
+  ].forEach(function (x) { x[0].figure = attachFigure(x[0].group, x[1]); });
+  ANSAR_MARKS.forEach(function (g) {
+    attachFigure(g, { ry: Math.PI, robe: 0xcfc6b2, robeDark: 0x8a7a60, weapon: 'spear', shield: true, scale: 1.1 });
+  });
 
   var SC = 1.15;
   var abdur = makeFighter({ x: -10.8, y: STAGE.y, z: 1.8, ry: Math.PI, robe: 0xcfc6b2, robeDark: 0x8a7a60, weapon: 'none', scale: SC });
@@ -1383,11 +1425,25 @@
 
   /* the seventy captives, unarmed, on the Muslim side (BADR-048/050) */
   function buildCaptives(count, x0, z0, cols, dx, dz) {
-    var bodyGeo = new THREE.CylinderGeometry(0.16, 0.2, 1.05, 6);
-    var headGeo = new THREE.SphereGeometry(0.13, 8, 6);
+    var bodyGeo = new THREE.CylinderGeometry(0.16, 0.2, 0.62, 6);
+    var skirtGeo = new THREE.CylinderGeometry(0.2, 0.26, 0.3, 6);
+    var headGeo = new THREE.SphereGeometry(0.13, 6, 5);
+    var legGeo = new THREE.CylinderGeometry(0.055, 0.07, 0.55, 5);
+    var footGeo = new THREE.BoxGeometry(0.11, 0.06, 0.2);
+    var armGeo = new THREE.CylinderGeometry(0.045, 0.05, 0.5, 5);
+    var headC = new THREE.Color(0x554838);
+    var robeC = new THREE.Color(0x6a5a45);
+    var darkC = new THREE.Color(0x4a4135);
     var geo = mergeParts([
-      { geo: bodyGeo, p: [0, 0.53, 0], c: new THREE.Color(0x6a5a45) },
-      { geo: headGeo, p: [0, 1.19, 0], c: new THREE.Color(0x554838) }
+      { geo: bodyGeo, p: [0, 0.86, 0], c: robeC },
+      { geo: skirtGeo, p: [0, 0.62, 0], c: robeC },
+      { geo: headGeo, p: [0, 1.34, 0], c: headC },
+      { geo: legGeo, p: [-0.08, 0.28, 0], c: darkC },
+      { geo: legGeo, p: [0.08, 0.28, 0], c: darkC },
+      { geo: footGeo, p: [-0.08, 0.03, 0.04], c: darkC },
+      { geo: footGeo, p: [0.08, 0.03, 0.04], c: darkC },
+      { geo: armGeo, p: [-0.18, 0.9, 0.02], r: [0, 0, 0.22], c: robeC },
+      { geo: armGeo, p: [0.18, 0.9, 0.02], r: [0, 0, -0.22], c: robeC }
     ]);
     var mesh = new THREE.InstancedMesh(geo, new THREE.MeshLambertMaterial({ vertexColors: true }), count);
     mesh.castShadow = true;
@@ -1406,6 +1462,7 @@
     var dm = new THREE.Object3D();
     var ph = curPhaseIdx, pt = curPhaseT;
     var fight = ph === 3 ? 1 : ph === 4 ? 0.75 : ph === 2 ? 0.35 : ph === 5 ? 0.25 : 0;
+    var disp = ph === 2 ? 1 : ph === 3 ? 0.7 : ph === 4 ? 0.3 : ph === 5 ? 0.55 : 0;
     var now = performance.now() / 1000;
     for (var m = 0; m < MASS.length; m++) {
       var M = MASS[m];
@@ -1413,12 +1470,13 @@
       var anchors = [];
       for (var s = 0; s < M.sq.length; s++) {
         var S = M.sq[s], u = M.blocks[S.block];
-        anchors.push([u.group.position.x + S.lx, u.group.position.z + S.lz]);
+        anchors.push([u.group.position.x + S.lx + (S.hsh - 0.5) * 1.0 * disp, u.group.position.z + S.lz + (S.hsh - 0.5) * 0.6 * disp]);
       }
       var helmN = 0;
       for (var i = 0; i < M.recs.length; i++) {
         var rec = M.recs[i], a = anchors[rec.s];
-        var px = a[0] + rec.ox, pz = a[1] + rec.oz;
+        var px = a[0] + rec.ox * (1 + 0.45 * disp) + Math.sin(rec.fp * 2.7 + now * 0.35) * 0.1 * disp;
+        var pz = a[1] + rec.oz + Math.sin(rec.fp * 1.9 + now * 0.3) * 0.14 * disp;
         var thrust = fight * (0.5 + 0.5 * Math.sin(now * 8 + rec.fp));
         var lunge = fight * 0.14 * thrust * dir;
         var lean = fight * 0.1 * thrust * dir;
@@ -1493,8 +1551,8 @@
   var LAND = [
     { w: [20, 0.6, 17], t: 'al-ʻUdwat ad-Dunya · the near bank', e: 'BADR-019', k: 'near', cls: 'is-land-name is-far' },
     { w: [-24, 0.4, -32], t: 'al-Quswa · the far bank', e: 'BADR-019', k: 'far', cls: 'is-land-name is-far' },
-    { w: [-5.2, 2.6, 1.2], t: 'wells of Badr', e: 'BADR-019', k: 'wells', cls: 'is-tap' },
-    { w: [-17.5, 2.6, 13.1], t: 'the ʻarish · the Prophet’s station (PBUH)', e: 'BADR-020', k: 'arish', cls: 'is-tap' },
+    { w: [9.2, 2.6, 3.8], t: 'wells of Badr', e: 'BADR-019', k: 'wells', cls: 'is-tap' },
+    { w: [-7.5, 2.6, 21.1], t: 'the ʻarish · the Prophet’s station (PBUH)', e: 'BADR-020', k: 'arish', cls: 'is-tap' },
     { w: [36, 2.6, 8], t: 'al-Qalib · the 24 leaders thrown into the well', e: 'BADR-049', k: 'well24', cls: 'is-tap is-event', ph: [6] },
     { w: [0, 8.4, 1], t: 'the angels · 8:9', e: 'BADR-031', k: 'angels', cls: 'is-land-name is-event', ph: [3, 4], tRange: [0.12, 0.9] }
   ];
@@ -1661,6 +1719,11 @@
       mergeMeshList(collectMergeable(bg), bg, true);
       bg.userData.dynamicRoot = true;
     });
+    ANSAR_MARKS.forEach(function (bg) {
+      bg.updateMatrixWorld(true);
+      mergeMeshList(collectMergeable(bg), bg, true);
+      bg.userData.dynamicRoot = true;
+    });
     /* palm crowns sway: merge each crown locally, leave its trunk to the world batch */
     PALMS.forEach(function (p) {
       p.crown.updateMatrixWorld(true);
@@ -1749,7 +1812,7 @@
   var TOTAL = 0; PHASES.forEach(function (p) { TOTAL += p.dur; });
   var CAMS = {
     ground:  { a: { p: [0, 30, 44], l: [0, 1.4, 0] },  b: { p: [4, 27, 40], l: [0, 1.4, -1] } },
-    duel:    { a: { p: [30, 10, 0], l: [0, 1.5, 0] }, b: { p: [22, 6, 0], l: [0, 1.5, 0] } },
+    duel:    { a: { p: [-26, 10, 0], l: [0, 1.5, 0] }, b: { p: [-18, 7, 0], l: [0, 1.5, 0] } },
     advance: { a: { p: [34, 20, 22], l: [-2, 1, 0] }, b: { p: [24, 15, 8], l: [-4, 1, -2] } },
     clash:   { a: { p: [30, 13, 20], l: [-2, 1, 0] }, b: { p: [8, 9, 14], l: [-6, 1, -2] } },
     turn:    { a: { p: [-9.0, 5.2, 8.0], l: [-9.4, 0.8, -0.2] }, b: { p: [-9.0, 3.8, 5.8], l: [-9.4, 0.8, -0.8] } },
@@ -1762,7 +1825,7 @@
     duel:    { p: [10, 4.6, 8], l: [0, 1, 0] },
     line:    { p: [24, 5, 18], l: [0, 0.6, 8] },
     far:     { p: [-26, 6, -16], l: [-4, 0.5, -8] },
-    wells:   { p: [6, 5, 9], l: [-5.4, 0.6, 3] },
+    wells:   { p: [6, 5, 9], l: [9.2, 0.6, 3.8] },
     command: { p: [-20, 5.6, 3.5], l: [-9.0, 1.1, -0.6] }
   };
 
@@ -1845,6 +1908,9 @@
     bilalMark.visible = i >= 5;
     umayyahMark.visible = i >= 5;
     ANSAR_MARKS.forEach(function (m) { m.visible = i === 1; });
+
+    /* the plinth belongs to the command/rout, not the duel/advance foreground */
+    stageGroup.visible = i >= 4;
 
     /* the aftermath (graves, dead, captives, spoils, the pit) belongs to the rout and reckoning */
     aftermathGroup.visible = i >= 5;
@@ -2176,7 +2242,7 @@
         if (isUnit && it.u.tRange && (curPhaseT < it.u.tRange[0] || curPhaseT > it.u.tRange[1])) { it.el.style.visibility = 'hidden'; continue; }
         if (!isUnit && it.ph && it.ph.indexOf(curPhaseIdx) < 0) { it.el.style.visibility = 'hidden'; continue; }
         if (!isUnit && it.tRange && (curPhaseT < it.tRange[0] || curPhaseT > it.tRange[1])) { it.el.style.visibility = 'hidden'; continue; }
-        var lY = isUnit ? (it.u.labelY !== undefined ? it.u.labelY : (it.u.isChampion ? 4.95 : 4.0)) : 0;
+        var lY = isUnit ? (it.u.labelY !== undefined ? it.u.labelY : (it.u.isChampion ? 3.9 : 4.0)) : 0;
         if (MOBILE && isUnit && (it.u.k === 'abujahlFig' || it.u.k === 'ikrimahFig')) lY -= 0.8;
         var v = (isUnit ? it.u.group.position.clone().add(new THREE.Vector3(0, lY, 0)) : it.v).clone();
         v = v.project ? v.project(camera) : v;
