@@ -10,7 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=20261023o">
+<link rel="stylesheet" href="css/style.css?v=20261023p">
 <script>document.documentElement.classList.add('js')</script>
 </head>
 <body>
@@ -25,7 +25,7 @@
   });
 </script>
 
-<canvas id="gl" aria-label="Interactive 3D model of the battle of Badr: valley, wells, the basin, the Prophet's hut, the standards of both armies. No human figures are depicted."></canvas>
+<canvas id="gl" aria-label="Interactive 3D model of the battle of Badr: valley, wells, the basin, the ʻarish, standards, and faceless stylized soldiers. The Prophet ﷺ is never depicted."></canvas>
 
 <header class="bar">
   <h1 class="brand">
@@ -55,16 +55,6 @@
     <span class="deck-count" id="deckCount" dir="ltr" aria-hidden="true">01 / 07</span>
     <button id="resetBtn" class="deck-btn slim" title="Back to the start">⟲</button>
   </div>
-  <div class="deck-row sub">
-    <div class="cams" id="cams" role="group" aria-label="Camera views">
-      <button data-cam="ground" class="cam is-on">the ground</button>
-      <button data-cam="aerial" class="cam">aerial · map</button>
-      <button data-cam="duel" class="cam">the duel</button>
-      <button data-cam="line" class="cam">our line</button>
-      <button data-cam="far" class="cam">their line</button>
-      <button data-cam="wells" class="cam">the wells</button>
-    </div>
-  </div>
 </footer>
 
 <div class="hint" id="hint"><span class="dot"></span><span data-i18n="hint">drag to look around · scroll to zoom</span></div>
@@ -72,14 +62,14 @@
 <noscript>
   <p class="noscript-note">The 3D battle needs JavaScript and WebGL. The model replays the day in seven phases: the ground; the
   3-versus-3 champions’ duel (Ḥamzah, ʻAlī, ʻUbaydah against ʻUtbah, Shaybah, al-Walīd); both lines advance; the clash
-  at the wells; the gravel and the sand; the rout; the field gone quiet. No human figure is drawn.</p>
+  at the wells; the sand; the rout; the field gone quiet. Figures are faceless; the Prophet ﷺ is never depicted.</p>
 </noscript>
 
-<script src="assets/three.min.js?v=20261023o"></script>
+<script src="assets/three.min.js?v=20261023p"></script>
 <script>window.THREE || document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\\/script>')</script>
-<script src="assets/data.js?v=20261023o"></script>
-<script src="js/audio.js?v=20261023o" defer></script>
-<script src="js/battle.js?v=20261023o" defer></script>
-<script src="js/main.js?v=20261023o" defer></script>
+<script src="assets/data.js?v=20261023p"></script>
+<script src="js/audio.js?v=20261023p" defer></script>
+<script src="js/battle.js?v=20261023p" defer></script>
+<script src="js/main.js?v=20261023p" defer></script>
 </body>
 </html>

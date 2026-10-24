@@ -19,7 +19,6 @@
   var scrubHead = $('#scrubHead');
   var segsEl = $('#segs');
   var deckCount = $('#deckCount');
-  var camBtns = Array.prototype.slice.call(document.querySelectorAll('.cam'));
   var langBtn = $('#langBtn');
   var nameEls = [];
 
@@ -31,7 +30,6 @@
       brand: 'badr <em>· the battle</em>',
       legendM: '<b>Muslims</b> · about 313, lightly equipped',
       legendQ: '<b>Quraysh</b> · about 1,000, fully equipped',
-      cams: { ground: 'the ground', aerial: 'aerial · map', duel: 'the duel', line: 'our line', far: 'their line', wells: 'the wells' },
       explore: 'free orbit',
       hint: 'drag to look around · scroll to zoom',
       phases: ['the ground', '3 v 3', 'the advance', 'the wells', 'the sand', 'the rout', 'the reckoning']
@@ -41,7 +39,6 @@
       brand: 'بدر <em>میدانِ بدر</em>',
       legendM: '<b>مسلمان</b> · تقریباً ۳۱۳، ہلکے اسلحے سے',
       legendQ: '<b>قریش</b> · تقریباً ۱،۰۰۰، مکمل اسلحے سے',
-      cams: { ground: 'زمین', aerial: 'فضائی نقشہ', duel: 'مقابلہ', line: 'ہماری صف', far: 'ان کی صف', wells: 'کنویں' },
       explore: 'آزاد گردش',
       hint: 'گھُمايو دیکھنے کے لیے · زوم کے لیے اسکرول',
       phases: ['زمین', 'تین بمقابلہ تین', 'پیش قدمی', 'کنویں', 'ریت', 'شکست', 'حساب']
@@ -63,7 +60,6 @@
     langBtn.setAttribute('aria-pressed', lang === 'ur' ? 'true' : 'false');
     soundBtn.textContent = soundOn ? t.soundOn : t.soundOff;
     playBtn.querySelector('.txt').textContent = B.isPlaying() ? t.pause : (B.frac() >= 1 ? t.replay : t.play);
-    camBtns.forEach(function (b) { b.textContent = t.cams[b.dataset.cam] || b.textContent; });
     document.querySelectorAll('[data-i18n]').forEach(function (n) { n.innerHTML = t[n.dataset.i18n]; });
     nameEls.forEach(function (n, i) { n.textContent = t.phases[i]; });
     if (B.setLang) B.setLang(lang);
@@ -189,15 +185,6 @@
     timeline.addEventListener(ev, function () { scrubbing = false; });
   });
 
-  /* ------------------------------ cameras */
-  camBtns.forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      camBtns.forEach(function (b) { b.classList.remove('is-on'); });
-      btn.classList.add('is-on');
-      B.cam(btn.dataset.cam);
-    });
-  });
-
   /* ------------------------------ keyboard */
   document.addEventListener('keydown', function (e) {
     if (e.target && /BODY/.test(e.target.tagName)) {
@@ -236,11 +223,11 @@
   });
 
   /* ------------------------------ boot */
-  console.log('[badr] build 2026-10-23o · aftermath counts, angels, persistent event labels');
+  console.log('[badr] build 2026-10-23p · action vignette, detailed mass, camera story');
   if (/[?&]debug=1/.test(location.search)) {
     var dbg = document.createElement('div');
     dbg.className = 'debug-build';
-    dbg.textContent = 'build o';
+    dbg.textContent = 'build p';
     document.body.appendChild(dbg);
   }
   setPlayState(false);

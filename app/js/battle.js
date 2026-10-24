@@ -246,7 +246,7 @@
     }
     g.position.set(wx, 0, wz); scene.add(g); return g;
   }
-  [[-9.8, 2.2], [-6.8, 3.4], [-4.2, 2.0]].forEach(function (w, wi) { wellAt(w[0], w[1], wi === 0); });
+  [[-5.2, 3.0], [-3.4, 4.0], [-2.0, 3.2]].forEach(function (w, wi) { wellAt(w[0], w[1], wi === 0); });
   var basin = new THREE.Group();
   var basinBed = new THREE.Mesh(new THREE.CircleGeometry(1.6, 24), waterM);
   basinBed.rotation.x = -Math.PI / 2; basinBed.position.y = 0.1; basin.add(basinBed);
@@ -258,10 +258,10 @@
     bst.castShadow = true; bst.receiveShadow = true;
     basin.add(bst);
   }
-  basin.position.set(-6.6, 0.02, 0.4);
+  basin.position.set(-6.2, 0.02, 3.4);
   scene.add(basin);
   var trough = new THREE.Mesh(new THREE.BoxGeometry(1.3, 0.34, 0.52), stoneM);
-  trough.position.set(-4.3, 0.17, 1.0);
+  trough.position.set(-4.4, 0.17, 2.2);
   trough.castShadow = true; trough.receiveShadow = true;
   scene.add(trough);
 
@@ -447,7 +447,7 @@
   palm(-16.4, 14.6, 3.6, 0.8); palm(-19.2, 10.8, 3.0, 0.5); palm(-14.6, 9.2, 2.6, 0.9);
   palm(26.8, -6.8, 3.2, 0.6); palm(23.4, -3.4, 2.7, 0.7);
   /* the grove at the wells */
-  palm(-12.8, 5.6, 3.3, 0.7, true); palm(-2.2, 5.2, 2.9, 0.5, true); palm(-15.2, 8.2, 2.4, 0.9, true);
+  palm(-16.0, 5.2, 3.3, 0.7, true); palm(-15.2, 8.2, 2.4, 0.9, true);
 
   /* reeds at the basin edge */
   for (var rd = 0; rd < 26; rd++) {
@@ -599,6 +599,7 @@
     g.position.set(x, 0, z); g.rotation.y = ry;
     g.traverse(function (o) { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
     scene.add(g);
+    return g;
   }
   horse(-15.8, 12.4, 0.5, false); horse(15.8, 14.2, -0.4, false);
   [[-24, -18, 0.3], [-20, -21, 0.5], [24, -18, -0.3], [20, -21, -0.5], [-27, -13, 0.4], [27, -13, -0.4]].forEach(function (h) {
@@ -678,8 +679,10 @@
   /* arrows spent into the sand after the volleys */
   var stuckArrows = new THREE.Group();
   for (var sa = 0; sa < 30; sa++) {
-    var arw = makeArrow();
-    arw.position.set(-11 + Math.random() * 21, 0.28, -2.5 + Math.random() * 7);
+    var arw = makeArrow(), ax, az;
+    do { ax = -11 + Math.random() * 21; az = -2.5 + Math.random() * 7; }
+    while (Math.hypot(ax + 9, az + 0.3) < 4.2);
+    arw.position.set(ax, 0.28, az);
     arw.rotation.x = 1.1 + Math.random() * 0.5;
     arw.rotation.z = (Math.random() - 0.5) * 0.8;
     stuckArrows.add(arw);
@@ -969,18 +972,13 @@
     (parent || scene).add(g);
     return g;
   }
-  /* Muʿādh (RA) loses an arm to Ikrimah's blow and fights on; Bilāl (RA) runs
-     down ʻUmayyah ibn Khalaf. The props are standards/spears, never figures. */
-  var muadhMark = eventStandard(-3.4, 2.4, 0, 0.16, false);
-  var muawwidhMark = eventStandard(-1.2, 2.8, 0, 0.12, false);
-  var ikrimahMark = eventStandard(3.4, -2.4, 1, 0, false);
+  /* Bilāl (RA) runs down ʻUmayyah ibn Khalaf; the Muʿādh/Muʿawwidh/Ikrimah
+     action is now told by the named vignette figures on their plinth. */
   var bilalMark = eventStandard(8.5, 5.0, 0, 0, false);
   var umayyahMark = eventStandard(13.2, -5.8, 1, 0, true);
   var EVENT_MARKS = [
-    { group: muadhMark, side: 0, label: 'Muʿādh (RA) & Muʿawwidh (RA)', k: 'muadhMuawwidh', labelY: 3.9, event: true, priority: 1, labelAlways: true },
-    { group: ikrimahMark, side: 1, label: 'Ikrimah ibn Abi Jahl', k: 'ikrimah', labelY: 3.7, event: true, priority: 1, labelAlways: true },
-    { group: bilalMark, side: 0, label: 'Bilāl (RA)', k: 'bilal', labelY: 3.9, event: true, priority: 1, labelAlways: true },
-    { group: umayyahMark, side: 1, label: 'ʻUmayyah ibn Khalaf', k: 'umayyah', labelY: 2.4, event: true, priority: 1, labelAlways: true }
+    { group: bilalMark, side: 0, label: 'Bilāl (RA)', k: 'bilal', labelY: 3.9, event: true, priority: 1, labelAlways: true, ph: [5, 6] },
+    { group: umayyahMark, side: 1, label: 'ʻUmayyah ibn Khalaf', k: 'umayyah', labelY: 2.4, event: true, priority: 1, labelAlways: true, ph: [5, 6] }
   ];
   /* the refusal is the point of the first challenge: say it plainly, then hide it */
   var refuseMark = new THREE.Group();
@@ -995,7 +993,7 @@
   var ANSAR_MARKS = [ansarA, ansarB, ansarC];
   /* these three standards move, so keep them out of the static merge */
   ANSAR_MARKS.forEach(function (g) { g.userData.dynamicRoot = true; });
-  EVENT_MARKS.push({ group: ansarB, side: 0, label: 'the Anṣār trio (RA)', k: 'ansarTrio', labelY: 4.0, event: true, priority: 1, labelAlways: true });
+  EVENT_MARKS.push({ group: ansarB, side: 0, label: 'the Anṣār trio (RA)', k: 'ansarTrio', labelY: 4.0, event: true, priority: 1, labelAlways: true, ph: [1] });
 
   /* ------------------------------ spoils and the aftermath counts.
      The captives and spoils are on the field; the counts follow BADR-047/048/050. */
@@ -1026,7 +1024,7 @@
 
   var martyrsMark = new THREE.Group(); martyrsMark.position.set(0, 0, 18);
   var killedMark = new THREE.Group(); killedMark.position.set(-18, 0, -16);
-  var captivesMark = new THREE.Group(); captivesMark.position.set(-30, 0, 10);
+  var captivesMark = new THREE.Group(); captivesMark.position.set(-18, 0, 22);
   var spoilsMark = new THREE.Group(); spoilsMark.position.set(24, 0, 12);
   EVENT_MARKS.push(
     { group: martyrsMark, side: 0, label: 'the 14 martyrs (RA)', k: 'martyrs', labelY: 3.6, event: true, priority: 1, labelAlways: true, ph: [5, 6] },
@@ -1034,6 +1032,212 @@
     { group: captivesMark, side: 0, label: '70 captives', k: 'captives', labelY: 3.6, event: true, priority: 1, labelAlways: true, ph: [5, 6] },
     { group: spoilsMark, side: 0, label: 'the spoils', k: 'spoils', labelY: 3.6, event: true, priority: 1, labelAlways: true, ph: [5, 6] }
   );
+
+  /* ------------------------------ the Abu Jahl action vignette.
+     Faceless, stylised figures on a low sand plinth in the gap between the Quraysh
+     centre and left divisions: ʿAbdur-Rahman points the two Ansari youths to Abu Jahl,
+     Ikrimah cuts Muʿadh's arm, Muʿadh steps on it and fights on one-armed,
+     Muʿawwidh is martyred, and Abu Jahl is struck down. */
+  var skinM = new THREE.MeshLambertMaterial({ color: 0x9a7a5c });
+  var leatherM = new THREE.MeshLambertMaterial({ color: 0x4a3a28 });
+  var steelM = new THREE.MeshLambertMaterial({ color: 0xb9b4a6 });
+  var woundM = new THREE.MeshLambertMaterial({ color: 0x5e2b22 });
+  var sandalM = new THREE.MeshLambertMaterial({ color: 0xd8c7a4 });
+
+  /* the plinth: a shallow, trampled sand stage, wide enough for the five figures */
+  var STAGE = { x: -9.0, z: -0.3, y: 0.07, r: 3.5 };
+  var stage = new THREE.Mesh(new THREE.CylinderGeometry(STAGE.r, STAGE.r + 0.25, STAGE.y, 30),
+    new THREE.MeshLambertMaterial({ color: 0xc7b184 }));
+  stage.position.set(STAGE.x, STAGE.y / 2, STAGE.z);
+  stage.receiveShadow = true;
+  scene.add(stage);
+  var stageRim = new THREE.Mesh(new THREE.TorusGeometry(STAGE.r + 0.05, 0.035, 5, 30),
+    new THREE.MeshLambertMaterial({ color: 0xa8916a }));
+  stageRim.rotation.x = Math.PI / 2;
+  stageRim.position.set(STAGE.x, STAGE.y + 0.005, STAGE.z);
+  stageRim.receiveShadow = true;
+  scene.add(stageRim);
+  /* dropped kit at the edge of the stage: a shield, two spears, a helmet */
+  var dropShield = new THREE.Mesh(new THREE.CylinderGeometry(0.33, 0.33, 0.04, 12), new THREE.MeshLambertMaterial({ color: 0x5a4f3c }));
+  dropShield.rotation.x = Math.PI / 2; dropShield.rotation.z = 0.4;
+  dropShield.position.set(STAGE.x - 2.5, STAGE.y + 0.03, STAGE.z + 2.2);
+  dropShield.castShadow = true; scene.add(dropShield);
+  for (var dsi = 0; dsi < 2; dsi++) {
+    var dShaft = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.026, 2.1, 5), woodM);
+    dShaft.rotation.z = Math.PI / 2; dShaft.rotation.y = dsi * 0.7;
+    dShaft.position.set(STAGE.x + 1.9 + dsi * 0.5, STAGE.y + 0.04, STAGE.z - 2.1);
+    dShaft.castShadow = true; scene.add(dShaft);
+  }
+  var dropHelm = new THREE.Mesh(new THREE.SphereGeometry(0.16, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2), steelM);
+  dropHelm.position.set(STAGE.x + 2.2, STAGE.y + 0.04, STAGE.z + 1.4);
+  dropHelm.castShadow = true; scene.add(dropHelm);
+
+  function vPart(parent, geo, mat, x, y, z, rx, ry, rz) {
+    var m = new THREE.Mesh(geo, mat);
+    m.position.set(x, y, z);
+    m.rotation.set(rx || 0, ry || 0, rz || 0);
+    m.castShadow = true; m.receiveShadow = true;
+    parent.add(m);
+    return m;
+  }
+  function vSpear(parent) {
+    var w = new THREE.Group();
+    var shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.024, 2.0, 5), woodM);
+    shaft.position.y = 0.72; w.add(shaft);
+    var tip = new THREE.Mesh(new THREE.ConeGeometry(0.04, 0.18, 4), brassM);
+    tip.position.y = 1.78; w.add(tip);
+    var butt = new THREE.Mesh(new THREE.ConeGeometry(0.03, 0.1, 4), brassM);
+    butt.position.y = -0.32; butt.rotation.x = Math.PI; w.add(butt);
+    w.traverse(function (o) { if (o.isMesh) { o.castShadow = true; } });
+    parent.add(w); return w;
+  }
+  function vSword(parent) {
+    var w = new THREE.Group();
+    var blade = new THREE.Mesh(new THREE.BoxGeometry(0.045, 0.72, 0.012), steelM);
+    blade.position.y = 0.4; w.add(blade);
+    var guard = new THREE.Mesh(new THREE.BoxGeometry(0.17, 0.03, 0.045), brassM);
+    guard.position.y = 0.05; w.add(guard);
+    var hilt = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.03, 0.16, 5), leatherM);
+    hilt.position.y = -0.05; w.add(hilt);
+    w.traverse(function (o) { if (o.isMesh) { o.castShadow = true; } });
+    parent.add(w); return w;
+  }
+  function vShield(parent) {
+    var s = new THREE.Group();
+    var disc = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.035, 12), new THREE.MeshLambertMaterial({ color: 0x5a4f3c }));
+    disc.rotation.x = Math.PI / 2; s.add(disc);
+    var rim = new THREE.Mesh(new THREE.TorusGeometry(0.3, 0.015, 5, 14), brassM);
+    s.add(rim);
+    var boss = new THREE.Mesh(new THREE.SphereGeometry(0.06, 6, 5), brassM);
+    boss.position.z = 0.03; s.add(boss);
+    s.position.set(-0.1, -0.34, 0.06);
+    s.traverse(function (o) { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+    parent.add(s); return s;
+  }
+  function makeFighter(o) {
+    var g = new THREE.Group();
+    var robe = new THREE.MeshLambertMaterial({ color: o.robe });
+    var robeDark = new THREE.MeshLambertMaterial({ color: o.robeDark });
+    vPart(g, new THREE.CylinderGeometry(0.16, 0.2, 0.55, 7), robe, 0, 0.95, 0);
+    vPart(g, new THREE.CylinderGeometry(0.2, 0.27, 0.38, 7), robeDark, 0, 0.6, 0);
+    vPart(g, new THREE.CylinderGeometry(0.21, 0.21, 0.06, 7), leatherM, 0, 0.79, 0);
+    vPart(g, new THREE.CylinderGeometry(0.05, 0.06, 0.1, 6), skinM, 0, 1.26, 0);
+    vPart(g, new THREE.SphereGeometry(0.12, 8, 6), skinM, 0, 1.36, 0);
+    if (o.helmet) {
+      vPart(g, new THREE.SphereGeometry(0.135, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2), steelM, 0, 1.4, 0);
+      vPart(g, new THREE.ConeGeometry(0.022, 0.1, 4), steelM, 0, 1.56, 0);
+      vPart(g, new THREE.BoxGeometry(0.025, 0.12, 0.02), steelM, 0, 1.35, 0.125);
+    } else {
+      vPart(g, new THREE.CylinderGeometry(0.14, 0.14, 0.09, 8), robeDark, 0, 1.44, 0);
+      vPart(g, new THREE.SphereGeometry(0.135, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2), robeDark, 0, 1.39, 0);
+    }
+    vPart(g, new THREE.SphereGeometry(0.07, 6, 5), robe, 0.18, 1.16, 0);
+    vPart(g, new THREE.SphereGeometry(0.07, 6, 5), robe, -0.18, 1.16, 0);
+    vPart(g, new THREE.CylinderGeometry(0.06, 0.07, 0.55, 5), robeDark, 0.09, 0.28, 0);
+    vPart(g, new THREE.CylinderGeometry(0.06, 0.07, 0.55, 5), robeDark, -0.09, 0.28, 0);
+    vPart(g, new THREE.BoxGeometry(0.11, 0.06, 0.2), leatherM, 0.09, 0.03, 0.04);
+    vPart(g, new THREE.BoxGeometry(0.11, 0.06, 0.2), leatherM, -0.09, 0.03, 0.04);
+    function arm(sx) {
+      var a = new THREE.Group();
+      a.position.set(sx * 0.18, 1.16, 0);
+      g.add(a);
+      vPart(a, new THREE.CylinderGeometry(0.05, 0.055, 0.3, 5), robe, 0, -0.15, 0);
+      vPart(a, new THREE.CylinderGeometry(0.045, 0.05, 0.28, 5), skinM, 0, -0.42, 0);
+      vPart(a, new THREE.SphereGeometry(0.055, 6, 5), skinM, 0, -0.58, 0.02);
+      return a;
+    }
+    var armR = arm(1), armL = arm(-1);
+    vPart(armR, new THREE.CylinderGeometry(0.06, 0.06, 0.05, 6), woundM, 0, -0.02, 0);
+    var stump = vPart(g, new THREE.CylinderGeometry(0.06, 0.07, 0.09, 6), woundM, 0.18, 1.11, 0);
+    stump.visible = false;
+    /* the stepping leg: a shin and foot that swings forward onto the severed arm */
+    var stepLeg = new THREE.Group();
+    stepLeg.position.set(0.18, 0.62, 0.0);
+    g.add(stepLeg);
+    vPart(stepLeg, new THREE.CylinderGeometry(0.075, 0.085, 0.3, 5), robeDark, 0, -0.12, 0.08, 0.45, 0, 0);
+    vPart(stepLeg, new THREE.CylinderGeometry(0.06, 0.07, 0.32, 5), robeDark, 0, -0.36, 0.22, -0.2, 0, 0);
+    vPart(stepLeg, new THREE.BoxGeometry(0.14, 0.07, 0.24), sandalM, 0, -0.55, 0.30);
+    vPart(stepLeg, new THREE.BoxGeometry(0.16, 0.025, 0.27), sandalM, 0, -0.59, 0.31);
+    stepLeg.visible = false;
+    var weaponR = null, weaponL = null;
+    if (o.weapon === 'spear') { weaponR = vSpear(armR); weaponR.position.set(0, -0.58, 0.06); }
+    if (o.weapon === 'sword') { weaponR = vSword(armR); weaponR.position.set(0, -0.58, 0.06); }
+    if (o.leftWeapon === 'spear') { weaponL = vSpear(armL); weaponL.position.set(0, -0.58, 0.06); }
+    if (o.shield) vShield(armL);
+    var sc = o.scale || 1;
+    g.scale.setScalar(sc);
+    g.position.set(o.x, o.y || 0, o.z);
+    g.rotation.y = o.ry || 0;
+    scene.add(g);
+    return { group: g, armR: armR, armL: armL, weaponR: weaponR, weaponL: weaponL, stump: stump, stepLeg: stepLeg, scale: sc, baseY: o.y || 0 };
+  }
+
+  var SC = 1.15;
+  var abdur = makeFighter({ x: -10.8, y: STAGE.y, z: 1.8, ry: Math.PI, robe: 0xcfc6b2, robeDark: 0x8a7a60, weapon: 'none', scale: SC });
+  var muadh = makeFighter({ x: -10.2, y: STAGE.y, z: -0.8, ry: Math.PI, robe: 0xcfc6b2, robeDark: 0x8a7a60, weapon: 'none', leftWeapon: 'spear', shield: true, scale: SC });
+  var muawwidh = makeFighter({ x: -8.6, y: STAGE.y, z: -0.8, ry: Math.PI, robe: 0xcfc6b2, robeDark: 0x8a7a60, weapon: 'spear', scale: SC });
+  var abujahl = makeFighter({ x: -8.8, y: STAGE.y, z: -2.2, ry: 0, robe: 0x3a332a, robeDark: 0x241f19, helmet: true, weapon: 'sword', scale: SC });
+  var ikrimah = makeFighter({ x: -11.2, y: STAGE.y, z: -1.6, ry: 0, robe: 0x3a332a, robeDark: 0x241f19, helmet: true, weapon: 'sword', scale: SC });
+  var VIGNETTE = [abdur, muadh, muawwidh, abujahl, ikrimah];
+  VIGNETTE.forEach(function (f) { f.group.userData.dynamicRoot = true; });
+  EVENT_MARKS.push(
+    { group: abdur.group, side: 0, label: 'ʿAbdur-Raḥmān ibn ʿAwf (RA)', k: 'abdur', labelY: 3.6, event: true, priority: 4, labelAlways: true, ph: [2, 3, 4, 5, 6] },
+    { group: muadh.group, side: 0, label: 'Muʿādh (RA)', k: 'muadhFig', labelY: 2.35, event: true, priority: 3, labelAlways: true, ph: [2, 3, 4, 5, 6] },
+    { group: muawwidh.group, side: 0, label: 'Muʿawwidh (RA)', k: 'muawwidhFig', labelY: 2.35, event: true, priority: 3, labelAlways: true, ph: [2, 3, 4, 5, 6] },
+    { group: abujahl.group, side: 1, label: 'Abū Jahl', k: 'abujahlFig', labelY: 2.35, event: true, priority: 3, labelAlways: true, ph: [2, 3, 4, 5, 6] },
+    { group: ikrimah.group, side: 1, label: 'Ikrimah ibn Abi Jahl', k: 'ikrimahFig', labelY: 2.35, event: true, priority: 3, labelAlways: true, ph: [2, 3, 4, 5, 6] }
+  );
+  var muawwidhMark = null, abujahlMark = null;
+  EVENT_MARKS.forEach(function (m) { if (m.k === 'muawwidhFig') muawwidhMark = m; if (m.k === 'abujahlFig') abujahlMark = m; });
+  function updateVignette(i, t) {
+    var show = i >= 2;
+    VIGNETTE.forEach(function (f) { f.group.visible = show; });
+    if (!show) return;
+    /* the two youths run from the near edge of the plinth into Abu Jahl's guard */
+    var run = i < 4 ? 0 : (i === 4 ? easeIO(clamp01(t / 0.32)) : 1);
+    var mx = -9.7 - 0.5 * run, mz = 6.2 - 7.0 * run;
+    muadh.group.position.set(mx, muadh.baseY, mz);
+    muawwidh.group.position.set(mx + 1.6, muawwidh.baseY, mz);
+    /* ʿAbdur-Rahman points across the gap, then follows a step */
+    var abdurZ = i >= 4 ? 1.8 : 6.6;
+    abdur.group.position.set(-10.8, abdur.baseY, abdurZ);
+    abdur.group.rotation.y = Math.PI * 0.78;
+    abdur.armR.rotation.set(-1.25, 0, -0.45);
+    /* the strike: spears come down on Abu Jahl */
+    var strike = i === 4 ? clamp01((t - 0.34) / 0.12) : (i > 4 ? 1 : 0);
+    muadh.armL.rotation.set(-0.2 - strike * 1.4, 0, 0);
+    muawwidh.armR.rotation.set(-0.2 - strike * 1.4, 0, 0);
+    muadh.group.rotation.x = -0.1 * strike;
+    /* the step: Muʿadh plants his foot on the severed arm and tears it free */
+    var step = (i > 4 || (i === 4 && t > 0.72)) ? 1 : (i === 4 ? clamp01((t - 0.62) / 0.10) : 0);
+    /* Ikrimah's cut: the arm hangs, then drops; the stump is exposed */
+    var cut = (i > 4 || (i === 4 && t > 0.60)) ? 1 : (i === 4 ? clamp01((t - 0.52) / 0.08) : 0);
+    if (cut > 0) {
+      muadh.stump.visible = true;
+      muadh.armR.position.set(0.2, 0.12 + (1 - cut) * 0.9, 0.22 - 0.06 * step);
+      muadh.armR.scale.setScalar(0.85 + 0.15 * (1 - cut));
+      muadh.armR.rotation.set(Math.PI / 2 * cut, 0, 0.3);
+    }
+    muadh.stepLeg.visible = step > 0;
+    muadh.stepLeg.rotation.x = -0.62 * step;
+    /* the one-armed fight: the left arm keeps the spear working */
+    if (i > 4 || (i === 4 && t > 0.72)) {
+      var thrust = 0.5 + 0.5 * Math.sin(t * Math.PI * 4);
+      muadh.armL.rotation.set(-0.45 - 0.35 * thrust, 0, 0);
+    }
+    /* Muʿawwidh is struck down; Abu Jahl follows in the rout */
+    var mfall = (i > 4 || (i === 4 && t > 0.88)) ? 1 : (i === 4 ? clamp01((t - 0.78) / 0.10) : 0);
+    if (muawwidhMark) muawwidhMark.labelY = 2.35 - 1.55 * mfall;
+    muawwidh.group.rotation.x = -0.1 * strike - 1.45 * mfall;
+    muawwidh.group.position.y = muawwidh.baseY - 0.1 * mfall;
+    var jfall = (i > 5 || (i === 5 && t > 0.10)) ? 1 : (i === 5 ? clamp01((t - 0.10) / 0.08) : 0);
+    if (abujahlMark) abujahlMark.labelY = 2.35 - 1.55 * jfall;
+    abujahl.group.rotation.x = -0.12 * strike - 1.45 * jfall;
+    abujahl.group.position.y = abujahl.baseY - 0.1 * jfall;
+    /* the horse's rider leans into the cut */
+    ikrimah.armR.rotation.set(-0.3 - cut * 0.95, 0, 0.2);
+    ikrimah.group.position.y = ikrimah.baseY;
+  }
 
   /* ------------------------------ squads and platoons.
      A squad is eight men: each is a hooded body holding an upright spear,
@@ -1079,18 +1283,50 @@
     var blocks = side ? qBands : mBands;
     var squadSize = 8;
     var squads = Math.ceil(count / squadSize);
-    var bodyGeo = new THREE.CylinderGeometry(0.16, 0.2, 1.05, 6);
-    var headGeo = new THREE.SphereGeometry(0.13, 8, 6);
+    var bodyGeo = new THREE.CylinderGeometry(0.16, 0.2, 0.62, 6);
+    var skirtGeo = new THREE.CylinderGeometry(0.2, 0.26, 0.3, 6);
+    var beltGeo = new THREE.CylinderGeometry(0.21, 0.21, 0.05, 6);
+    var headGeo = new THREE.SphereGeometry(0.13, 6, 5);
+    var legGeo = new THREE.CylinderGeometry(0.055, 0.07, 0.55, 5);
+    var footGeo = new THREE.BoxGeometry(0.11, 0.06, 0.2);
+    var armGeo = new THREE.CylinderGeometry(0.045, 0.05, 0.5, 5);
+    var helmGeo = new THREE.SphereGeometry(0.145, 6, 4, 0, Math.PI * 2, 0, Math.PI / 2);
+    var turbanGeo = new THREE.CylinderGeometry(0.15, 0.15, 0.08, 6);
     var shaftGeo = new THREE.CylinderGeometry(0.02, 0.028, h, 5);
     var tipGeo = new THREE.BoxGeometry(0.035, 0.2, 0.014);
+    var buttGeo = new THREE.ConeGeometry(0.03, 0.1, 4);
+    var bodyC = new THREE.Color(side ? 0x5f5544 : 0xcfc6b2);
+    var legC = new THREE.Color(side ? 0x4a4135 : 0xa89a80);
+    var headC = new THREE.Color(side ? 0x463d32 : 0xbfb49d);
+    var beltC = new THREE.Color(side ? 0x3a3126 : 0x8a7a60);
+    var clothC = new THREE.Color(side ? 0x6b5f4c : 0xd8cfba);
+    var ironC = (side ? ironQ : ironM).color;
+    var woodC = new THREE.Color(0x6b5c42);
     var manGeo = mergeParts([
-      { geo: bodyGeo, p: [0, 0.53, 0], c: new THREE.Color(side ? 0x5f5544 : 0xcfc6b2) },
-      { geo: headGeo, p: [0, 1.19, 0], c: new THREE.Color(side ? 0x463d32 : 0xbfb49d) },
-      { geo: shaftGeo, p: [0.2, 0.95, 0.06], c: new THREE.Color(0x6b5c42) },
-      { geo: tipGeo, p: [0.2, 0.95 + h / 2 + 0.1, 0.06], c: (side ? ironQ : ironM).color }
+      { geo: bodyGeo, p: [0, 0.86, 0], c: bodyC },
+      { geo: skirtGeo, p: [0, 0.62, 0], c: bodyC },
+      { geo: beltGeo, p: [0, 0.79, 0], c: beltC },
+      { geo: headGeo, p: [0, 1.34, 0], c: headC },
+      side
+        ? { geo: helmGeo, p: [0, 1.38, 0], c: ironC }
+        : { geo: turbanGeo, p: [0, 1.42, 0], c: clothC },
+      { geo: legGeo, p: [-0.08, 0.28, 0], r: [0, 0, 0.04], c: legC },
+      { geo: legGeo, p: [0.08, 0.28, 0], r: [0, 0, -0.04], c: legC },
+      { geo: footGeo, p: [-0.08, 0.03, 0.04], c: legC },
+      { geo: footGeo, p: [0.08, 0.03, 0.04], c: legC },
+      { geo: armGeo, p: [-0.18, 0.9, 0.02], r: [0, 0, 0.22], c: bodyC },
+      { geo: armGeo, p: [0.18, 0.9, 0.02], r: [0, 0, -0.22], c: bodyC }
     ]);
     var men = new THREE.InstancedMesh(manGeo, new THREE.MeshLambertMaterial({ vertexColors: true }), count);
     men.castShadow = true;
+    /* the spear is its own instance so the whole hedge can level and thrust */
+    var spearGeo = mergeParts([
+      { geo: shaftGeo, p: [0, -0.05, 0], c: woodC },
+      { geo: tipGeo, p: [0, -0.05 + h / 2 + 0.1, 0], c: ironC },
+      { geo: buttGeo, p: [0, -0.05 - h / 2 - 0.04, 0], r: [Math.PI, 0, 0], c: ironC }
+    ]);
+    var spears = new THREE.InstancedMesh(spearGeo, new THREE.MeshLambertMaterial({ vertexColors: true }), count);
+    spears.castShadow = true;
     var shieldsPer = side ? 3 : 2;
     var shields = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.34, 0.34, 0.04, 12), new THREE.MeshLambertMaterial({ color: 0xffffff }), squads * shieldsPer);
     if (shields.setColorAt) {
@@ -1134,12 +1370,13 @@
           oz: (Math.floor(m / 4) - 0.5) * 0.5,
           hs: 0.94 + (Math.abs(Math.sin(idx * 3.7) * 917) % 1) * 0.12,
           ry: (Math.abs(Math.sin(idx * 1.7) * 537) % 1) * 0.3 - 0.15,
-          tilt: (Math.abs(Math.sin(idx * 2.3) * 719) % 1 - 0.5) * 0.05
+          tilt: (Math.abs(Math.sin(idx * 2.3) * 719) % 1 - 0.5) * 0.05,
+          fp: (Math.abs(Math.sin(idx * 5.17) * 1931) % 1) * 6.283
         });
       }
     }
-    scene.add(men); scene.add(shields); scene.add(rims); scene.add(swords); scene.add(guards); scene.add(helms);
-    MASS.push({ men: men, shields: shields, rims: rims, swords: swords, guards: guards, helms: helms, shieldsPer: shieldsPer, sq: sq, recs: recs, blocks: blocks, h: h, side: side });
+    scene.add(men); scene.add(spears); scene.add(shields); scene.add(rims); scene.add(swords); scene.add(guards); scene.add(helms);
+    MASS.push({ men: men, spears: spears, shields: shields, rims: rims, swords: swords, guards: guards, helms: helms, shieldsPer: shieldsPer, sq: sq, recs: recs, blocks: blocks, h: h, side: side });
   }
   buildMass(0, 313, 9, 2.2, 1.9, 12.2, 1.9);
   buildMass(1, 1000, 21, 2.0, 1.9, -14.2, 2.15);
@@ -1163,12 +1400,16 @@
     mesh.instanceMatrix.needsUpdate = true;
     aftermathGroup.add(mesh);
   }
-  buildCaptives(70, -27, 6, 7, 1.05, 1.05);
+  buildCaptives(70, -22, 18, 7, 1.05, 1.05);
 
   function updateMass() {
     var dm = new THREE.Object3D();
+    var ph = curPhaseIdx, pt = curPhaseT;
+    var fight = ph === 3 ? 1 : ph === 4 ? 0.75 : ph === 2 ? 0.35 : ph === 5 ? 0.25 : 0;
+    var now = performance.now() / 1000;
     for (var m = 0; m < MASS.length; m++) {
       var M = MASS[m];
+      var dir = M.side ? 1 : -1;
       var anchors = [];
       for (var s = 0; s < M.sq.length; s++) {
         var S = M.sq[s], u = M.blocks[S.block];
@@ -1178,12 +1419,22 @@
       for (var i = 0; i < M.recs.length; i++) {
         var rec = M.recs[i], a = anchors[rec.s];
         var px = a[0] + rec.ox, pz = a[1] + rec.oz;
-        /* the man: body, head, spear and tip are one baked geometry */
-        dm.position.set(px, 0, pz);
-        dm.rotation.set(0, rec.ry, 0);
+        var thrust = fight * (0.5 + 0.5 * Math.sin(now * 8 + rec.fp));
+        var lunge = fight * 0.14 * thrust * dir;
+        var lean = fight * 0.1 * thrust * dir;
+        var bob = fight * Math.abs(Math.sin(now * 6 + rec.fp)) * 0.045;
+        dm.position.set(px, bob, pz + lunge);
+        dm.rotation.set(lean, rec.ry, 0);
         dm.scale.set(1, rec.hs, 1);
         dm.updateMatrix();
         M.men.setMatrixAt(i, dm.matrix);
+        /* the spear rides the right hand: upright at rest, levels and thrusts in the fight */
+        var cy = Math.cos(rec.ry), sy = Math.sin(rec.ry);
+        dm.position.set(px + 0.22 * cy + 0.06 * sy, bob + 1.0 * rec.hs, pz + lunge - 0.22 * sy + 0.06 * cy);
+        dm.rotation.set(dir * (0.15 + fight * (0.5 + 0.25 * thrust)), rec.ry, 0);
+        dm.scale.set(1, 1, 1);
+        dm.updateMatrix();
+        M.spears.setMatrixAt(i, dm.matrix);
       }
       var si = 0;
       for (var s2 = 0; s2 < M.sq.length; s2++) {
@@ -1192,8 +1443,9 @@
         for (var k = 0; k < M.shieldsPer; k++) {
           var off = (k - (M.shieldsPer - 1) / 2) * 0.62;
           var face = M.side ? 0.58 : -0.58;
-          dm.position.set(a2[0] + off, 0.62 * sv, a2[1] + face);
-          dm.rotation.set(Math.PI / 2 - 0.08, 0.03, 0);
+          var shieldLift = fight * (0.06 + 0.06 * Math.sin(now * 6 + sqv.hsh * 6));
+          dm.position.set(a2[0] + off, 0.62 * sv + shieldLift, a2[1] + face);
+          dm.rotation.set(Math.PI / 2 - 0.08 - fight * 0.12, 0.03, 0);
           if (M.side) dm.rotation.y = Math.PI;
           dm.scale.set(sv, 1, sv);
           dm.updateMatrix();
@@ -1210,8 +1462,9 @@
         dm.updateMatrix();
         M.helms.setMatrixAt(s2, dm.matrix);
         /* the sword held hilt-up at the front man's side */
+        var swing = fight * Math.sin(now * 7 + sqv.hsh * 6);
         dm.position.set(a2[0] + 0.4, 0.72, a2[1] + (M.side ? -0.5 : 0.5));
-        dm.rotation.set(0.03, 0.3, 0.04);
+        dm.rotation.set(0.03 + swing * 0.28, 0.3, 0.04 + swing * 0.85);
         dm.updateMatrix();
         M.swords.setMatrixAt(s2, dm.matrix);
         dm.position.y = 1.05;
@@ -1219,6 +1472,7 @@
         M.guards.setMatrixAt(s2, dm.matrix);
       }
       M.men.instanceMatrix.needsUpdate = true;
+      M.spears.instanceMatrix.needsUpdate = true;
       M.shields.instanceMatrix.needsUpdate = true;
       M.rims.instanceMatrix.needsUpdate = true;
       M.swords.instanceMatrix.needsUpdate = true;
@@ -1239,10 +1493,10 @@
   var LAND = [
     { w: [20, 0.6, 17], t: 'al-ʻUdwat ad-Dunya · the near bank', e: 'BADR-019', k: 'near', cls: 'is-land-name is-far' },
     { w: [-24, 0.4, -32], t: 'al-Quswa · the far bank', e: 'BADR-019', k: 'far', cls: 'is-land-name is-far' },
-    { w: [-6.9, 1.2, 1.2], t: 'wells of Badr', e: 'BADR-019', k: 'wells', cls: 'is-tap' },
+    { w: [-5.2, 2.6, 1.2], t: 'wells of Badr', e: 'BADR-019', k: 'wells', cls: 'is-tap' },
     { w: [-17.5, 2.6, 13.1], t: 'the ʻarish · the Prophet’s station (PBUH)', e: 'BADR-020', k: 'arish', cls: 'is-tap' },
-    { w: [36, 2.6, 8], t: 'al-Qalib · the 24 leaders thrown into the well', e: 'BADR-049', k: 'well24', cls: 'is-tap is-event', ph: [5, 6] },
-    { w: [0, 8.4, 1], t: 'the angels · 8:9', e: 'BADR-031', k: 'angels', cls: 'is-land-name is-event', ph: [3, 4, 5], tRange: [0.12, 0.9] }
+    { w: [36, 2.6, 8], t: 'al-Qalib · the 24 leaders thrown into the well', e: 'BADR-049', k: 'well24', cls: 'is-tap is-event', ph: [6] },
+    { w: [0, 8.4, 1], t: 'the angels · 8:9', e: 'BADR-031', k: 'angels', cls: 'is-land-name is-event', ph: [3, 4], tRange: [0.12, 0.9] }
   ];
   var LANDL = LAND.map(function (l) {
     var el = mkLabel(l.t, l.cls);
@@ -1265,10 +1519,11 @@
       near: 'al-ʻUdwat ad-Dunya · the near bank', far: 'al-Quswa · the far bank',
       basin: 'the basin', wells: 'wells of Badr', arish: 'the ʻarish · the Prophet’s station (PBUH)',
       well24: 'al-Qalib · the 24 leaders thrown into the well', katheeb: 'Katheeb al-Hannan (a modern name)',
-      muadhMuawwidh: 'Muʿādh (RA) & Muʿawwidh (RA)', ikrimah: 'Ikrimah ibn Abi Jahl',
       bilal: 'Bilāl (RA)', umayyah: 'ʻUmayyah ibn Khalaf', ansarTrio: 'the Anṣār trio (RA)', angels: 'the angels · 8:9',
       qurayshRefuse: 'the Quraysh refuse', martyrs: 'the 14 martyrs (RA)', killed: '70 Quraysh killed',
-      captives: '70 captives', spoils: 'the spoils'
+      captives: '70 captives', spoils: 'the spoils',
+      abdur: 'ʿAbdur-Raḥmān ibn ʿAwf (RA)', muadhFig: 'Muʿādh (RA)', muawwidhFig: 'Muʿawwidh (RA)',
+      abujahlFig: 'Abū Jahl', ikrimahFig: 'Ikrimah ibn Abi Jahl'
     },
     ur: {
       hamzah: 'حمزہ رضی اللہ عنہ', ali: 'علی رضی اللہ عنہ', ubaydah: 'عبیدہ رضی اللہ عنہ',
@@ -1277,10 +1532,11 @@
       near: 'العدوۃ الدنیا · قریب کا کنارہ', far: 'القصوی · دور کا کنارہ',
       basin: 'حوض', wells: 'بدر کے کنویں', arish: 'عرش · مقامِ نبوی ﷺ',
       well24: 'القليب · ۲۴ سردار کنویں میں ڈالے گئے', katheeb: 'کتیبة الحنان (جدید نام)',
-      muadhMuawwidh: 'معاذ و معوذ رضی اللہ عنہما', ikrimah: 'عکرمہ بن ابی جہل',
       bilal: 'بلال رضی اللہ عنہ', umayyah: 'امیہ بن خلف', ansarTrio: 'تین انصاری (رضی اللہ عنہم)', angels: 'فرشتے · ۸:۹',
       qurayshRefuse: 'قریش نے انکار کیا', martyrs: '۱۴ شہید (رضی اللہ عنہم)', killed: '۷۰ قریشی مارے گئے',
-      captives: '۷۰ قیدی', spoils: 'مالِ غنیمت'
+      captives: '۷۰ قیدی', spoils: 'مالِ غنیمت',
+      abdur: 'عبدالرحمٰن بن عوف رضی اللہ عنہ', muadhFig: 'معاذ رضی اللہ عنہ', muawwidhFig: 'معوذ رضی اللہ عنہ',
+      abujahlFig: 'ابو جہل', ikrimahFig: 'عکرمہ بن ابی جہل'
     }
   };
   function setLang(lang) {
@@ -1387,6 +1643,17 @@
     stuckArrows.updateMatrixWorld(true);
     mergeMeshList(collectMergeable(stuckArrows), stuckArrows, true);
     stuckArrows.userData.keep = true;
+    /* the named vignette figures: merge the body, keep arms/stump separate */
+    VIGNETTE.forEach(function (f) {
+      f.armR.userData.keep = true;
+      f.armL.userData.keep = true;
+      f.stump.userData.keep = true;
+      f.stepLeg.userData.keep = true;
+      f.group.updateMatrixWorld(true);
+      mergeMeshList(collectMergeable(f.group), f.group, true);
+      f.group.userData.dynamicRoot = true;
+    });
+
     /* banners ride on moving unit blocks: merge each block's rigid parts locally */
     champs.concat(mBands, qBands).forEach(function (b) {
       var bg = b.group || b;
@@ -1428,15 +1695,15 @@
     return new THREE.CanvasTexture(c);
   }
   function resetDust(i) {
-    dustP[i * 3] = -24 + Math.random() * 48;
+    dustP[i * 3] = -6 + Math.random() * 18;
     dustP[i * 3 + 1] = 0.15 + Math.random() * 2.6;
-    dustP[i * 3 + 2] = -12 + Math.random() * 16;
+    dustP[i * 3 + 2] = -9 + Math.random() * 12;
     dustB[i * 3] = dustP[i * 3];
     dustB[i * 3 + 1] = dustP[i * 3 + 1];
     dustB[i * 3 + 2] = dustP[i * 3 + 2];
   }
   dustGeo.setAttribute('position', new THREE.BufferAttribute(dustP, 3));
-  var dust = new THREE.Points(dustGeo, new THREE.PointsMaterial({ color: 0xd0bd99, size: 3.2, map: softDot(), transparent: true, opacity: 0, depthWrite: false }));
+  var dust = new THREE.Points(dustGeo, new THREE.PointsMaterial({ color: 0xd0bd99, size: 2.6, map: softDot(), transparent: true, opacity: 0, depthWrite: false }));
   scene.add(dust);
 
   /* the angels' help: a gold shimmer, never a figure (Qur'an 8:9; BADR-031/032) */
@@ -1482,12 +1749,12 @@
   var TOTAL = 0; PHASES.forEach(function (p) { TOTAL += p.dur; });
   var CAMS = {
     ground:  { a: { p: [0, 30, 44], l: [0, 1.4, 0] },  b: { p: [4, 27, 40], l: [0, 1.4, -1] } },
-    duel:    { a: { p: [15, 6, 10], l: [0, 1.2, 1.6] }, b: { p: [9, 3.4, 4.5], l: [0, 1.3, 1.2] } },
+    duel:    { a: { p: [30, 10, 0], l: [0, 1.5, 0] }, b: { p: [22, 6, 0], l: [0, 1.5, 0] } },
     advance: { a: { p: [34, 20, 22], l: [-2, 1, 0] }, b: { p: [24, 15, 8], l: [-4, 1, -2] } },
-    clash:   { a: { p: [30, 13, 20], l: [-2, 1, 0] }, b: { p: [20, 9, 8], l: [-4, 1, -2] } },
-    turn:    { a: { p: [24, 16, 26], l: [-4, 1, -4] }, b: { p: [12, 13, 18], l: [-8, 1, -8] } },
-    rout:    { a: { p: [14, 22, 34], l: [-14, 0, -18] },  b: { p: [2, 20, 30], l: [-18, 0, -22] } },
-    quiet:   { a: { p: [32, 18, 30], l: [0, 0.6, 0] }, b: { p: [30, 9, 19], l: [36, 1.2, 8] } }
+    clash:   { a: { p: [30, 13, 20], l: [-2, 1, 0] }, b: { p: [8, 9, 14], l: [-6, 1, -2] } },
+    turn:    { a: { p: [-9.0, 5.2, 8.0], l: [-9.4, 0.8, -0.2] }, b: { p: [-9.0, 3.8, 5.8], l: [-9.4, 0.8, -0.8] } },
+    rout:    { a: { p: [-9.8, 2.6, 1.0], l: [-9.2, 0.7, -2.6] },  b: { p: [2, 20, 30], l: [-18, 0, -22] } },
+    quiet:   { a: { p: [0, 40, 82], l: [0, 0, 10] }, b: { p: [30, 9, 19], l: [36, 1.2, 8] } }
   };
   var PRESETS = {
     ground:  { p: [0, 30, 44], l: [0, 1.4, 0] },
@@ -1495,7 +1762,8 @@
     duel:    { p: [10, 4.6, 8], l: [0, 1, 0] },
     line:    { p: [24, 5, 18], l: [0, 0.6, 8] },
     far:     { p: [-26, 6, -16], l: [-4, 0.5, -8] },
-    wells:   { p: [6, 5, 9], l: [-5.4, 0.6, 3] }
+    wells:   { p: [6, 5, 9], l: [-5.4, 0.6, 3] },
+    command: { p: [-20, 5.6, 3.5], l: [-9.0, 1.1, -0.6] }
   };
 
   var clock = { playing: false, speed: 1, frac: 0, last: performance.now() };
@@ -1562,6 +1830,8 @@
       applyPose(u, p, fallen);
     }
 
+    updateVignette(i, t);
+
     /* the Ansari trio steps out, is refused, and withdraws before the champions engage */
     var ansarZ = 10.5;
     if (i === 1) {
@@ -1570,6 +1840,11 @@
       ansarZ = 10.5 - 6.0 * ansarAdv + 6.0 * ansarBack;
     }
     ANSAR_MARKS.forEach(function (m) { m.position.z = ansarZ; });
+
+    /* Bilal's chase of Umayyah belongs to the rout: the standards wait off-stage */
+    bilalMark.visible = i >= 5;
+    umayyahMark.visible = i >= 5;
+    ANSAR_MARKS.forEach(function (m) { m.visible = i === 1; });
 
     /* the aftermath (graves, dead, captives, spoils, the pit) belongs to the rout and reckoning */
     aftermathGroup.visible = i >= 5;
@@ -1582,7 +1857,7 @@
 
     /* the sand: from ʻUtbah-side cast of the Prophet (PBUH) toward the Quraysh */
     var dustAmt = (i === 4) ? Math.sin(clamp01(t) * Math.PI) : (i === 5 && t < 0.35 ? (1 - t / 0.35) * 0.5 : 0);
-    dust.material.opacity = dustAmt * 0.36;
+    dust.material.opacity = dustAmt * 0.3;
     if (dustAmt > 0.02 && !reduce) {
       var dp = dust.geometry.attributes.position;
       var nowMs = performance.now();
@@ -1669,14 +1944,23 @@
       };
     }
     /* portrait phones see a narrow horizontal slice: back the camera off and
-       lift it so all three Quraysh divisions stay in frame */
+       lift it so all three Quraysh divisions stay in frame. The command beat is
+       the exception: it is a close, vertical lane shot, so keep it tight. */
     if (camera.aspect < 1) {
-      var k = Math.min(2.1, Math.pow(1 / camera.aspect, 0.9));
-      tgt.p = [
-        tgt.l[0] + (tgt.p[0] - tgt.l[0]) * k,
-        tgt.l[1] + (tgt.p[1] - tgt.l[1]) * k * 1.12,
-        tgt.l[2] + (tgt.p[2] - tgt.l[2]) * k
-      ];
+      if (PHASES[i].id === 'duel' && camState.mode !== 'preset') {
+        tgt = { p: [0, 10, 20], l: [0, 1.5, 2] };
+      } else if (PHASES[i].id === 'turn' && camState.mode !== 'preset') {
+        /* the compact plinth fits the portrait slice; keep the phase path */
+      } else if (PHASES[i].id === 'rout' && camState.mode !== 'preset' && t < 0.35) {
+        /* hold the close rout view for the fall before pulling back */
+      } else {
+        var k = Math.min(2.1, Math.pow(1 / camera.aspect, 0.9));
+        tgt.p = [
+          tgt.l[0] + (tgt.p[0] - tgt.l[0]) * k,
+          tgt.l[1] + (tgt.p[1] - tgt.l[1]) * k * 1.12,
+          tgt.l[2] + (tgt.p[2] - tgt.l[2]) * k
+        ];
+      }
     }
     lerpCam(tgt, snap ? 1 : (reduce ? 0.22 : 0.09));
   }
@@ -1893,6 +2177,7 @@
         if (!isUnit && it.ph && it.ph.indexOf(curPhaseIdx) < 0) { it.el.style.visibility = 'hidden'; continue; }
         if (!isUnit && it.tRange && (curPhaseT < it.tRange[0] || curPhaseT > it.tRange[1])) { it.el.style.visibility = 'hidden'; continue; }
         var lY = isUnit ? (it.u.labelY !== undefined ? it.u.labelY : (it.u.isChampion ? 4.95 : 4.0)) : 0;
+        if (MOBILE && isUnit && (it.u.k === 'abujahlFig' || it.u.k === 'ikrimahFig')) lY -= 0.8;
         var v = (isUnit ? it.u.group.position.clone().add(new THREE.Vector3(0, lY, 0)) : it.v).clone();
         v = v.project ? v.project(camera) : v;
         var sx = (v.x * 0.5 + 0.5) * w, sy = (-v.y * 0.5 + 0.5) * h;
@@ -1907,7 +2192,7 @@
           sx = Math.max(lw0 / 2 + 26, Math.min(w - lw0 / 2 - 26, sx));
         }
         /* far camera: unit labels fade out, landmarks stay */
-        var vis = v.z < 1 && sy > 56 && sy < h - 170;
+        var vis = v.z > -1 && v.z < 1 && sy > 56 && sy < h - 170;
         var dist = isUnit ? camera.position.distanceTo(it.u.group.position) : 0;
         /* phones: names belong to the close shot, not the pulled-back map */
         var far = MOBILE ? 58 : 95, fade = MOBILE ? 40 : 62, span = MOBILE ? 18 : 33;
@@ -2076,6 +2361,11 @@
     },
     benchMass: function (n) { var t0 = performance.now(); for (var i = 0; i < (n || 10); i++) updateMass(); return (performance.now() - t0) / (n || 10); },
     isExplore: function () { return camState.mode === 'orbit'; },
+    setCam: function (p, l) {
+      camState.mode = 'preset';
+      camState.preset = { p: p, l: l };
+      applyCamera(curPhaseIdx, curPhaseT, true);
+    },
     snapCam: function (name) {
       if (name) { camState.mode = 'preset'; camState.preset = PRESETS[name] || PRESETS.ground; }
       else { camState.mode = 'phase'; }

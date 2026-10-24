@@ -31,11 +31,12 @@ python3 -m http.server 8000
 ## Principles
 
 - Every fact traces to a graded ledger entry; disputed figures shown as ranges, never harmonized.
-- No human figure of the Prophet ﷺ or the Companions is depicted — armies are stylized
-  standards and weapon-masses.
+- The Prophet ﷺ is never depicted. No figure has a face; named Companions appear only as
+  stylized faceless figures where explicitly approved (the Badr vignette); elsewhere standards
+  and weapon-masses mark the event.
 - English and Urdu (Noto Nastaliq, full RTL) throughout.
 
 ## Status
 
-- Badr: playable model, under active polish.
+- Badr: playable model, under active polish — see `openspec/changes/badr-phase-2-finish/`.
 - Uhud / Khandaq: ledgers not yet written (awaiting approval).
