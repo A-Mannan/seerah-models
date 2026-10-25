@@ -69,7 +69,9 @@ h1, h2, p { margin: 0; }
   height: var(--bar-h);
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 22px;
-  background: rgba(16, 14, 12, 0.28);
+  background: rgba(16, 14, 12, 0.34);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(236, 232, 223, 0.08);
   pointer-events: none;
 }
@@ -92,7 +94,7 @@ h1, h2, p { margin: 0; }
   position: fixed; top: calc(var(--bar-h) + 10px); right: 22px; z-index: 9;
   display: flex; flex-direction: column; gap: 7px;
   padding: 12px 14px;
-  background: rgba(16, 14, 12, 0.6);
+  background: rgba(16, 14, 12, 0.72);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   max-width: 300px;
@@ -114,8 +116,8 @@ h1, h2, p { margin: 0; }
 .hud-label {
   position: absolute; transform: translate(-50%, -130%);
   font-size: 12.5px; color: var(--ink); font-family: inherit;
-  background: rgba(14, 12, 10, 0.72);
-  border: 1px solid rgba(236, 232, 223, 0.1);
+  background: rgba(14, 12, 10, 0.8);
+  border: 1px solid rgba(236, 232, 223, 0.12);
   padding: 4px 9px; border-radius: 8px;
   white-space: nowrap; will-change: left, top;
 }
@@ -129,12 +131,20 @@ h1, h2, p { margin: 0; }
 /* ------------------------------ deck */
 .deck {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 11;
-  display: flex; flex-direction: column; gap: 4px;
+  display: flex; flex-direction: column; gap: 2px;
   padding: 10px 22px 12px;
-  background: rgba(16, 14, 12, 0.94);
+  background: rgba(16, 14, 12, 0.82);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-top: 1px solid var(--line);
 }
 .deck-row { display: flex; align-items: center; gap: 14px; }
+/* the active phase name: the deck's caption on phones (seg names hide there) */
+.deck-phase {
+  display: none;
+  text-align: center; font-size: 11px; letter-spacing: 0.02em;
+  color: var(--muted); min-height: 15px; margin-top: 2px;
+}
 
 #playBtn {
   display: inline-flex; align-items: center; gap: 9px; flex: none;
@@ -142,9 +152,10 @@ h1, h2, p { margin: 0; }
   border-radius: var(--radius);
   background: var(--brass); color: #14120f;
   font-size: 14px; font-weight: 500;
-  transition: background 0.2s ease;
+  transition: background 0.2s ease, transform 0.12s ease;
 }
 #playBtn:hover { background: #d6b75a; }
+#playBtn:active { transform: scale(0.97); }
 #playBtn[aria-pressed="true"] { background: rgba(236, 232, 223, 0.12); color: var(--ink); }
 .glyph { font-size: 11px; width: 12px; text-align: center; }
 
@@ -192,8 +203,9 @@ h1, h2, p { margin: 0; }
 .seg.is-today::after { background: var(--brass); height: 2px; }
 .seg.is-today .name { color: var(--ink); }
 .seg:hover .name { color: var(--muted); }
+.seg:hover::after { background: rgba(200, 168, 75, 0.65); }
 .scrub-head {
-  position: absolute; bottom: 4px; width: 9px; height: 9px;
+  position: absolute; bottom: 3px; width: 11px; height: 11px;
   transform: translateX(-50%);
   background: var(--brass); border-radius: 50%; pointer-events: none;
 }
@@ -224,6 +236,8 @@ h1, h2, p { margin: 0; }
   .timeline { height: 44px; }
   .seg .name { display: none; }
   .seg.is-today .name { display: none; }
+  .deck-phase { display: block; }
+  body.is-ur .deck-phase { font-size: 11.5px; line-height: 1.9; }
   .hud-label.is-far { display: none; }
   .hud-label { font-size: 11px; padding: 3px 6px; }
 }

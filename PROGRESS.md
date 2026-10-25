@@ -1,9 +1,35 @@
 # Progress
 
-## Build r — carved-maquette rebuild (local, not pushed)
-Badr · the battle. Cache-bust `?v=20261025r`.
+## Build s — review fixes (local, not pushed)
+Badr · the battle. Cache-bust `?v=20261025s`. Owner review of build r drove this round.
 
-### Shipped
+### Changed after the owner's review
+- **The 3v3 is now a fight.** The six champions walk out bare of their standards (the standards
+  stay with the line as unit markers — the old pole-and-cloth forest at the mid-ground is gone),
+  meet in pairs at sword range and exchange blows keyed to BADR-028: Shaybah swings, Ḥamzah
+  answers and kills (0.74); al-Walīd and ʿAlī cross blades, al-Walīd falls (0.86); ʿUtbah's
+  thrust wounds ʿUbaydah (0.9); Ḥamzah finishes ʿUtbah (0.93). Hit reactions precede each death;
+  champion labels follow the walking figure, not the standard.
+- **The pushed build's camera paths are restored** (origin/main, build q): one continuous move
+  per phase — establishing crane, the SE duel view, the advance, the wells, the sand, the rout
+  pull-back, the reckoning. The interim shot-list cuts, holds and camera knocks are gone, and
+  the portrait rule is the pushed uniform backing-off.
+- **Bilāl (RA) and ʻUmayyah (BADR-041)**: ʻUmayyah's standard now flees along the rout path with
+  Bilāl's pursuing; it falls when the crowd reaches him and Bilāl's stands over it, labels on.
+- **The Abu Jahl vignette strikes with swords simultaneously** (BADR-037: the two Helpers struck
+  together and both were ruled his killers) — the old spear thrust is gone; Muʿādh takes up the
+  left sword after Ikrimah's cut.
+- **Champion standards cleaned**: no more bundled spears / planted sword / parked shield at the
+  pole — the "3–4 sticks" the owner flagged. Band standards keep their spear stands.
+- **March fixed**: gait frequency now matches actual travel speed (the advance was sliding at
+  ~3× foot speed), the rout is a forward-leaning run with wider scatter, the fight plants the
+  stance.
+- **Floating dot particles removed** (the irrelevant motes); the 8:9 angel shimmer is tighter
+  over the Muslim line and quieter; dust stays only in the sand beat.
+- **UI polish**: frosted top bar and deck, larger scrub head, play-button press state, the active
+  phase name under the timeline on phones, play button reads "play", kept to the taste gates.
+
+### Shipped in build r (carried)
 - **Owner gate passed.** The hero frame (`app/proto/hero.html`, Quaternius rig, carved-maquette
   field, dawn grade) was approved on 2026-10-25; section 3 of `battle-visual-quality` proceeded.
 - **Rigged heroes.** The six duel champions and the three Anṣār are rigged Quaternius Adventurers
@@ -41,16 +67,15 @@ Badr · the battle. Cache-bust `?v=20261025r`.
   0 FAIL. Uhud/Khandaq can now be built as data/scene modules on the same engine.
 
 ### Verification
-- `node --check app/js/battle.js` / `main.js`: pass.
-- Gates: design-taste lint **0 FAIL / 1 WARN** (em-dash count); inspect **0 FAIL / 0 WARN** with
-  allowances `font-not-dealt,gradient,mixed-font-headline,palette-cream` (the grade is the
-  approved hero-frame look; the brand mixed face and dawn cream are intentional).
-- Perf: desktop 1440×900 **243 draw calls / ~750k triangles**; mobile 390×844 **246 calls**,
-  `benchMass` **~2.9 ms** at 1× (10.3 ms at 4× CPU throttle; adaptive pixel-ratio fallback armed).
-- Probes: `.taste-skill/probe-rebuild.mjs` (full reel stills), `probe-duel2.mjs` / death-pose
-  checks (dead champions' head-bone height ≈ 0.1 after any seek), `probe-perf.mjs`; stills in
-  `.taste-skill/inspect/r*.jpg`, `r2-*.jpg`, `m-duel.jpg`.
-- Historical fit: kill attribution and the Anṣār trio refusal stay on BADR-028/013; the wells,
+- `node --check engine.js / badr.js / main.js`: pass.
+- Gates: design-taste lint **0 FAIL / 4 WARN** (two intentional sticky-bar blurs + em-dash count);
+  inspect **0 FAIL / 0 WARN** with allowances `font-not-dealt,gradient,mixed-font-headline,palette-cream`.
+- Perf: desktop 1440×900 **223 draw calls / ~745k triangles**; mobile 390×844 **233 calls**,
+  `benchMass` **~2.3 ms** at 1× (6.2 ms at 4× CPU throttle; adaptive pixel-ratio fallback armed).
+- Probes: `.taste-skill/probe-rebuild.mjs`, `probe-fix.mjs` (duel exchange, sand strike, Bilāl
+  chase), `probe-perf.mjs`; stills in `.taste-skill/inspect/s*.jpg`.
+- Historical fit: the duel exchange, kills and ʿUbaydah's wound stay on BADR-028; the Abu Jahl
+  simultaneous sword strike on BADR-037; the Bilāl/ʻUmayyah reckoning on BADR-041; the wells,
   banks and camps keep the build q layout audit; no new claims introduced.
 
 ### Known limits

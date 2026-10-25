@@ -19,6 +19,7 @@
   var scrubHead = $('#scrubHead');
   var segsEl = $('#segs');
   var deckCount = $('#deckCount');
+  var deckPhase = $('#deckPhase');
   var langBtn = $('#langBtn');
   var nameEls = [];
 
@@ -63,6 +64,7 @@
     document.querySelectorAll('[data-i18n]').forEach(function (n) { n.innerHTML = t[n.dataset.i18n]; });
     nameEls.forEach(function (n, i) { n.textContent = t.phases[i]; });
     if (B.setLang) B.setLang(lang);
+    if (deckPhase) deckPhase.textContent = t.phases[B.phaseInfo(B.frac()).i] || '';
     if (typeof setScrub === 'function') setScrub(B.frac());
     var hintEl = $('#hint');
     if (hintEl && B.isPlaying()) hintEl.classList.add('is-gone');
@@ -205,6 +207,7 @@
     deckCount.textContent = lang === 'ur'
       ? urNum(info.i + 1) + ' / ' + urNum(B.phases.length)
       : ('0' + (info.i + 1)).slice(-2) + ' / 0' + B.phases.length;
+    if (deckPhase) deckPhase.textContent = T().phases[info.i] || '';
     segEls.forEach(function (s, k) {
       s.classList.toggle('is-today', k === info.i);
       s.classList.toggle('is-past', k < info.i);
@@ -223,11 +226,11 @@
   });
 
   /* ------------------------------ boot */
-  console.log('[badr] build 2026-10-25r · carved-maquette rebuild: rigged heroes, crowd gait, heightfield field, shot list');
+  console.log('[badr] build 2026-10-25s · review fixes: 3v3 duel fight, restored cameras, Bilal-Umayyah reckoning, sword vignette');
   if (/[?&]debug=1/.test(location.search)) {
     var dbg = document.createElement('div');
     dbg.className = 'debug-build';
-    dbg.textContent = 'build r';
+    dbg.textContent = 'build s';
     document.body.appendChild(dbg);
   }
   setPlayState(false);
