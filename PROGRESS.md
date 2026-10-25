@@ -31,6 +31,14 @@ Badr · the battle. Cache-bust `?v=20261025r`.
   the sand beat in three cuts with a held aftermath, rout hold → pull-back → scatter overview,
   reckoning overview → al-Qalib push. A short camera knock lands on each kill, the first clash,
   the strike and Abu Jahl's fall.
+- **Engine split (task 3.6).** `app/js/engine.js` carries everything a future battle reuses —
+  renderer boot, dawn sky/lights, heightfield, prop builders, static merge, the instanced crowd
+  with its gait, the rigged-hero rig and deterministic clip driver, the label pass, the camera
+  director (shot list, orbit, pinch, adaptive quality) and the particle systems. `app/js/badr.js`
+  keeps only Badr: layout, formations and plans, the Abu Jahl vignette, ledger-graded copy, the
+  choreography (`applyFrac`) and the public `BATTLE` API (unchanged for `main.js`). Verified
+  behavior-identical: same draw calls/triangles, same clips and death poses after seeks, gates
+  0 FAIL. Uhud/Khandaq can now be built as data/scene modules on the same engine.
 
 ### Verification
 - `node --check app/js/battle.js` / `main.js`: pass.
@@ -51,7 +59,7 @@ Badr · the battle. Cache-bust `?v=20261025r`.
 - The crowd gait is a rigid scissor swing per leg, not a skinned walk — correct at maquette
   distance, stiff in close-up.
 - ʿUtbah's death completes just past the duel phase cut; the cut to the advance hides the snap.
-- The shared engine/per-battle split is next (task 3.6); Uhud/Khandaq remain blocked.
+- Uhud/Khandaq remain blocked pending owner approval.
 
 ## Build q — local, committed 04e7436
 Named figures, layout audit, dispersion, aftermath bodies, event layer, mobile type/play/brand.

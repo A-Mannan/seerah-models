@@ -1,12 +1,11 @@
 # Tasks
 
-**Current:** 3.5 — build **r** is cut (gates passed, `PROGRESS.md` updated); commit locally, then
-3.6 engine split.
+**Current:** all 15 tasks complete (2026-10-25). Build **r** committed locally (7bdc6e3) and the
+engine split landed on top. Ready for owner review, then archive.
 
 **Done:** 1.x direction/assets/licence · 2.x hero frame + owner gate (approved 2026-10-25) ·
-3.1 rigged champions · 3.2 crowd gait · 3.3 field rebuild · 3.4 shot list.
-
-**Next:** 3.5 local commit → 3.6 shared engine split before Uhud/Khandaq.
+3.1 rigged champions · 3.2 crowd gait · 3.3 field rebuild · 3.4 shot list · 3.5 build **r** ·
+3.6 engine split.
 
 ## 1. Direction, assets and licence
 
@@ -34,8 +33,8 @@
 - [x] 3.2 Replace the sliding crowd with a leg gait, weapon thrust and hit ripple; keep the 1,313 men instanced/LODed and the three Quraysh divisions legible; benchmark. *(Per-leg hip-pivot instances, battle-clock gait, spear thrust, rank ripple; 246 calls / ~2.9 ms benchMass at 390×844.)*
 - [x] 3.3 Rebuild the field: heightfield, sculpted dunes, rocks/scrub, palms, wells, layered camps, haze, aerial perspective and the post grade. *(Flat corridor + dune fields, ripple normal map, masonry wells, ridge tents, FogExp2, dawn sky, ACES + CSS grade.)*
 - [x] 3.4 Replace phase lerps with the approved shot list: establishing, tracking, duel side, command close, rout pull-back, reckoning overview → al-Qalib; cuts/holds/impact frames. *(Per-phase SHOTS with cuts/holds and a deterministic impact-shake table.)*
-- [ ] 3.5 Integrate Badr, run desktop/mobile/perf gates, cut build **r**, update `PROGRESS.md`, commit locally; do **not** push without explicit approval.
-- [ ] 3.6 Split the shared engine (renderer, camera, clock, labels, orbit, particles, merge) from per-battle data/scene modules before Uhud/Khandaq.
+- [x] 3.5 Integrate Badr, run desktop/mobile/perf gates, cut build **r**, update `PROGRESS.md`, commit locally; do **not** push without explicit approval. *(Commit 7bdc6e3, local only.)*
+- [x] 3.6 Split the shared engine (renderer, camera, clock, labels, orbit, particles, merge) from per-battle data/scene modules before Uhud/Khandaq. *(app/js/engine.js = shared engine; app/js/badr.js = Badr scene; verified behavior-identical — same calls/tris, clips, gates 0 FAIL.)*
 
 ## Known limits of the hero frame (carry into 3.x)
 

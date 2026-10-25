@@ -54,7 +54,7 @@ A pure-visual, interactive 3D seerah series. **Badr** is the live model; **Uhud*
 - Do not add a public version string.
 
 ## Architecture / next battles
-- `battle.js` is ~2.3k lines and Badr-specific. Before Uhud/Khandaq, split it into a shared engine (renderer, camera, clock, labels, orbit, particles, merge) plus per-battle data/scene modules. React/R3F is optional for the UI shell only — not the instanced 3D engine.
+- Split done (build r): `app/js/engine.js` is the shared engine (renderer boot, dawn sky, heightfield, props, merge, crowd, rigged heroes, labels, camera director with clock/orbit/shots, particles); `app/js/badr.js` is the Badr scene module (layout, plans, vignette, choreography, `BATTLE` API). A new battle is a data/scene module on the same engine. React/R3F is optional for the UI shell only — not the instanced 3D engine.
 - Uhud/Khandaq ledgers and scenes remain blocked until the owner approves.
 - OpenSpec: planning artifacts live in `openspec/changes/<change>/`; implement through the apply workflow; archive when accepted.
 
