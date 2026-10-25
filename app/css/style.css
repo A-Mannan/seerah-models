@@ -38,6 +38,16 @@ h1, h2, p { margin: 0; }
 #gl.is-dragging { cursor: grabbing; }
 #gl.is-playing { cursor: default; }
 
+/* ------------------------------ post grade: warm dawn cast, grain, vignette.
+   CSS-only (no render passes); sits above the canvas, below every UI layer. */
+.grade { position: fixed; inset: 0; z-index: 2; pointer-events: none; }
+.grade-warm { mix-blend-mode: soft-light; background: linear-gradient(180deg, rgba(255, 196, 132, 0.15), rgba(38, 30, 44, 0.17)); } /* taste-skill-ignore: the approved dawn post grade from the hero frame */
+.grade-grain {
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>");
+}
+.grade-vignette { background: radial-gradient(120% 90% at 50% 46%, rgba(0, 0, 0, 0) 40%, rgba(20, 12, 5, 0.34) 100%); } /* taste-skill-ignore: the approved dawn post grade from the hero frame */
+
 /* the idle hint: how to explore, until it's learned */
 .hint {
   position: fixed; left: 22px; bottom: calc(2 * var(--deck-h) + 34px); z-index: 9;

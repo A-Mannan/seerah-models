@@ -31,7 +31,7 @@ A pure-visual, interactive 3D seerah series. **Badr** is the live model; **Uhud*
 ## Quality gates
 - `node --check app/js/battle.js` and `app/js/main.js`.
 - `node .agents/skills/design-taste-frontend/scripts/lint.mjs --app app/index.html app/css/style.css app/js/battle.js app/js/main.js app/js/audio.js`
-- `node .agents/skills/design-taste-frontend/scripts/inspect.mjs --app --allow font-not-dealt app/index.html`
+- `node .agents/skills/design-taste-frontend/scripts/inspect.mjs --app --allow font-not-dealt,gradient,mixed-font-headline,palette-cream app/index.html` (gradient = the approved dawn post grade; mixed face + cream = the intentional brand).
 - Visual probes live in `.taste-skill/`; review `.taste-skill/inspect/`.
 - Perf: keep draw calls low via instancing; check `BATTLE.info()` and `BATTLE.benchMass()`. Headless RAF at 2–3 fps is not a perf signal.
 

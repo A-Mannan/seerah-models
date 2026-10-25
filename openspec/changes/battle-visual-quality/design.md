@@ -23,10 +23,21 @@ See `proposal.md` — Why. The current Badr scene is a single Three.js r128 modu
 ### Hybrid cast: rigged heroes, instanced crowd
 The ~10 named figures use rigged GLTF; the 1,313 crowd stays instanced with a procedural gait/thrust. A fully skinned crowd is not viable on the mobile budget; a fully procedural hero will not produce natural motion quickly enough.
 
-### Assets: CC0 rigged heroes; Gobkit round rejected
-Round 1 used the Gobkit **Free Character Pack Vol.3** (`Footman`, `Scout`, `Archer`, `HeavyWarrior`, `KnightCaptain`, `PeasantMilitia`). It is CC0, direct `.glb`, rigged, with `Idle`, `Walk`, `Run`, `Attack`, `Hit`, `Death`, `Special`, and a fixed **7×** scale brings it to ~1.75 m. The side-by-side sheet, however, showed **chibi/Clash-of-Clans proportions with exposed faces** — a weaker fit than the current model, not a stronger one. Rejected.
+### Assets: Quaternius Adventurer, CC0
+Three rounds were tested. **Gobkit human003** (CC0, 24 clips) was rejected as chibi/Clash-of-Clans
+with exposed faces. **KayKit Adventurers** (CC0) was rejected as Fortnite-proportioned with big
+heads. **Quaternius Adventurer** (CC0, `CharacterArmature`) is chosen: normal proportions, 327-bone
+rig, 24 clips including `Idle_Sword`, `Walk`, `Sword_Slash`, `HitRecieve` and `Death`, loading at a
+0.01 root scale through `FBXLoader` + `fflate`. Faces are removed at the material level (the `Head`
+mesh is recoloured to cloth) and covered by a procedural cloth skull + wound turban or an iron helm,
+so a geometry gap can never reveal a face. Weapons are the Quaternius sword and spear, attached to
+`WristR` in the bone's own space with a scale-compensating holder.
 
-Round 2 tests **KayKit Adventurers** and **Quaternius Animated Men / Ultimate Modular Men** (both CC0, normal-proportioned, rigged, face-coverable). The chosen champion/soldier/Quraysh still needs a side-by-side sheet before the hero frame. `GLTFLoader` and `SkeletonUtils` remain in the pipeline. Faces are covered with a procedural turban + face veil (Muslims) or a full helm/mask (Quraysh).
+### Cloth add-ons: rejected on this rig
+A tunic skirt, waist belt, diagonal sash and shoulder cloak were each tried and removed. Rigid
+panels parented to `Chest`/`Hips` read as barrels and boards because they do not deform with the
+spine. The headwrap works because it is a closed volume on one bone. A convincing body garment needs
+a purpose-built skinned mesh or a material/palette pass, not more attached planes.
 
 ### Hero-frame test before the rebuild
 `app/proto/hero.html` is a standalone proof: terrain patch, well, tent, horse, champion, soldier, Quraysh fighter, dawn light, haze, post, a five-second advance → strike → hit with a wide-to-close cut. It uses the real assets and real animations; if it does not clear the bar, the direction changes before the scene rewrite.
@@ -54,8 +65,8 @@ Crowd instancing/LOD; hero clones limited; field batched; post minimal; measure 
 
 ## Migration Plan
 
-1. Finish round 2 of the asset sheet (KayKit/Quaternius): scale, face coverage, weapons, style.
-2. Build the hero-frame prototype and capture stills + a five-second clip.
+1. ~~Finish round 2 of the asset sheet~~ — done: Quaternius chosen, Gobkit/KayKit rejected.
+2. ~~Build the hero-frame prototype and capture stills + a five-second clip~~ — done.
 3. Owner gate. If approved:
 4. Rigged heroes in the duel/vignette; crowd gait; field/atmosphere/post; shot list.
 5. Mobile performance; integrate Badr; build **r**; `PROGRESS.md`; local commit; no push.
@@ -64,6 +75,6 @@ Rollback: the hero prototype is isolated under `app/proto/`; the main Badr scene
 
 ## Open Questions
 
-- Which round-2 model (KayKit vs Quaternius) best reads as the Muslim champion vs the Quraysh champion? Resolve on the asset sheet/hero frame.
-- Is a full crowd gait affordable at 1,313 men on the phone? Resolve with the hero-frame/bench pass.
+- Resolved: Quaternius for all three, differentiated by palette (linen/ochre) and headwear (turban vs helm).
+- Is a full crowd gait affordable at 1,313 men on the phone? Still open; the hero frame only benches three rigged figures (186 calls / 111k tris).
 - Does the owner want a specific historical silhouette for the turban/veil? No reference supplied; use the carved-maquette abstraction.

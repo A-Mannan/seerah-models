@@ -1,44 +1,68 @@
 # Progress
 
-## Visual quality rebuild — in progress (not committed as a build)
-- Direction locked with the owner: **hybrid carved maquette**; **heroes-only CC0 rigged GLTF**; faces covered; no Prophet ﷺ.
-- **Round 1 asset sheet rejected:** Gobkit human003 is chibi/Clash-of-Clans with exposed faces, not the carved-maquette bar. Evidence: `.taste-skill/inspect/asset-sheet.jpg`.
-- **Current task 1.3:** round 2 asset sheets — KayKit Adventurers and Quaternius Animated Men/Ultimate Modular Men.
-- **Next:** 1.4 licence record → 2.1 hero-frame field/light → 2.2 rigged figures → 2.3 five-second cut → 2.4 stills/clip → **2.5 owner gate**. Full rebuild starts only after 2.5.
-- OpenSpec: `openspec/changes/battle-visual-quality/`.
-- Build q remains local; no push.
-
-## Build q — local, not pushed
-Badr · the battle. Cache-bust `?v=20261023q`.
+## Build r — carved-maquette rebuild (local, not pushed)
+Badr · the battle. Cache-bust `?v=20261025r`.
 
 ### Shipped
-- **Field layout audited.** The wells moved east into the gap between the Quraysh centre and right divisions, clear of the 3v3 and the command lane. The ʿarish moved behind the Muslim line at the rear (headquarters reading). The command plinth is hidden during the duel/advance and appears for the sand beat; the plinth no longer catches the palm-shadow checker.
-- **Named figures.** Six faceless champion figures now stand at their standards (Ḥamzah, ʿAlī, ʿUbaydah / Shaybah, al-Walīd, ʿUtbah) and move/fall with them. The first three Anṣār also have faceless figures at their standards, stepping out and withdrawing with the trio.
-- **Advance dispersion.** Squads and men spread laterally/unevenly during the advance; the clash keeps a smaller ripple and the rout scatters. The three Quraysh divisions remain legible.
-- **Aftermath bodies.** The 70 captives, 70 Quraysh dead and 24 leaders at al-Qalib now have bodies, heads, arms, legs and feet; the captives are unarmed. No faces.
-- **Build p carried forward:** Abu Jahl vignette, mass detail/spear hedge, story cameras, gated events, mobile play/brand/type.
+- **Owner gate passed.** The hero frame (`app/proto/hero.html`, Quaternius rig, carved-maquette
+  field, dawn grade) was approved on 2026-10-25; section 3 of `battle-visual-quality` proceeded.
+- **Rigged heroes.** The six duel champions and the three Anṣār are rigged Quaternius Adventurers
+  (CC0): one merged skinned mesh per body (single draw call per figure), cloth turban or iron helm
+  over the head — no face ever visible — a sword or spear on the right wrist and a shield strapped
+  to the left forearm with a visible leather strap. Clips (idle/walk/attack/hit/death) are driven
+  from the battle clock with structural crossfades, so every seek lands on the same pose. The
+  attack beats follow ledger BADR-028: Ḥamzah kills Shaybah, ʿAlī kills al-Walīd, ʿUtbah wounds
+  ʿUbaydah (hunched stagger), Ḥamzah finishes ʿUtbah. Fallen champions crumple through the Death
+  clip while their standard topples separately. The Abu Jahl plinth vignette keeps its approved
+  faceless action figures.
+- **Living crowd.** The 1,313 instanced men now march with a real leg gait: each leg is its own
+  instance pivoting at the hip, scissor-swinging in step with the battle clock; spears level and
+  thrust; a stagger ripple travels back through the ranks in the mêlée. Hot-loop matrix writes
+  skip euler/quaternion compose entirely.
+- **Field rebuild.** The flat tiled plane is gone: a displaced heightfield with a flat battle
+  corridor and sculpted dune fields beyond, framing mounds at the near corners, valley walls
+  rising to the horizon, wind-ripple normal map, stratified rocks, instanced scrub, masonry wells
+  (three courses + parapet + curb stones + beam and bucket), goat-hair ridge tents with guys and
+  pegs for both camps, pebbles seated on the terrain. `FogExp2` haze, a shader dawn sky with the
+  low sun, and the hero frame's CSS post grade (warm cast, grain, vignette) plus ACES tone
+  mapping.
+- **Shot list.** Phase lerps replaced by per-phase shots with motivated cuts, holds and impact
+  frames: establishing crane, duel side then close lanes, advance tracking, clash at the wells,
+  the sand beat in three cuts with a held aftermath, rout hold → pull-back → scatter overview,
+  reckoning overview → al-Qalib push. A short camera knock lands on each kill, the first clash,
+  the strike and Abu Jahl's fall.
 
 ### Verification
 - `node --check app/js/battle.js` / `main.js`: pass.
-- Performance: **169 draw calls**, **~694k triangles**; `benchMass` **~1.7–2.7 ms** at 390×844.
-- Probes: `.taste-skill/probe-{desktop,mobile,checks,duel}.mjs`; stills in `.taste-skill/inspect/`.
-- Gates: design-taste lint **0 FAIL / 0 WARN**; inspect **0 FAIL / 2 WARN** (intentional brand mixed face; dawn cream palette).
-- Wells/rain: Muslims reached the wells first on al-Ḥubāb's advice, seized the nearest, built a basin and stopped the others; the Quraysh were denied water. The night rain refreshed/steadied the Muslims and held back the Quraysh; Qur'an 8:11 adds purification and firm feet; 8:42 places the two banks. See BADR-018/019, Raheeq p. 135.
+- Gates: design-taste lint **0 FAIL / 1 WARN** (em-dash count); inspect **0 FAIL / 0 WARN** with
+  allowances `font-not-dealt,gradient,mixed-font-headline,palette-cream` (the grade is the
+  approved hero-frame look; the brand mixed face and dawn cream are intentional).
+- Perf: desktop 1440×900 **243 draw calls / ~750k triangles**; mobile 390×844 **246 calls**,
+  `benchMass` **~2.9 ms** at 1× (10.3 ms at 4× CPU throttle; adaptive pixel-ratio fallback armed).
+- Probes: `.taste-skill/probe-rebuild.mjs` (full reel stills), `probe-duel2.mjs` / death-pose
+  checks (dead champions' head-bone height ≈ 0.1 after any seek), `probe-perf.mjs`; stills in
+  `.taste-skill/inspect/r*.jpg`, `r2-*.jpg`, `m-duel.jpg`.
+- Historical fit: kill attribution and the Anṣār trio refusal stay on BADR-028/013; the wells,
+  banks and camps keep the build q layout audit; no new claims introduced.
 
 ### Known limits
-- The 3v3 is now a wide side view with the six figures at their standards; the wells no longer overlap, but the six are not all hero-framed at once.
-- Phone labels show the two central youths; the outer names can still be crowded off at 390px.
-- The ʿarish is behind the line; the graded ledger (BADR-020) describes the headquarters and guards but does not grade which flank, so the left-rear side is a staging choice.
-- Fonts are still Google-hosted; the shared engine/per-battle split is not started; Uhud/Khandaq remain blocked.
+- The hero figures still read low-poly game rather than carved maquette (modern base mesh); the
+  material/palette pass is the next lever, not more attached props.
+- The crowd gait is a rigid scissor swing per leg, not a skinned walk — correct at maquette
+  distance, stiff in close-up.
+- ʿUtbah's death completes just past the duel phase cut; the cut to the advance hides the snap.
+- The shared engine/per-battle split is next (task 3.6); Uhud/Khandaq remain blocked.
 
-## Build p — local, committed 38b7264
-- Abu Jahl vignette; mass action figures; story cameras; chip row removed; gated events; mobile type/play/brand; wells clear of the command lane.
-- Gates: lint 0/0; inspect 0 FAIL / 2 WARN (intentional brand mixed face; dawn cream palette).
+## Build q — local, committed 04e7436
+Named figures, layout audit, dispersion, aftermath bodies, event layer, mobile type/play/brand.
+Gates at the time: lint 0/0; inspect 0 FAIL / 2 WARN.
 
 ### Earlier
+- **p** — Abu Jahl vignette; mass action figures; story cameras; chip row removed; gated events.
 - **o** — aftermath counts, angel shimmer, persistent event labels.
 - **n** — event layer, Anṣār trio, al-Qalib focus, camps and type.
 
 ### Next
-- OpenSpec `badr-phase-2-finish`: 7.1 architecture direction and 7.2 separate engine-split change remain open.
-- Build q is committed locally only; no push until owner approval.
+- OpenSpec `battle-visual-quality` 3.6: split the shared engine (renderer, camera, clock, labels,
+  orbit, particles, merge) from per-battle data/scene modules before Uhud/Khandaq.
+- Build r is committed locally only; no push until owner approval.

@@ -24,25 +24,44 @@
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, MOBILE ? 1.5 : 2));
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFShadowMap;
+  renderer.outputEncoding = THREE.sRGBEncoding;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 0.92;
   renderer.setClearColor(0x232936, 1);
 
   var scene = new THREE.Scene();
-  scene.fog = new THREE.Fog(0x8a7355, 130, 460);
+  scene.fog = new THREE.FogExp2(0xc39a6e, MOBILE ? 0.0046 : 0.0038);
 
   var camera = new THREE.PerspectiveCamera(36, 1, 0.1, 900);
 
-  /* ------------------------------ night sky: gradient dome, moon, stars */
-  var skyGeo = new THREE.SphereGeometry(620, 32, 20);
-  var skyPos = skyGeo.attributes.position;
-  var skyCols = new Float32Array(skyPos.count * 3);
-  var zen = new THREE.Color(0x24304a), hor = new THREE.Color(0x9a7850), skyTmp = new THREE.Color();
-  for (var si = 0; si < skyPos.count; si++) {
-    var yy = Math.max(0, Math.min(1, skyPos.getY(si) / 620));
-    skyTmp.copy(hor).lerp(zen, Math.pow(yy, 0.55));
-    skyCols[si * 3] = skyTmp.r; skyCols[si * 3 + 1] = skyTmp.g; skyCols[si * 3 + 2] = skyTmp.b;
-  }
-  skyGeo.setAttribute('color', new THREE.BufferAttribute(skyCols, 3));
-  var skyDome = new THREE.Mesh(skyGeo, new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.BackSide, fog: false }));
+  /* ------------------------------ dawn sky: gradient dome with the low sun,
+     the last stars overhead and the setting moon in the west */
+  var sunDir = new THREE.Vector3(64, 34, -46).normalize();
+  var skyMat = new THREE.ShaderMaterial({
+    side: THREE.BackSide, depthWrite: false, fog: false,
+    uniforms: {
+      top: { value: new THREE.Color(0x1a2740) },
+      mid: { value: new THREE.Color(0x5d6a7d) },
+      bot: { value: new THREE.Color(0xdfae7c) },
+      sunDir: { value: sunDir.clone() },
+      sunCol: { value: new THREE.Color(0xffdda8) }
+    },
+    vertexShader: 'varying vec3 vW; void main(){ vW = normalize(position); gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0); }',
+    fragmentShader: [
+      'uniform vec3 top, mid, bot, sunCol; uniform vec3 sunDir; varying vec3 vW;',
+      'void main(){',
+      '  float h = clamp(vW.y * 1.05 + 0.09, 0.0, 1.0);',
+      '  vec3 c = mix(bot, mid, smoothstep(0.00, 0.26, h));',
+      '  c = mix(c, top, smoothstep(0.20, 0.95, h));',
+      '  float d = max(dot(vW, sunDir), 0.0);',
+      '  c += sunCol * pow(d, 42.0) * 0.8;',
+      '  c += sunCol * pow(d, 5.0) * 0.12;',
+      '  c = pow(c, vec3(0.4545));',
+      '  gl_FragColor = vec4(c, 1.0);',
+      '}'
+    ].join('\n')
+  });
+  var skyDome = new THREE.Mesh(new THREE.SphereGeometry(620, 32, 20), skyMat);
   skyDome.castShadow = false; skyDome.receiveShadow = false;
   scene.add(skyDome);
 
@@ -57,7 +76,7 @@
     starPos[s * 3 + 2] = Math.sin(r1) * Math.sin(r2) * 560;
   }
   starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
-  var stars = new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xdfe4ee, size: 2.0, sizeAttenuation: false, transparent: true, opacity: 0.22, fog: false }));
+  var stars = new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xdfe4ee, size: 2.0, sizeAttenuation: false, transparent: true, opacity: 0.13, fog: false }));
   scene.add(stars);
 
   function softDisc(inner, outer, tint) {
@@ -72,20 +91,20 @@
     var tex = new THREE.CanvasTexture(c);
     return new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false, fog: false, blending: THREE.AdditiveBlending, color: tint || 0xffffff });
   }
-  var moonGlow = new THREE.Mesh(new THREE.PlaneGeometry(70, 70), softDisc('rgba(226,232,244,0.25)', 'rgba(160,176,200,0.08)', 0xcfd8e6));
+  var moonGlow = new THREE.Mesh(new THREE.PlaneGeometry(70, 70), softDisc('rgba(226,232,244,0.16)', 'rgba(160,176,200,0.05)', 0xcfd8e6));
   moonGlow.position.set(-160, 62, -240); moonGlow.lookAt(0, 0, 0);
   scene.add(moonGlow);
-  var moonDisk = new THREE.Mesh(new THREE.CircleGeometry(5.4, 26), new THREE.MeshBasicMaterial({ color: 0xe9edf5, transparent: true, opacity: 0.3, fog: false }));
+  var moonDisk = new THREE.Mesh(new THREE.CircleGeometry(5.4, 26), new THREE.MeshBasicMaterial({ color: 0xe9edf5, transparent: true, opacity: 0.18, fog: false }));
   moonDisk.position.set(-160, 62, -240);
   moonDisk.lookAt(0, 0, 0);
   scene.add(moonDisk);
 
   /* ------------------------------ light */
-  var hemi = new THREE.HemisphereLight(0x8fa0b8, 0x3a2f22, 0.44);
+  var hemi = new THREE.HemisphereLight(0x8fa8c8, 0x4a3826, 0.52);
   scene.add(hemi);
 
   /* low eastern sun: the ranks formed at dawn and the fighting was by day */
-  var moonLight = new THREE.DirectionalLight(0xffc27d, 0.9);
+  var moonLight = new THREE.DirectionalLight(0xffc089, 1.15);
   moonLight.position.set(64, 34, -46);
   moonLight.castShadow = true;
   moonLight.shadow.mapSize.set(MOBILE ? 1024 : 2048, MOBILE ? 1024 : 2048);
@@ -99,10 +118,10 @@
   scene.add(moonLight);
   scene.add(moonLight.target);
 
-  var fill = new THREE.DirectionalLight(0x7d8ea8, 0.2);
+  var fill = new THREE.DirectionalLight(0x7d8ea8, 0.3);
   fill.position.set(-40, 30, 40);
   scene.add(fill);
-  var rim = new THREE.DirectionalLight(0xffd9b0, 0.3); /* dawn rim on the ivory standards */
+  var rim = new THREE.DirectionalLight(0xffd9b0, 0.4); /* dawn rim on the ivory standards */
   rim.position.set(10, 14, 60);
   scene.add(rim);
 
@@ -113,71 +132,99 @@
   wellLight.position.set(-5.8, 1.8, 2.6);
   scene.add(wellLight);
 
-  /* ------------------------------ terrain */
-  var T = 420, SEG = 160;
+  /* ------------------------------ terrain: a sculpted valley around a flat
+     battle corridor. The wells, both lines, both camps, the plinth and
+     al-Qalib all sit on flat sand; dune fields rise beyond the corridor and
+     the valley walls lift toward the horizon. */
+  function hash2(x, y) { var s = Math.sin(x * 127.1 + y * 311.7) * 43758.5453; return s - Math.floor(s); }
+  function vnoise(x, y) {
+    var xi = Math.floor(x), yi = Math.floor(y), xf = x - xi, yf = y - yi;
+    var u = xf * xf * (3 - 2 * xf), v = yf * yf * (3 - 2 * yf);
+    var a = hash2(xi, yi), b = hash2(xi + 1, yi), c = hash2(xi, yi + 1), d = hash2(xi + 1, yi + 1);
+    return (a * (1 - u) + b * u) * (1 - v) + (c * (1 - u) + d * u) * v;
+  }
+  function fbm(x, y, o) {
+    var s = 0, a = 0.5, f = 1, i;
+    for (i = 0; i < (o || 3); i++) { s += a * vnoise(x * f, y * f); f *= 2; a *= 0.5; }
+    return s;
+  }
+  function smoothstepN(x, a, b) { var t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); }
+  function heightAt(x, z) {
+    var out = Math.max(
+      smoothstepN(Math.abs(x), 44, 62),
+      smoothstepN(z, 28, 46),
+      smoothstepN(-z, 36, 54)
+    );
+    var h = (fbm(x * 0.024 + 11.2, z * 0.024 + 7.4, 3) - 0.5) * 9.0 * out;
+    h += (fbm(x * 0.06 + 3.7, z * 0.06 + 9.1, 2) - 0.5) * 1.8 * out;
+    /* framing mounds at the near corners */
+    h += 3.2 * Math.exp(-Math.pow((x + 28) / 16, 2) - Math.pow((z - 36) / 12, 2));
+    h += 3.0 * Math.exp(-Math.pow((x - 28) / 16, 2) - Math.pow((z - 34) / 12, 2));
+    /* the valley walls lift toward the horizon */
+    var r = Math.hypot(x, z + 4);
+    h += Math.max(0, r - 125) * 0.05 * (0.6 + 0.4 * fbm(x * 0.011, z * 0.011, 2));
+    /* micro ripple underfoot, flat enough that nothing floats */
+    h += (fbm(x * 0.35, z * 0.35, 2) - 0.5) * 0.05 * (1 - out);
+    return Math.max(-5, h);
+  }
+
+  function rippleNormal(size, repeat) {
+    var c = document.createElement('canvas'); c.width = c.height = size;
+    var ctx = c.getContext('2d');
+    var img = ctx.createImageData(size, size);
+    function H(x, y) {
+      return Math.sin(x * 0.38 + Math.sin(y * 0.055) * 4.2 + fbm(x * 0.02, y * 0.02, 2) * 5.0) * 0.30 + fbm(x * 0.05, y * 0.05, 3) * 2.2;
+    }
+    var i, x, y;
+    for (y = 0; y < size; y++) {
+      for (x = 0; x < size; x++) {
+        var nx = H(x - 1, y) - H(x + 1, y);
+        var ny = H(x, y - 1) - H(x, y + 1);
+        var nz = 2.4, l = Math.hypot(nx, ny, nz);
+        i = (y * size + x) * 4;
+        img.data[i] = (nx / l * 0.5 + 0.5) * 255;
+        img.data[i + 1] = (ny / l * 0.5 + 0.5) * 255;
+        img.data[i + 2] = (nz / l * 0.5 + 0.5) * 255;
+        img.data[i + 3] = 255;
+      }
+    }
+    ctx.putImageData(img, 0, 0);
+    var t = new THREE.CanvasTexture(c);
+    t.wrapS = t.wrapT = THREE.RepeatWrapping;
+    t.repeat.set(repeat, repeat);
+    t.anisotropy = renderer.capabilities.getMaxAnisotropy();
+    return t;
+  }
+
+  var T = 420, SEG = 168;
   var groundGeo = new THREE.PlaneGeometry(T, T, SEG, SEG);
   groundGeo.rotateX(-Math.PI / 2);
   var pos = groundGeo.attributes.position;
   var colors = new Float32Array(pos.count * 3);
-  var cSand = new THREE.Color(0xd3bf9b);
-  var cValley = new THREE.Color(0xb3a284);
-  var cDune = new THREE.Color(0xe0cda8);
+  var cSand = new THREE.Color(0x8a5c31), cCrest = new THREE.Color(0xc0905c),
+    cTrough = new THREE.Color(0x46301c), cGrit = new THREE.Color(0x6f5030);
   var tmp = new THREE.Color();
   for (var i = 0; i < pos.count; i++) {
     var x = pos.getX(i), z = pos.getZ(i);
-    var az = Math.abs(z), ax = Math.abs(x);
-    var flat = Math.max(0, 1 - Math.max(0, az - 22) / 12) * Math.max(0, 1 - Math.max(0, ax - 40) / 16);
-    var crest = Math.pow(Math.abs(Math.sin(z * 0.075 + Math.sin(x * 0.035) * 0.9 + 0.4)), 2.2);
-    var rise = Math.min(1, Math.max(0, (az - 22) / 34) + Math.max(0, (ax - 40) / 40));
-    var dune = crest * (2.2 + rise * 5.5) * rise;
-    var ripple = Math.sin(x * 1.45 + Math.sin(z * 0.5) * 1.7) * 0.07 * flat;
-    var h = dune + ripple - flat * 0.2;
-    pos.setY(i, h);
-    tmp.copy(cSand);
-    if (flat > 0.4) tmp.lerp(cValley, 0.3 * flat);
-    if (dune > 0.8) tmp.lerp(cDune, Math.min(0.5, dune / 8));
-    tmp.multiplyScalar(0.94 + crest * 0.08);
-    if (Math.sin(x * 0.09 + z * 0.045) > 0.7) tmp.multiplyScalar(0.975);
-    tmp.offsetHSL(0, 0, (Math.random() - 0.5) * 0.008);
+    var y = heightAt(x, z);
+    pos.setY(i, y);
+    var v = fbm(x * 0.07 + 3, z * 0.07 + 5, 3);
+    var t = Math.min(1, Math.max(0, y * 0.30 + 0.32 + (v - 0.5) * 0.40));
+    tmp.copy(cTrough).lerp(cSand, Math.min(1, t * 1.6)).lerp(cCrest, Math.max(0, t - 0.52) * 1.5);
+    tmp.lerp(cGrit, fbm(x * 0.38, z * 0.38, 2) * 0.34);
     colors[i * 3] = tmp.r; colors[i * 3 + 1] = tmp.g; colors[i * 3 + 2] = tmp.b;
   }
   groundGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
   groundGeo.computeVertexNormals();
-  function sandTexture() {
-    var c = document.createElement('canvas'); c.width = c.height = 1024;
-    var g = c.getContext('2d');
-    g.fillStyle = '#eee6d4'; g.fillRect(0, 0, 1024, 1024);
-    var img = g.getImageData(0, 0, 1024, 1024), d = img.data;
-    for (var i = 0; i < d.length; i += 4) {
-      var n = (Math.random() - 0.5) * 22;
-      d[i] += n; d[i + 1] += n; d[i + 2] += n;
-    }
-    g.putImageData(img, 0, 0);
-    g.globalAlpha = 0.07;
-    for (var k = 0; k < 160; k++) {
-      g.strokeStyle = k % 2 ? '#fff8e8' : '#6b5f4a';
-      g.lineWidth = 1 + Math.random() * 2.4;
-      g.beginPath();
-      var yy = Math.random() * 1024;
-      g.moveTo(0, yy);
-      for (var x = 0; x <= 1024; x += 32) {
-        g.lineTo(x, yy + Math.sin(x * 0.018 + k) * 7 + Math.sin(x * 0.004 + k * 2.3) * 18);
-      }
-      g.stroke();
-    }
-    var tex = new THREE.CanvasTexture(c);
-    tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-    tex.repeat.set(26, 26);
-    return tex;
-  }
-  var sandTex = sandTexture();
-  sandTex.anisotropy = renderer.capabilities.getMaxAnisotropy();
   /* under-floor lid: a huge disc below the sand so nothing shows beneath the terrain */
   var lid = new THREE.Mesh(new THREE.CircleGeometry(600, 48), new THREE.MeshBasicMaterial({ color: 0x2a251d }));
   lid.rotation.x = -Math.PI / 2;
   lid.position.y = -6.5;
   scene.add(lid);
-  var ground = new THREE.Mesh(groundGeo, new THREE.MeshPhongMaterial({ vertexColors: true, map: sandTex, bumpMap: sandTex, bumpScale: 0.12, shininess: 0 }));
+  var ground = new THREE.Mesh(groundGeo, new THREE.MeshStandardMaterial({
+    vertexColors: true, roughness: 1, metalness: 0,
+    normalMap: rippleNormal(256, MOBILE ? 30 : 42), normalScale: new THREE.Vector2(0.24, 0.24)
+  }));
   ground.receiveShadow = true;
   scene.add(ground);
 
@@ -185,18 +232,18 @@
   [[-96, -122, 62, 9], [86, -138, 56, 11], [148, -58, 42, 7], [-150, -40, 46, 8], [-240, -180, 90, 16], [210, -200, 84, 18]].forEach(function (r) {
     var ridgeM = new THREE.Mesh(new THREE.SphereGeometry(1, 20, 12), new THREE.MeshLambertMaterial({ color: 0xb0a184 }));
     ridgeM.scale.set(r[2], r[3], r[2] * 0.55);
-    ridgeM.position.set(r[0], -1.5, r[1]);
+    ridgeM.position.set(r[0], heightAt(r[0], r[1]) - 1.5, r[1]);
     scene.add(ridgeM);
   });
 
   /* pebbles scattered across the plain */
-  var pebbles = new THREE.InstancedMesh(new THREE.DodecahedronGeometry(1, 0), new THREE.MeshLambertMaterial({ color: 0x968b76 }), 260);
+  var pebbles = new THREE.InstancedMesh(new THREE.DodecahedronGeometry(1, 0), new THREE.MeshLambertMaterial({ color: 0x8b7658 }), 260);
   var pd = new THREE.Object3D();
   for (var pi = 0; pi < 260; pi++) {
     var px = -34 + Math.random() * 68;
     var pz = -26 + Math.random() * 56;
     var ps = 0.05 + Math.random() * 0.12;
-    pd.position.set(px, ps * 0.4, pz);
+    pd.position.set(px, heightAt(px, pz) + ps * 0.4, pz);
     pd.rotation.set(Math.random() * 3, Math.random() * 3, Math.random() * 3);
     pd.scale.set(ps, ps * 0.6, ps);
     pd.updateMatrix();
@@ -213,38 +260,64 @@
 
   function wellAt(wx, wz, big) {
     var g = new THREE.Group();
-    var R = big ? 1.12 : 0.94;
-    var n = big ? 16 : 12;
-    for (var k = 0; k < n; k++) {
-      var a = (k / n) * Math.PI * 2;
-      var st = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.26, 0.3), k % 2 ? stoneM : stoneDark);
-      st.position.set(Math.cos(a) * R, 0.13, Math.sin(a) * R);
-      st.rotation.y = -a;
-      st.castShadow = true; st.receiveShadow = true;
+    var R = big ? 1.12 : 0.94, H = big ? 1.06 : 0.92;
+    var per = big ? 16 : 13;
+    var bw = (2 * Math.PI * R / per) * 1.02;
+    /* solid wall so no light leaks between stones */
+    var wall = new THREE.Mesh(new THREE.CylinderGeometry(R, R * 1.03, H, 20, 1, true), stoneDark);
+    wall.position.y = H / 2; wall.castShadow = true; wall.receiveShadow = true;
+    g.add(wall);
+    /* three facing courses of masonry blocks */
+    for (var c = 0; c < 3; c++) {
+      for (var k = 0; k < per; k++) {
+        var a = (k + (c % 2 ? 0.5 : 0)) / per * Math.PI * 2;
+        var bh = 0.26 + hash2(k + 9, c) * 0.05;
+        var b = new THREE.Mesh(new THREE.BoxGeometry(bw, bh, 0.15), c % 2 ? stoneM : stoneDark);
+        b.position.set(Math.cos(a) * (R + 0.04), 0.15 + c * (H / 3) + hash2(k, c + 2) * 0.012, Math.sin(a) * (R + 0.04));
+        b.rotation.y = -a + Math.PI / 2;
+        b.rotation.z = (hash2(k, c + 5) - 0.5) * 0.03;
+        b.castShadow = true; b.receiveShadow = true;
+        g.add(b);
+      }
+    }
+    /* parapet ring */
+    for (var rr = 0; rr < per; rr++) {
+      var ra = rr / per * Math.PI * 2;
+      var cap = new THREE.Mesh(new THREE.BoxGeometry(0.38, 0.1, 0.32), stoneDark);
+      cap.position.set(Math.cos(ra) * (R + 0.02), H + 0.02, Math.sin(ra) * (R + 0.02));
+      cap.rotation.y = -ra + Math.PI / 2;
+      cap.castShadow = true;
+      g.add(cap);
+    }
+    /* dark mouth + water */
+    var mouth = new THREE.Mesh(new THREE.CircleGeometry(R - 0.15, 18), new THREE.MeshLambertMaterial({ color: 0x100c08 }));
+    mouth.rotation.x = -Math.PI / 2; mouth.position.y = H - 0.03; g.add(mouth);
+    var water = new THREE.Mesh(new THREE.CircleGeometry(R - 0.22, 16), waterM);
+    water.rotation.x = -Math.PI / 2; water.position.y = H - 0.05; g.add(water);
+    /* curb stones on the sand */
+    for (var s2 = 0; s2 < 10; s2++) {
+      var sa = s2 / 10 * Math.PI * 2 + 0.3;
+      var st = new THREE.Mesh(new THREE.IcosahedronGeometry(0.15 + hash2(s2, 3) * 0.07, 0), stoneDark);
+      st.position.set(Math.cos(sa) * (R + 0.32), 0.07, Math.sin(sa) * (R + 0.32));
+      st.rotation.set(hash2(s2, 1) * 3, hash2(s2, 2) * 3, hash2(s2, 3) * 3);
+      st.scale.y = 0.6;
+      st.castShadow = true;
       g.add(st);
-      var st2 = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.2, 0.26), k % 2 ? stoneDark : stoneM);
-      st2.position.set(Math.cos(a + 0.13) * (R - 0.04), 0.35, Math.sin(a + 0.13) * (R - 0.04));
-      st2.rotation.y = -a;
-      st2.castShadow = true;
-      g.add(st2);
     }
-    var shaft = new THREE.Mesh(new THREE.CylinderGeometry(R - 0.24, R - 0.28, 0.48, 16, 1, true),
-      new THREE.MeshLambertMaterial({ color: 0x453c2e, side: THREE.DoubleSide }));
-    shaft.position.y = 0.24; g.add(shaft);
-    var water = new THREE.Mesh(new THREE.CircleGeometry(R - 0.3, 16), new THREE.MeshLambertMaterial({ color: 0x1c2427 }));
-    water.rotation.x = -Math.PI / 2; water.position.y = 0.07; g.add(water);
     if (big) {
-      var post1 = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.08, 1.9, 6), woodM);
-      post1.position.set(-R, 0.95, 0); post1.castShadow = true; g.add(post1);
-      var post2 = post1.clone(); post2.position.x = R; g.add(post2);
-      var bar = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.05, R * 2 + 0.2, 6), woodM);
-      bar.rotation.z = Math.PI / 2; bar.position.set(0, 1.86, 0); bar.castShadow = true; g.add(bar);
-      var rope = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 0.85, 4), new THREE.MeshLambertMaterial({ color: 0x8a7a5a }));
-      rope.position.set(0, 1.36, 0); g.add(rope);
-      var bucket = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.11, 0.2, 8), woodM);
-      bucket.position.set(0, 0.9, 0); g.add(bucket);
+      var p1 = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.07, 1.66, 7), woodM);
+      p1.position.set(-0.82, 0.83, 0); p1.rotation.z = 0.045; p1.castShadow = true; g.add(p1);
+      var p2 = p1.clone(); p2.position.x = 0.82; p2.rotation.z = -0.045; g.add(p2);
+      var beam = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.74, 6), woodM);
+      beam.rotation.z = Math.PI / 2; beam.position.y = 1.6; beam.castShadow = true; g.add(beam);
+      var rope = new THREE.Mesh(new THREE.CylinderGeometry(0.013, 0.013, 0.9, 4), new THREE.MeshLambertMaterial({ color: 0x8a7a5a }));
+      rope.position.set(0.1, 1.14, 0); g.add(rope);
+      var bucket = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.1, 0.2, 8), woodM);
+      bucket.position.set(0.1, 0.62, 0); bucket.castShadow = true; g.add(bucket);
     }
-    g.position.set(wx, 0, wz); scene.add(g); return g;
+    g.position.set(wx, heightAt(wx, wz), wz);
+    g.rotation.y = 0.5;
+    scene.add(g); return g;
   }
   [[8.0, 3.2], [9.5, 4.2], [10.8, 3.4]].forEach(function (w, wi) { wellAt(w[0], w[1], wi === 0); });
   var basin = new THREE.Group();
@@ -288,12 +361,6 @@
   arish.position.set(-7.5, 0, 20.5);
   scene.add(arish);
 
-  var dune = new THREE.Mesh(new THREE.SphereGeometry(30, 22, 14, 0, Math.PI * 2, 0, Math.PI / 2),
-    new THREE.MeshPhongMaterial({ color: 0xdccaa6, map: sandTex, bumpMap: sandTex, bumpScale: 0.1, shininess: 0 }));
-  dune.scale.set(1.5, 0.3, 1);
-  dune.position.set(58, -0.4, -54);
-  dune.receiveShadow = true;
-  scene.add(dune);
   var aftermathGroup = new THREE.Group();
   aftermathGroup.userData.keep = true;
   aftermathGroup.visible = false;
@@ -348,37 +415,47 @@
     stone.castShadow = true; stone.receiveShadow = true; aftermathGroup.add(stone);
   }
 
-  /* framing dunes at the near corners: the field sits inside the valley */
-  [[-28, 36, 16, 2.4, 10], [28, 34, 18, 2.2, 11]].forEach(function (d) {
-    var fd = new THREE.Mesh(new THREE.SphereGeometry(1, 22, 12), new THREE.MeshPhongMaterial({ color: 0xd6c4a2, map: sandTex, bumpMap: sandTex, bumpScale: 0.1, shininess: 0 }));
-    fd.scale.set(d[2], d[3], d[4]);
-    fd.position.set(d[0], -0.6, d[1]);
-    fd.receiveShadow = true;
-    scene.add(fd);
-  });
-
   /* ------------------------------ set dressing: rocks, scrub, palms */
-  var rockM = new THREE.MeshPhongMaterial({ color: 0x968c78, flatShading: true, shininess: 0 });
-  [[-26, 6, 1.3], [-23, -9, 0.8], [18, 9, 1.1], [24, 2.6, 0.7], [-16, -22, 1.4], [10, -19, 0.9], [33, -14, 1.6], [-34, 16, 1.8], [40, 12, 1.2], [6, 26, 0.9], [-9, 30, 1.1], [30, -30, 2.2], [-13, 23, 1.5], [12, 24, 1.3], [-19, 26, 1.7]].forEach(function (r, ri) {
-    var rock = new THREE.Mesh(new THREE.IcosahedronGeometry(r[2], 0), rockM);
-    rock.position.set(r[0], r[2] * 0.32, r[1]);
-    rock.rotation.set(ri * 0.7, ri * 1.3, ri * 0.4);
-    rock.scale.y = 0.62;
-    rock.castShadow = true; rock.receiveShadow = true;
-    scene.add(rock);
-  });
-  var scrubM = new THREE.MeshLambertMaterial({ color: 0x6f6547 });
-  function scrub(x, z, sc) {
-    for (var k = 0; k < 5; k++) {
-      var b = new THREE.Mesh(new THREE.ConeGeometry(0.03, 0.5, 4), scrubM);
-      var a = (k / 5) * Math.PI * 2;
-      b.position.set(x + Math.cos(a) * 0.12, 0.24, z + Math.sin(a) * 0.12);
-      b.rotation.set(Math.cos(a) * 0.35, 0, Math.sin(a) * 0.35);
-      b.scale.setScalar(sc);
-      scene.add(b);
+  var rockM = new THREE.MeshPhongMaterial({ color: 0x8f7f68, flatShading: true, shininess: 0 });
+  var rockDarkM = new THREE.MeshPhongMaterial({ color: 0x5d5342, flatShading: true, shininess: 0 });
+  /* stratified rocks: three stacked slabs, seated on the heightfield */
+  function rock(px, pz, s) {
+    var g = new THREE.Group();
+    for (var l = 0; l < 3; l++) {
+      var geo = new THREE.IcosahedronGeometry(s * (0.72 - l * 0.13), 0);
+      var p = geo.attributes.position;
+      for (var vi = 0; vi < p.count; vi++) {
+        var f = 0.82 + hash2(vi, l + 2) * 0.36;
+        p.setXYZ(vi, p.getX(vi) * f * 1.35, p.getY(vi) * f * 0.55, p.getZ(vi) * f);
+      }
+      geo.computeVertexNormals();
+      var m = new THREE.Mesh(geo, l === 2 ? rockDarkM : rockM);
+      m.position.y = 0.10 + l * s * 0.30;
+      m.rotation.y = hash2(l, 7) * 3;
+      m.castShadow = true; m.receiveShadow = true;
+      g.add(m);
     }
+    g.position.set(px, heightAt(px, pz), pz);
+    scene.add(g);
   }
-  [[-11, 8.4], [-2.5, 9.2], [7, 7.6], [14, 5], [-15, 3.4], [3, 21], [-8, 25], [12, 24], [-20, -6], [8, -9], [21, -12], [-4, -25], [16, -27], [36, -8]].forEach(function (s) { scrub(s[0], s[1], 0.8 + Math.random() * 0.7); });
+  [[-26, 6, 1.3], [-23, -9, 0.8], [18, 9, 1.1], [24, 2.6, 0.7], [-16, -22, 1.4], [10, -19, 0.9], [33, -14, 1.6], [-34, 16, 1.8], [40, 12, 1.2], [6, 26, 0.9], [-9, 30, 1.1], [30, -30, 2.2], [-13, 23, 1.5], [12, 24, 1.3], [-19, 26, 1.7]].forEach(function (r, ri) { rock(r[0], r[1], r[2]); });
+  /* scrub: one instanced draw for the whole field */
+  var scrubGeo = new THREE.ConeGeometry(0.13, 0.46, 4, 1);
+  var scrubN = 240;
+  var scrub = new THREE.InstancedMesh(scrubGeo, new THREE.MeshLambertMaterial({ color: 0x6f6547 }), scrubN);
+  var scrubD = new THREE.Object3D();
+  for (var scI = 0; scI < scrubN; scI++) {
+    var scA = hash2(scI, 1) * Math.PI * 2, scR = 5 + Math.pow(hash2(scI, 2), 0.6) * 52;
+    var scX = Math.cos(scA) * scR, scZ = Math.sin(scA) * scR - 3;
+    scrubD.position.set(scX, heightAt(scX, scZ) + 0.12, scZ);
+    scrubD.rotation.set((hash2(scI, 3) - 0.5) * 0.5, hash2(scI, 4) * 3, (hash2(scI, 5) - 0.5) * 0.5);
+    var scS = 0.5 + hash2(scI, 6) * 1.1;
+    scrubD.scale.set(scS, scS * (0.7 + hash2(scI, 7) * 0.9), scS);
+    scrubD.updateMatrix();
+    scrub.setMatrixAt(scI, scrubD.matrix);
+  }
+  scrub.receiveShadow = true;
+  scene.add(scrub);
   var PALMS = [];
   function palm(x, z, h, lean, simple) {
     var g = new THREE.Group();
@@ -472,35 +549,87 @@
     scene.add(reed);
   }
 
-  /* camps on the banks (BADR-018: both armies camped on their bank through the rain-night) */
-  function tent(x, z, dark) {
-    var t = new THREE.Mesh(new THREE.ConeGeometry(1.6, 1.5, 4), new THREE.MeshLambertMaterial({ color: dark ? 0x4b4437 : 0xc4b99f }));
-    t.position.set(x, 0.75, z);
-    t.rotation.y = Math.PI / 4;
-    t.castShadow = true; t.receiveShadow = true;
-    scene.add(t);
-    var flap = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.9, 0.05), new THREE.MeshLambertMaterial({ color: dark ? 0x2e2a22 : 0x6f6450 }));
-    flap.position.set(x, 0.45, z + 1.05);
-    flap.rotation.x = 0.1;
-    scene.add(flap);
-    var pole = new THREE.Mesh(new THREE.CylinderGeometry(0.028, 0.028, 1.95, 5), woodM);
-    pole.position.set(x, 0.98, z);
-    pole.castShadow = true;
-    scene.add(pole);
-    var ropeMat = new THREE.LineBasicMaterial({ color: 0x8a7a5a, transparent: true, opacity: 0.8 });
-    [[1.35, 1.1], [-1.35, 1.1], [0, -1.5]].forEach(function (d) {
-      var geo = new THREE.BufferGeometry().setFromPoints([
-        new THREE.Vector3(x, 1.68, z),
-        new THREE.Vector3(x + d[0], 0.02, z + d[1])
-      ]);
-      scene.add(new THREE.Line(geo, ropeMat));
+  /* camps on the banks (BADR-018: both armies camped on their bank through the rain-night).
+     Goat-hair ridge tents: sagging cloth roof, dark interior, back wall, ridge poles and guys. */
+  var ropeM = new THREE.MeshLambertMaterial({ color: 0x8a7a5a });
+  function tent(x, z, dark, w, d, h) {
+    w = w || 3.6; d = d || 4.4; h = h || 1.3;
+    var g = new THREE.Group();
+    var feltM = new THREE.MeshLambertMaterial({ color: dark ? 0x4b4437 : 0xb9ac92, side: THREE.DoubleSide });
+    var innerM = new THREE.MeshLambertMaterial({ color: 0x16100b, side: THREE.DoubleSide });
+    var wallM = new THREE.MeshLambertMaterial({ color: dark ? 0x322c23 : 0x8f826a, side: THREE.DoubleSide });
+    function roof(scale, dy, mat, sagAmt) {
+      var nu = 16, nz = 12;
+      var geo = new THREE.BufferGeometry();
+      var vs = [], idx = [], uvs = [], iz, iu;
+      for (iz = 0; iz <= nz; iz++) {
+        var t = iz / nz;
+        var ridgedip = 1 - 0.16 * Math.pow(Math.abs(t - 0.5) * 2, 4);
+        for (iu = 0; iu <= nu; iu++) {
+          var u = iu / nu;
+          var arch = Math.pow(1 - Math.abs(u * 2 - 1), 1.45);
+          var X = (u - 0.5) * w * scale;
+          var Y = h * ridgedip * arch + dy;
+          Y -= sagAmt * Math.sin(u * Math.PI) * (0.45 + 0.55 * Math.sin(t * Math.PI));
+          var Z = (t - 0.5) * d;
+          vs.push(X, Math.max(0.02, Y), Z);
+          uvs.push(u, t);
+        }
+      }
+      for (iz = 0; iz < nz; iz++) {
+        for (iu = 0; iu < nu; iu++) {
+          var a = iz * (nu + 1) + iu, b = a + 1, c = a + nu + 1, dd = c + 1;
+          idx.push(a, c, b, b, c, dd);
+        }
+      }
+      geo.setAttribute('position', new THREE.Float32BufferAttribute(vs, 3));
+      geo.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
+      geo.setIndex(idx);
+      geo.computeVertexNormals();
+      var m = new THREE.Mesh(geo, mat);
+      m.castShadow = true;
+      return m;
+    }
+    g.add(roof(0.90, -0.08, innerM, 0.09));
+    g.add(roof(1.0, 0, feltM, 0.12));
+    var back = new THREE.Mesh(new THREE.PlaneGeometry(w * 0.98, h * 0.95, 8, 6), wallM);
+    var bp = back.geometry.attributes.position;
+    for (var bi = 0; bi < bp.count; bi++) {
+      var bx = bp.getX(bi), by = bp.getY(bi);
+      var arch2 = Math.pow(Math.max(0, 1 - Math.abs(bx / (w * 0.49))), 1.45);
+      bp.setY(bi, Math.min(by + h * 0.475, h * arch2 * 0.92));
+    }
+    back.geometry.computeVertexNormals();
+    back.rotation.y = Math.PI;
+    back.position.z = -d * 0.49;
+    back.castShadow = true;
+    g.add(back);
+    [-1, 1].forEach(function (f) {
+      var p = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.06, h + 0.26, 6), woodM);
+      p.position.set(0, (h + 0.26) / 2, f * d * 0.44);
+      p.castShadow = true;
+      g.add(p);
+      var ex = (f > 0 ? 1 : -1) * w * 0.6, ez = f * d * 0.6;
+      var gp = new THREE.Mesh(new THREE.CylinderGeometry(0.01, 0.01, 1.7, 3), ropeM);
+      var len = Math.hypot(ex, h * 0.5, ez - f * d * 0.44);
+      gp.position.set(ex * 0.5, h * 0.45, (f * d * 0.44 + ez) * 0.5);
+      gp.lookAt(new THREE.Vector3(ex, 0.02, ez));
+      gp.rotateX(Math.PI / 2);
+      gp.scale.y = len / 1.7;
+      g.add(gp);
+      var peg = new THREE.Mesh(new THREE.CylinderGeometry(0.026, 0.04, 0.13, 5), woodM);
+      peg.position.set(ex, 0.04, ez);
+      g.add(peg);
     });
+    g.position.set(x, heightAt(x, z) - 0.02, z);
+    g.rotation.y = (hash2(Math.round(x * 7 + z * 3), 1) - 0.5) * 0.5;
+    scene.add(g);
   }
-  [-22, -18].forEach(function (x) { tent(x, 18.5, false); });
-  [18, 22].forEach(function (x) { tent(x, 18.5, false); });
+  [-22, -18].forEach(function (x) { tent(x, 18.5, false, 3.8, 4.8, 1.4); });
+  [18, 22].forEach(function (x) { tent(x, 18.5, false, 3.8, 4.8, 1.4); });
   /* Quraysh: ten tents in the front row and five behind, scaled to the army */
-  [-23, -18, -13, -8, -3, 2, 7, 12, 17, 22].forEach(function (x) { tent(x, -26.5, true); });
-  [-19, -9, 1, 11, 21].forEach(function (x) { tent(x, -31.6, true); });
+  [-23, -18, -13, -8, -3, 2, 7, 12, 17, 22].forEach(function (x) { tent(x, -26.5, true, 3.4, 4.2, 1.25); });
+  [-19, -9, 1, 11, 21].forEach(function (x) { tent(x, -31.6, true, 3.4, 4.2, 1.25); });
 
   /* camp clutter: sacks, jars, stacked spears and a fire ring */
   var sackM = new THREE.MeshLambertMaterial({ color: 0x9a8462 });
@@ -1008,6 +1137,403 @@
   ANSAR_MARKS.forEach(function (g) { g.userData.dynamicRoot = true; });
   EVENT_MARKS.push({ group: ansarB, side: 0, label: 'the Anṣār trio (RA)', k: 'ansarTrio', labelY: 4.0, event: true, priority: 1, labelAlways: true, ph: [1] });
 
+  /* ------------------------------ rigged heroes (Quaternius Adventurer, CC0).
+     The six duel champions and the three Anṣār are rigged, faceless figures:
+     one merged skinned mesh per body (a single draw call each), a cloth turban
+     or iron helm over the head, a weapon on the right wrist and a shield
+     strapped to the left forearm. Clip time is driven from the battle clock,
+     so every seek poses the figures deterministically. No face is ever visible;
+     the Prophet ﷺ is never depicted. */
+  var HEROES = { ready: false, kits: {}, specs: [], ansar: [], count: 0, assets: {} };
+  var HCLIP = {
+    idle: 'CharacterArmature|Idle_Sword',
+    neutral: 'CharacterArmature|Idle',
+    walk: 'CharacterArmature|Walk',
+    attack: 'CharacterArmature|Sword_Slash',
+    hit: 'CharacterArmature|HitRecieve',
+    death: 'CharacterArmature|Death'
+  };
+  var HERO_PAL = {
+    muslim: { body: 0xd8d2c4, legs: 0x5f5240, feet: 0x3f2f22, head: 0x2a2833 },
+    ansar: { body: 0xbfb2a0, legs: 0x54483a, feet: 0x3a2b20, head: 0x33303b },
+    quraysh: { body: 0x6d3d29, legs: 0x452e20, feet: 0x33251b, head: 0x3a2c25 }
+  };
+  var HERO_MAT = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.95, metalness: 0, flatShading: true, skinning: true });
+
+  /* world-aligned holder on a bone: keeps a prop upright at bind, then follows it */
+  function boneHolder(bone) {
+    bone.updateMatrixWorld(true);
+    var q0 = bone.getWorldQuaternion(new THREE.Quaternion());
+    var ws = bone.getWorldScale(new THREE.Vector3());
+    var holder = new THREE.Group();
+    holder.quaternion.copy(q0).invert();
+    holder.scale.set(1 / ws.x, 1 / ws.y, 1 / ws.z);
+    bone.add(holder);
+    return holder;
+  }
+  function scaleHolder(bone) {
+    var ws = bone.getWorldScale(new THREE.Vector3());
+    var h = new THREE.Group();
+    h.scale.set(1 / ws.x, 1 / ws.y, 1 / ws.z);
+    bone.add(h);
+    return h;
+  }
+  /* bake a small rigid group into one vertex-coloured mesh (one draw call) */
+  function bakeToMesh(root, rough) {
+    root.updateMatrixWorld(true);
+    var inv = new THREE.Matrix4().copy(root.matrixWorld).invert();
+    var m = new THREE.Matrix4(), v = new THREE.Vector3(), nv = new THREE.Vector3();
+    var posA = [], norA = [], colA = [], idx = [], off = 0;
+    var grey = new THREE.Color(0x888888);
+    root.traverse(function (o) {
+      if (!o.isMesh || !o.geometry || !o.geometry.attributes.position) return;
+      m.multiplyMatrices(inv, o.matrixWorld);
+      var g = o.geometry, p = g.attributes.position;
+      if (!g.attributes.normal) g.computeVertexNormals();
+      var c = (o.material && o.material.color) || grey;
+      for (var i = 0; i < p.count; i++) {
+        v.fromBufferAttribute(p, i).applyMatrix4(m);
+        posA.push(v.x, v.y, v.z);
+        nv.fromBufferAttribute(g.attributes.normal, i).transformDirection(m).normalize();
+        norA.push(nv.x, nv.y, nv.z);
+        colA.push(c.r, c.g, c.b);
+      }
+      if (g.index) { for (var k = 0; k < g.index.count; k++) idx.push(g.index.array[k] + off); }
+      else { for (var k2 = 0; k2 < p.count; k2++) idx.push(k2 + off); }
+      off += p.count;
+    });
+    var geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(posA, 3));
+    geo.setAttribute('normal', new THREE.Float32BufferAttribute(norA, 3));
+    geo.setAttribute('color', new THREE.Float32BufferAttribute(colA, 3));
+    geo.setIndex(idx);
+    var mesh = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ vertexColors: true, roughness: rough || 0.95, metalness: 0, flatShading: true }));
+    mesh.castShadow = true;
+    return mesh;
+  }
+  /* merge a clone's skinned parts into one geometry: every part is re-expressed
+     in the first part's bind space so a single bind matrix drives them all */
+  function mergeHeroBody(root) {
+    var parts = [];
+    root.traverse(function (o) { if (o.isSkinnedMesh && !/Backpack/i.test(o.name || '')) parts.push(o); });
+    if (!parts.length) return null;
+    var b0 = parts[0].bindMatrix || new THREE.Matrix4();
+    var inv0 = new THREE.Matrix4().copy(b0).invert();
+    var m = new THREE.Matrix4(), v = new THREE.Vector3(), nv = new THREE.Vector3();
+    var posA = [], norA = [], colA = [], siA = [], swA = [], idx = [], off = 0;
+    var grey = new THREE.Color(0x888888);
+    for (var pi = 0; pi < parts.length; pi++) {
+      var part = parts[pi];
+      var g = part.geometry, p = g.attributes.position;
+      if (!g.attributes.normal) g.computeVertexNormals();
+      m.multiplyMatrices(inv0, part.bindMatrix || b0);
+      var c = (part.material && part.material.color) || grey;
+      var si = g.attributes.skinIndex, sw = g.attributes.skinWeight;
+      for (var i = 0; i < p.count; i++) {
+        v.fromBufferAttribute(p, i).applyMatrix4(m);
+        posA.push(v.x, v.y, v.z);
+        nv.fromBufferAttribute(g.attributes.normal, i).transformDirection(m).normalize();
+        norA.push(nv.x, nv.y, nv.z);
+        colA.push(c.r, c.g, c.b);
+        siA.push(si.getX(i), si.getY(i), si.getZ(i), si.getW(i));
+        swA.push(sw.getX(i), sw.getY(i), sw.getZ(i), sw.getW(i));
+      }
+      if (g.index) { for (var k = 0; k < g.index.count; k++) idx.push(g.index.array[k] + off); }
+      else { for (var k2 = 0; k2 < p.count; k2++) idx.push(k2 + off); }
+      off += p.count;
+    }
+    var geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(posA, 3));
+    geo.setAttribute('normal', new THREE.Float32BufferAttribute(norA, 3));
+    geo.setAttribute('color', new THREE.Float32BufferAttribute(colA, 3));
+    geo.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(siA, 4));
+    geo.setAttribute('skinWeight', new THREE.Float32BufferAttribute(swA, 4));
+    geo.setIndex(idx);
+    geo.computeBoundingBox();
+    var bindBox = new THREE.Box3().copy(geo.boundingBox).applyMatrix4(b0);
+    return { geo: geo, bind: b0, bindBox: bindBox };
+  }
+  function applyPalette(root, pal) {
+    root.traverse(function (o) {
+      if (!o.isMesh) return;
+      var nm = o.name || '';
+      if (/Backpack/i.test(nm)) { o.visible = false; return; }
+      var col = pal.body;
+      if (/Legs/i.test(nm)) col = pal.legs;
+      else if (/Feet/i.test(nm)) col = pal.feet;
+      else if (/Head/i.test(nm)) col = pal.head;
+      o.material = new THREE.MeshStandardMaterial({ color: col, roughness: 0.95, metalness: 0, flatShading: true, skinning: true });
+    });
+  }
+  function buildKit(pal) {
+    var c = THREE.SkeletonUtils.clone(HEROES.master);
+    applyPalette(c, pal);
+    var merged = mergeHeroBody(c);
+    return merged;
+  }
+  /* normalize a loaded glb prop: centre it, size it, aim its axis, one mesh */
+  function prepProp(src, opts) {
+    var obj = src.clone(true);
+    obj.traverse(function (o) { if (o.isMesh) { o.castShadow = true; } });
+    var wrap = new THREE.Group();
+    wrap.add(obj);
+    wrap.updateMatrixWorld(true);
+    var box = new THREE.Box3().setFromObject(wrap);
+    var sz = box.getSize(new THREE.Vector3());
+    var arr = [sz.x, sz.y, sz.z];
+    var longest = Math.max(arr[0], arr[1], arr[2]);
+    obj.scale.multiplyScalar(opts.len / longest);
+    wrap.updateMatrixWorld(true);
+    var box2 = new THREE.Box3().setFromObject(wrap);
+    var c = box2.getCenter(new THREE.Vector3());
+    obj.position.sub(c);
+    var axisVec = new THREE.Vector3(
+      arr[0] >= arr[1] && arr[0] >= arr[2] ? 1 : 0,
+      arr[1] > arr[0] && arr[1] >= arr[2] ? 1 : 0,
+      arr[2] > arr[0] && arr[2] > arr[1] ? 1 : 0
+    );
+    if (opts.grip) obj.position.addScaledVector(axisVec, -opts.grip * opts.len);
+    var q = new THREE.Quaternion().setFromUnitVectors(axisVec, opts.dir.clone().normalize());
+    var baked = bakeToMesh(wrap, 0.55);
+    var out = new THREE.Group();
+    out.add(baked);
+    out.quaternion.copy(q);
+    return out;
+  }
+  /* cloth-wrapped head: a wound turban or an iron helm. No face, ever. */
+  function heroHead(bone, height, opts) {
+    var s = height / 1.78;
+    var g = boneHolder(bone);
+    var tmp = new THREE.Group();
+    function part(geo, color, x, y, z, rx, sx, sy, sz2) {
+      var mm = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color: color, roughness: 1, metalness: 0, flatShading: true }));
+      mm.position.set(x || 0, y || 0, z || 0);
+      if (rx) mm.rotation.x = rx;
+      if (sx) mm.scale.set(sx, sy, sz2);
+      tmp.add(mm);
+    }
+    part(new THREE.SphereGeometry(0.114 * s, 14, 10), opts.wrap, 0, 0.078 * s, 0, 0, 1.0, 1.10, 1.04);
+    part(new THREE.CylinderGeometry(0.056 * s, 0.070 * s, 0.13 * s, 10), opts.wrap, 0, -0.045 * s);
+    if (opts.helm) {
+      part(new THREE.SphereGeometry(0.130 * s, 12, 9, 0, Math.PI * 2, 0, Math.PI * 0.66), opts.band, 0, 0.078 * s, 0, 0, 1, 1.16, 1.04);
+      part(new THREE.CylinderGeometry(0.145 * s, 0.141 * s, 0.040 * s, 12), opts.dark, 0, 0.055 * s);
+      part(new THREE.BoxGeometry(0.022 * s, 0.10 * s, 0.024 * s), opts.dark, 0, 0.005 * s, 0.138 * s);
+      part(new THREE.ConeGeometry(0.028 * s, 0.10 * s, 6), opts.dark, 0, 0.245 * s);
+      part(new THREE.CylinderGeometry(0.118 * s, 0.100 * s, 0.12 * s, 12, 1, true), opts.dark, 0, -0.025 * s);
+    } else {
+      part(new THREE.TorusGeometry(0.104 * s, 0.052 * s, 6, 18), opts.band, 0, 0.163 * s, Math.PI / 2);
+      part(new THREE.TorusGeometry(0.108 * s, 0.022 * s, 4, 18), opts.dark, 0, 0.118 * s, Math.PI / 2);
+      part(new THREE.SphereGeometry(0.108 * s, 12, 8, 0, Math.PI * 2, 0, Math.PI * 0.5), opts.band, 0, 0.170 * s, 0, 0, 1, 0.46, 1);
+      part(new THREE.SphereGeometry(0.036 * s, 6, 5), opts.dark, 0.085 * s, 0.135 * s, -0.055 * s);
+    }
+    g.add(tmp);
+    var baked = bakeToMesh(tmp, 1);
+    g.add(baked);
+    g.remove(tmp);
+    return g;
+  }
+  /* shield strapped to the left forearm: disc, boss and a leather strap that
+     wraps the wrist — the strap is what keeps it from reading as a tray */
+  function strappedShield(bone, spec) {
+    var s = spec.height / 1.78;
+    var holder = boneHolder(bone);
+    bone.updateMatrixWorld(true);
+    var up = new THREE.Vector3(0, 1, 0);
+    var parent = bone.parent;
+    parent.updateMatrixWorld(true);
+    var d = bone.getWorldPosition(new THREE.Vector3()).sub(parent.getWorldPosition(new THREE.Vector3()));
+    if (d.lengthSq() < 1e-8) d.set(0, -1, 0); else d.normalize();
+    var fwd = new THREE.Vector3(Math.sin(spec.ry), 0, Math.cos(spec.ry));
+    var left = new THREE.Vector3().crossVectors(up, fwd).normalize();
+    var tmp = new THREE.Group();
+    var faceC = spec.kit === 'quraysh' ? 0x4a4132 : 0x8a7a5c;
+    var rimC = spec.kit === 'quraysh' ? 0x33322e : 0x5f5240;
+    function part(geo, color, pos, quat) {
+      var mm = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color: color, roughness: 0.9, metalness: 0.05, flatShading: true }));
+      if (pos) mm.position.copy(pos);
+      if (quat) mm.quaternion.copy(quat);
+      mm.castShadow = true;
+      tmp.add(mm);
+    }
+    var qFace = new THREE.Quaternion().setFromUnitVectors(up, d);
+    part(new THREE.CylinderGeometry(0.26 * s, 0.26 * s, 0.035, 14), faceC,
+      d.clone().multiplyScalar(0.07 * s).addScaledVector(left, 0.05 * s), qFace);
+    part(new THREE.SphereGeometry(0.05 * s, 8, 6), rimC,
+      d.clone().multiplyScalar(0.095 * s).addScaledVector(left, 0.05 * s));
+    part(new THREE.TorusGeometry(0.07 * s, 0.019 * s, 5, 12), rimC,
+      left.clone().multiplyScalar(0.02 * s),
+      new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 0, 1), d));
+    holder.add(tmp);
+    var baked = bakeToMesh(tmp, 0.9);
+    holder.add(baked);
+    holder.remove(tmp);
+  }
+  function makeHero(spec) {
+    var root = THREE.SkeletonUtils.clone(HEROES.master);
+    var holder = new THREE.Group();
+    holder.add(root);
+    var kit = HEROES.kits[spec.kit];
+    var native = kit.bindBox.max.y - kit.bindBox.min.y;
+    var s = spec.height / native;
+    root.scale.setScalar(s);
+    root.position.y = -kit.bindBox.min.y * s;
+    /* the merged kit body replaces the part meshes (same skeleton, one draw) */
+    var parts = [];
+    root.traverse(function (o) { if (o.isSkinnedMesh) parts.push(o); });
+    var body = new THREE.SkinnedMesh(kit.geo, HERO_MAT);
+    body.castShadow = true; body.receiveShadow = true; body.frustumCulled = false;
+    body.bind(parts[0].skeleton, parts[0].bindMatrix);
+    body.position.copy(parts[0].position);
+    body.quaternion.copy(parts[0].quaternion);
+    body.scale.copy(parts[0].scale);
+    parts[0].parent.add(body);
+    parts.forEach(function (pm) { pm.visible = false; });
+
+    root.updateMatrixWorld(true);
+    var mixer = new THREE.AnimationMixer(root);
+    var actions = {};
+    HEROES.master.animations.forEach(function (clip) { actions[clip.name] = mixer.clipAction(clip); });
+    var fig = { root: root, holder: holder, mixer: mixer, actions: actions, cur: null, from: null, fadeAt: -1, off: spec.offT || 0, idle: spec.idle || 'idle' };
+    var idleA = actions[HCLIP[fig.idle]];
+    if (idleA) { idleA.enabled = true; idleA.setEffectiveWeight(1); idleA.play(); idleA.time = 0; idleA.paused = true; }
+    mixer.update(0);
+
+    var head = root.getObjectByName('Head');
+    var wristR = root.getObjectByName('WristR');
+    var wristL = root.getObjectByName('WristL');
+    if (head) heroHead(head, spec.height, spec.wrap);
+    if (wristR && spec.weapon) {
+      var wl = spec.weapon === 'sword' ? { len: 0.60, grip: 0.42 } : { len: 2.25, grip: 0.30 };
+      var w = prepProp(HEROES.assets[spec.weapon], { len: wl.len, dir: new THREE.Vector3(0, -1, 0), grip: wl.grip });
+      scaleHolder(wristR).add(w);
+    }
+    if (wristL && spec.shield) strappedShield(wristL, spec);
+    HEROES.count++;
+    return fig;
+  }
+  /* deterministic clip driving: weights fade on the battle clock keyed to the
+     structural state boundary (not the seek time), and clip times are set
+     explicitly so a seek always lands on the same pose */
+  function heroDrive(f, want, tl, deathT, attackT, fadeStart) {
+    if (!f.actions[HCLIP[want]]) want = f.idle;
+    if (want !== f.cur) {
+      f.from = f.cur;
+      if (fadeStart !== undefined && fadeStart <= tl) f.fadeAt = fadeStart;
+      else { f.from = null; f.fadeAt = tl - 1; } /* seeked to before the change: snap */
+      f.cur = want;
+    }
+    var w = clamp01((tl - f.fadeAt) / 0.5);
+    var states = [];
+    function st(name, weight) {
+      if (!weight || !name) return;
+      var a = f.actions[HCLIP[name]];
+      if (!a) return;
+      var dur = a.getClip().duration || 1;
+      var tt;
+      if (name === 'death') tt = Math.min(Math.max(0.01, (deathT || 0) * 1.4), dur - 0.01);
+      else if (name === 'attack') tt = Math.min(attackT || 0, dur - 0.01);
+      else if (name === 'walk') tt = (tl * 0.85 + f.off) % dur;
+      else tt = (tl * 0.55 + f.off) % dur;
+      states.push({ a: a, time: tt, w: weight });
+    }
+    st(want, w);
+    if (w < 1 && f.from && f.from !== want) st(f.from, 1 - w);
+    for (var nm in f.actions) { var a = f.actions[nm]; a.enabled = false; a.setEffectiveWeight(0); }
+    states.forEach(function (ss) {
+      ss.a.enabled = true; ss.a.setEffectiveWeight(ss.w); ss.a.play(); ss.a.time = ss.time; ss.a.paused = true;
+    });
+    f.mixer.update(0);
+  }
+  function driveHeroUnit(u, i, t, tl, fallen, deathT, deathStart) {
+    var f = u.hero;
+    if (!f) return;
+    var want, atk = null, fadeStart;
+    if (fallen > 0.02 || deathT > 0.05) {
+      want = 'death';
+      fadeStart = deathStart;
+    } else {
+      var mv = false, mvWin = null;
+      if (u._walkWin) for (var wi = 0; wi < u._walkWin.length; wi++) {
+        var ww = u._walkWin[wi];
+        if (ww.i === i && t >= ww.a && t <= ww.b) { mv = true; mvWin = ww; break; }
+      }
+      if (mv) u._lastWalkEnd = fracOf(mvWin.i, mvWin.b) * TOTAL;
+      if (!mv && u._attackWin) for (var ai = 0; ai < u._attackWin.length; ai++) {
+        var aw = u._attackWin[ai];
+        if (aw.i === i && t >= aw.a && t <= aw.b) { atk = (t - aw.a) * PHASES[i].dur * 1.4; fadeStart = fracOf(aw.i, aw.a) * TOTAL; break; }
+      }
+      var wounded = u._wound && (i > u._wound.i || (i === u._wound.i && t >= u._wound.at));
+      if (atk !== null) want = 'attack';
+      else if (mv) { want = 'walk'; fadeStart = fracOf(mvWin.i, mvWin.a) * TOTAL; }
+      else if (wounded) { want = 'neutral'; fadeStart = fracOf(u._wound.i, u._wound.at) * TOTAL; }
+      else { want = f.idle; fadeStart = u._lastWalkEnd; }
+    }
+    heroDrive(f, want, tl, deathT, atk, fadeStart);
+  }
+
+  /* the cast: Ḥamzah, ʿAlī and ʿUbaydah (linen, turbans) against Shaybah,
+     al-Walīd and ʿUtbah (dark mail, helms); the Anṣār trio in field dress.
+     Attack beats follow the graded ledger (BADR-028): Ḥamzah kills Shaybah,
+     ʿAlī kills al-Walīd, ʿUtbah wounds ʿUbaydah, Ḥamzah finishes ʿUtbah. */
+  HEROES.specs = [
+    { u: chH, kit: 'muslim', height: 1.80, weapon: 'sword', shield: true, wrap: { wrap: 0x2d2a35, band: 0xd8cdb2, dark: 0x6f5f49 }, ry: Math.PI, idle: 'idle', offT: 0.0, zoff: 0.38,
+      walkWin: [{ i: 1, a: 0.14, b: 0.78 }, { i: 2, a: 0.12, b: 0.84 }],
+      attackWin: [{ i: 1, a: 0.62, b: 0.72 }, { i: 1, a: 0.87, b: 0.93 }] },
+    { u: chA, kit: 'muslim', height: 1.76, weapon: 'sword', shield: true, wrap: { wrap: 0x2f2c38, band: 0xcfc3a8, dark: 0x6f5f49 }, ry: Math.PI, idle: 'idle', offT: 1.7, zoff: 0.38,
+      walkWin: [{ i: 1, a: 0.14, b: 0.78 }, { i: 2, a: 0.12, b: 0.84 }],
+      attackWin: [{ i: 1, a: 0.76, b: 0.86 }] },
+    { u: chU, kit: 'muslim', height: 1.82, weapon: 'spear', shield: true, wrap: { wrap: 0x35313d, band: 0xd0c4aa, dark: 0x6f5f49 }, ry: Math.PI, idle: 'neutral', offT: 3.1, zoff: 0.38,
+      walkWin: [{ i: 1, a: 0.14, b: 0.78 }, { i: 2, a: 0.12, b: 0.84 }] },
+    { u: chS, kit: 'quraysh', height: 1.84, weapon: 'sword', shield: true, helm: true, wrap: { wrap: 0x54554f, band: 0x7b7c74, dark: 0x33322e }, ry: 0, idle: 'idle', offT: 4.3, zoff: -0.38,
+      walkWin: [{ i: 1, a: 0.14, b: 0.78 }] },
+    { u: chW, kit: 'quraysh', height: 1.86, weapon: 'sword', shield: true, helm: true, wrap: { wrap: 0x50514b, band: 0x77786f, dark: 0x31302c }, ry: 0, idle: 'idle', offT: 5.2, zoff: -0.38,
+      walkWin: [{ i: 1, a: 0.14, b: 0.78 }] },
+    { u: chB, kit: 'quraysh', height: 1.82, weapon: 'spear', shield: true, helm: true, wrap: { wrap: 0x585951, band: 0x7d7e74, dark: 0x35342f }, ry: 0, idle: 'neutral', offT: 6.1, zoff: -0.38,
+      walkWin: [{ i: 1, a: 0.14, b: 0.78 }],
+      attackWin: [{ i: 1, a: 0.78, b: 0.88 }] },
+    { parent: ansarA, kit: 'ansar', height: 1.72, weapon: 'spear', shield: true, wrap: { wrap: 0x352f3a, band: 0xcfc3a8, dark: 0x7f6a4c }, ry: Math.PI, idle: 'neutral', offT: 7.4, zoff: 0.0 },
+    { parent: ansarB, kit: 'ansar', height: 1.70, weapon: 'spear', shield: true, wrap: { wrap: 0x3a3340, band: 0xc8bca0, dark: 0x7f6a4c }, ry: Math.PI, idle: 'neutral', offT: 8.3, zoff: 0.0 },
+    { parent: ansarC, kit: 'ansar', height: 1.74, weapon: 'spear', shield: true, wrap: { wrap: 0x322c36, band: 0xd4c8ac, dark: 0x7f6a4c }, ry: Math.PI, idle: 'neutral', offT: 9.2, zoff: 0.0 }
+  ];
+  var fbxLoader = new THREE.FBXLoader();
+  var gltfLoader = new THREE.GLTFLoader();
+  function loadFBX(url) { return new Promise(function (res, rej) { fbxLoader.load(url, res, undefined, rej); }); }
+  function loadGLB(url) { return new Promise(function (res, rej) { gltfLoader.load(url, res, undefined, rej); }); }
+  Promise.all([
+    loadFBX('assets/models/quaternius/Adventurer.fbx'),
+    loadGLB('assets/models/quaternius/Sword.glb'),
+    loadGLB('assets/models/quaternius/Spear.glb'),
+    loadGLB('assets/models/quaternius/Shield_Round.glb')
+  ]).then(function (r) {
+    HEROES.master = r[0];
+    HEROES.assets.sword = r[1].scene;
+    HEROES.assets.spear = r[2].scene;
+    HEROES.kits.muslim = buildKit(HERO_PAL.muslim);
+    HEROES.kits.ansar = buildKit(HERO_PAL.ansar);
+    HEROES.kits.quraysh = buildKit(HERO_PAL.quraysh);
+    HEROES.specs.forEach(function (spec) {
+      var fig = makeHero(spec);
+      var parent = spec.u ? spec.u.group : spec.parent;
+      parent.add(fig.holder);
+      fig.holder.position.set(0, 0, spec.zoff || 0);
+      fig.holder.rotation.y = spec.ry || 0;
+      if (spec.u) {
+        spec.u.hero = fig;
+        spec.u.heroUnit = true;
+        spec.u._walkWin = spec.walkWin || null;
+        spec.u._attackWin = spec.attackWin || null;
+      } else {
+        HEROES.ansar.push(fig);
+      }
+    });
+    HEROES.ready = true;
+    applyFrac(clock.frac);
+  }).catch(function (e) {
+    /* the battle stands without heroes rather than failing: standards still tell it */
+    HEROES.err = String((e && e.message) || e);
+    console.error('[badr] heroes failed to load', e);
+  });
+
   /* ------------------------------ spoils and the aftermath counts.
      The captives and spoils are on the field; the counts follow BADR-047/048/050. */
   eventStandard(21.5, 9.0, 1, 0, true, aftermathGroup);
@@ -1187,32 +1713,8 @@
     scene.add(g);
     return { group: g, armR: armR, armL: armL, weaponR: weaponR, weaponL: weaponL, stump: stump, stepLeg: stepLeg, scale: sc, baseY: o.y || 0 };
   }
-  /* The named duel and the Ansar trio get faceless figures too; the standard
-     remains as the unit marker while the figure stands at its foot. */
-  function attachFigure(group, opts) {
-    var f = makeFighter({
-      x: 0, y: 0, z: 0.35, ry: opts.ry || 0,
-      robe: opts.robe, robeDark: opts.robeDark,
-      weapon: opts.weapon, leftWeapon: opts.leftWeapon,
-      shield: opts.shield, helmet: opts.helmet, scale: opts.scale || 1.2
-    });
-    group.add(f.group);
-    f.group.position.set(0, 0, 0.35);
-    f.stump.visible = false; f.stump.userData.keep = true;
-    f.stepLeg.visible = false; f.stepLeg.userData.keep = true;
-    return f;
-  }
-  [
-    [chH, { ry: Math.PI, robe: 0xcfc6b2, robeDark: 0x8a7a60, weapon: 'sword', shield: true }],
-    [chA, { ry: Math.PI, robe: 0xcfc6b2, robeDark: 0x8a7a60, weapon: 'sword', shield: true }],
-    [chU, { ry: Math.PI, robe: 0xcfc6b2, robeDark: 0x8a7a60, weapon: 'spear', shield: true }],
-    [chS, { ry: 0, robe: 0x3a332a, robeDark: 0x241f19, weapon: 'sword', shield: true, helmet: true }],
-    [chW, { ry: 0, robe: 0x3a332a, robeDark: 0x241f19, weapon: 'sword', shield: true, helmet: true }],
-    [chB, { ry: 0, robe: 0x3a332a, robeDark: 0x241f19, weapon: 'spear', shield: true, helmet: true }]
-  ].forEach(function (x) { x[0].figure = attachFigure(x[0].group, x[1]); });
-  ANSAR_MARKS.forEach(function (g) {
-    attachFigure(g, { ry: Math.PI, robe: 0xcfc6b2, robeDark: 0x8a7a60, weapon: 'spear', shield: true, scale: 1.1 });
-  });
+  /* The named duel figures and the Anṣār trio are rigged heroes (loaded below);
+     the plinth vignette keeps its approved faceless action figures. */
 
   var SC = 1.15;
   var abdur = makeFighter({ x: -10.8, y: STAGE.y, z: 1.8, ry: Math.PI, robe: 0xcfc6b2, robeDark: 0x8a7a60, weapon: 'none', scale: SC });
@@ -1344,6 +1846,7 @@
     var clothC = new THREE.Color(side ? 0x6b5f4c : 0xd8cfba);
     var ironC = (side ? ironQ : ironM).color;
     var woodC = new THREE.Color(0x6b5c42);
+    /* upper body only: the legs are their own instances so the march has a gait */
     var manGeo = mergeParts([
       { geo: bodyGeo, p: [0, 0.86, 0], c: bodyC },
       { geo: skirtGeo, p: [0, 0.62, 0], c: bodyC },
@@ -1352,15 +1855,24 @@
       side
         ? { geo: helmGeo, p: [0, 1.38, 0], c: ironC }
         : { geo: turbanGeo, p: [0, 1.42, 0], c: clothC },
-      { geo: legGeo, p: [-0.08, 0.28, 0], r: [0, 0, 0.04], c: legC },
-      { geo: legGeo, p: [0.08, 0.28, 0], r: [0, 0, -0.04], c: legC },
-      { geo: footGeo, p: [-0.08, 0.03, 0.04], c: legC },
-      { geo: footGeo, p: [0.08, 0.03, 0.04], c: legC },
       { geo: armGeo, p: [-0.18, 0.9, 0.02], r: [0, 0, 0.22], c: bodyC },
       { geo: armGeo, p: [0.18, 0.9, 0.02], r: [0, 0, -0.22], c: bodyC }
     ]);
     var men = new THREE.InstancedMesh(manGeo, new THREE.MeshLambertMaterial({ vertexColors: true }), count);
     men.castShadow = true;
+    /* each leg pivots at the hip (y 0.56): leg + foot in one rigid piece */
+    var hipY = 0.56;
+    var legLGeo = mergeParts([
+      { geo: legGeo, p: [-0.08, 0.28 - hipY, 0], r: [0, 0, 0.04], c: legC },
+      { geo: footGeo, p: [-0.08, 0.03 - hipY, 0.04], c: legC }
+    ]);
+    var legRGeo = mergeParts([
+      { geo: legGeo, p: [0.08, 0.28 - hipY, 0], r: [0, 0, -0.04], c: legC },
+      { geo: footGeo, p: [0.08, 0.03 - hipY, 0.04], c: legC }
+    ]);
+    var legsL = new THREE.InstancedMesh(legLGeo, new THREE.MeshLambertMaterial({ vertexColors: true }), count);
+    var legsR = new THREE.InstancedMesh(legRGeo, new THREE.MeshLambertMaterial({ vertexColors: true }), count);
+    legsL.castShadow = true; legsR.castShadow = true;
     /* the spear is its own instance so the whole hedge can level and thrust */
     var spearGeo = mergeParts([
       { geo: shaftGeo, p: [0, -0.05, 0], c: woodC },
@@ -1406,19 +1918,23 @@
       var an = blocks[best].group.position;
       sq.push({ lx: cx - an.x, lz: cz - an.z, block: best, hsh: hsh });
       for (var m = 0; m < squadSize && idx < count; m++, idx++) {
+        var recRy = (Math.abs(Math.sin(idx * 1.7) * 537) % 1) * 0.3 - 0.15;
         recs.push({
           s: s,
+          row: rk,
           ox: (m % 4 - 1.5) * 0.42 + (Math.abs(Math.sin(idx * 7.31) * 9123) % 1 - 0.5) * 0.1,
           oz: (Math.floor(m / 4) - 0.5) * 0.5,
           hs: 0.94 + (Math.abs(Math.sin(idx * 3.7) * 917) % 1) * 0.12,
-          ry: (Math.abs(Math.sin(idx * 1.7) * 537) % 1) * 0.3 - 0.15,
+          ry: recRy,
+          cy: Math.cos(recRy),
+          sy: Math.sin(recRy),
           tilt: (Math.abs(Math.sin(idx * 2.3) * 719) % 1 - 0.5) * 0.05,
           fp: (Math.abs(Math.sin(idx * 5.17) * 1931) % 1) * 6.283
         });
       }
     }
-    scene.add(men); scene.add(spears); scene.add(shields); scene.add(rims); scene.add(swords); scene.add(guards); scene.add(helms);
-    MASS.push({ men: men, spears: spears, shields: shields, rims: rims, swords: swords, guards: guards, helms: helms, shieldsPer: shieldsPer, sq: sq, recs: recs, blocks: blocks, h: h, side: side });
+    scene.add(men); scene.add(legsL); scene.add(legsR); scene.add(spears); scene.add(shields); scene.add(rims); scene.add(swords); scene.add(guards); scene.add(helms);
+    MASS.push({ men: men, legsL: legsL, legsR: legsR, spears: spears, shields: shields, rims: rims, swords: swords, guards: guards, helms: helms, shieldsPer: shieldsPer, sq: sq, recs: recs, blocks: blocks, h: h, side: side });
   }
   buildMass(0, 313, 9, 2.2, 1.9, 12.2, 1.9);
   buildMass(1, 1000, 21, 2.0, 1.9, -14.2, 2.15);
@@ -1458,12 +1974,27 @@
   }
   buildCaptives(70, -22, 18, 7, 1.05, 1.05);
 
+  /* hot-loop matrix writer: M = T · Rx(ax) · Ry(ry) · S(1, hs, 1), straight
+     into the instance array — no euler/quaternion compose per man */
+  function writeTRxRyS(arr, o, tx, ty, tz, ax, cy, sy, hs) {
+    var sa = Math.sin(ax), ca = Math.cos(ax);
+    arr[o] = cy; arr[o + 1] = sa * sy; arr[o + 2] = -ca * sy; arr[o + 3] = 0;
+    arr[o + 4] = 0; arr[o + 5] = ca * hs; arr[o + 6] = sa * hs; arr[o + 7] = 0;
+    arr[o + 8] = sy; arr[o + 9] = -sa * cy; arr[o + 10] = ca * cy; arr[o + 11] = 0;
+    arr[o + 12] = tx; arr[o + 13] = ty; arr[o + 14] = tz; arr[o + 15] = 1;
+  }
   function updateMass() {
     var dm = new THREE.Object3D();
     var ph = curPhaseIdx, pt = curPhaseT;
     var fight = ph === 3 ? 1 : ph === 4 ? 0.75 : ph === 2 ? 0.35 : ph === 5 ? 0.25 : 0;
     var disp = ph === 2 ? 1 : ph === 3 ? 0.7 : ph === 4 ? 0.3 : ph === 5 ? 0.55 : 0;
+    var marching = ph === 2 || ph === 5;
     var now = performance.now() / 1000;
+    /* gait clock runs on the battle timeline: seek-safe, and the march keeps
+       step with playback speed */
+    var gaitHz = ph === 5 ? 2.3 : 1.85;
+    var gaitPh = (clock ? clock.frac : 0) * TOTAL * gaitHz * 6.283;
+    var gaitAmp = marching ? (ph === 5 ? 0.62 : 0.5) : (fight > 0 ? 0.1 : 0.045);
     for (var m = 0; m < MASS.length; m++) {
       var M = MASS[m];
       var dir = M.side ? 1 : -1;
@@ -1473,26 +2004,35 @@
         anchors.push([u.group.position.x + S.lx + (S.hsh - 0.5) * 1.0 * disp, u.group.position.z + S.lz + (S.hsh - 0.5) * 0.6 * disp]);
       }
       var helmN = 0;
+      var menArr = M.men.instanceMatrix.array;
+      var legLArr = M.legsL.instanceMatrix.array;
+      var legRArr = M.legsR.instanceMatrix.array;
+      var spArr = M.spears.instanceMatrix.array;
       for (var i = 0; i < M.recs.length; i++) {
         var rec = M.recs[i], a = anchors[rec.s];
         var px = a[0] + rec.ox * (1 + 0.45 * disp) + Math.sin(rec.fp * 2.7 + now * 0.35) * 0.1 * disp;
         var pz = a[1] + rec.oz + Math.sin(rec.fp * 1.9 + now * 0.3) * 0.14 * disp;
         var thrust = fight * (0.5 + 0.5 * Math.sin(now * 8 + rec.fp));
         var lunge = fight * 0.14 * thrust * dir;
-        var lean = fight * 0.1 * thrust * dir;
-        var bob = fight * Math.abs(Math.sin(now * 6 + rec.fp)) * 0.045;
-        dm.position.set(px, bob, pz + lunge);
-        dm.rotation.set(lean, rec.ry, 0);
-        dm.scale.set(1, rec.hs, 1);
-        dm.updateMatrix();
-        M.men.setMatrixAt(i, dm.matrix);
-        /* the spear rides the right hand: upright at rest, levels and thrusts in the fight */
-        var cy = Math.cos(rec.ry), sy = Math.sin(rec.ry);
-        dm.position.set(px + 0.22 * cy + 0.06 * sy, bob + 1.0 * rec.hs, pz + lunge - 0.22 * sy + 0.06 * cy);
-        dm.rotation.set(dir * (0.15 + fight * (0.5 + 0.25 * thrust)), rec.ry, 0);
-        dm.scale.set(1, 1, 1);
-        dm.updateMatrix();
-        M.spears.setMatrixAt(i, dm.matrix);
+        /* the hit ripple: a stagger wave travelling back through the ranks */
+        var ripple = fight * Math.sin(now * 9 - rec.row * 1.05);
+        var lean = fight * 0.1 * thrust * dir + ripple * 0.06;
+        var gait = Math.sin(gaitPh + rec.fp);
+        var bob = marching * Math.abs(Math.cos(gaitPh + rec.fp)) * 0.05 * (gaitAmp / 0.5)
+          + fight * Math.abs(Math.sin(now * 6 + rec.fp)) * 0.045;
+        /* direct matrix writes: M = T · Rx(a) · Ry(ry) · S(1,hs,1) — no euler
+           or quaternion compose in the hot loop */
+        var cy = rec.cy, sy = rec.sy;
+        var o = i * 16;
+        var hipY = 0.56 * rec.hs;
+        var swL = gait * gaitAmp;
+        writeTRxRyS(menArr, o, px, bob, pz + lunge, lean, cy, sy, rec.hs);
+        writeTRxRyS(legLArr, o, px - 0.08 * cy, bob + hipY, pz + lunge + 0.08 * sy, lean + swL, cy, sy, rec.hs);
+        writeTRxRyS(legRArr, o, px + 0.08 * cy, bob + hipY, pz + lunge - 0.08 * sy, lean - swL, cy, sy, rec.hs);
+        var spLean = dir * (0.15 + fight * (0.5 + 0.25 * thrust)) + (marching ? 0.18 : 0);
+        writeTRxRyS(spArr, o,
+          px + 0.22 * cy + 0.06 * sy, bob + 1.0 * rec.hs, pz + lunge - 0.22 * sy + 0.06 * cy,
+          spLean, cy, sy, 1);
       }
       var si = 0;
       for (var s2 = 0; s2 < M.sq.length; s2++) {
@@ -1530,6 +2070,8 @@
         M.guards.setMatrixAt(s2, dm.matrix);
       }
       M.men.instanceMatrix.needsUpdate = true;
+      M.legsL.instanceMatrix.needsUpdate = true;
+      M.legsR.instanceMatrix.needsUpdate = true;
       M.spears.instanceMatrix.needsUpdate = true;
       M.shields.instanceMatrix.needsUpdate = true;
       M.rims.instanceMatrix.needsUpdate = true;
@@ -1718,6 +2260,7 @@
       bg.updateMatrixWorld(true);
       mergeMeshList(collectMergeable(bg), bg, true);
       bg.userData.dynamicRoot = true;
+      bg.userData.banners = bg.children.filter(function (c) { return c.isMesh; });
     });
     ANSAR_MARKS.forEach(function (bg) {
       bg.updateMatrixWorld(true);
@@ -1781,7 +2324,7 @@
   }
   angelGeo.setAttribute('position', new THREE.BufferAttribute(angelP, 3));
   var angels = new THREE.Points(angelGeo, new THREE.PointsMaterial({
-    color: 0xffe2a8, size: 3.2, map: softDot(), transparent: true, opacity: 0,
+    color: 0xffe2a8, size: 1.1, map: softDot(), transparent: true, opacity: 0,
     depthWrite: false, blending: THREE.AdditiveBlending
   }));
   scene.add(angels);
@@ -1810,15 +2353,62 @@
     { id: 'quiet',   name: 'the reckoning', dur: 10 }
   ];
   var TOTAL = 0; PHASES.forEach(function (p) { TOTAL += p.dur; });
-  var CAMS = {
-    ground:  { a: { p: [0, 30, 44], l: [0, 1.4, 0] },  b: { p: [4, 27, 40], l: [0, 1.4, -1] } },
-    duel:    { a: { p: [-26, 10, 0], l: [0, 1.5, 0] }, b: { p: [-18, 7, 0], l: [0, 1.5, 0] } },
-    advance: { a: { p: [34, 20, 22], l: [-2, 1, 0] }, b: { p: [24, 15, 8], l: [-4, 1, -2] } },
-    clash:   { a: { p: [30, 13, 20], l: [-2, 1, 0] }, b: { p: [8, 9, 14], l: [-6, 1, -2] } },
-    turn:    { a: { p: [-9.0, 5.2, 8.0], l: [-9.4, 0.8, -0.2] }, b: { p: [-9.0, 3.8, 5.8], l: [-9.4, 0.8, -0.8] } },
-    rout:    { a: { p: [-9.8, 2.6, 1.0], l: [-9.2, 0.7, -2.6] },  b: { p: [2, 20, 30], l: [-18, 0, -22] } },
-    quiet:   { a: { p: [0, 40, 82], l: [0, 0, 10] }, b: { p: [30, 9, 19], l: [36, 1.2, 8] } }
+  /* the shot list: per-phase shots with motivated cuts, holds and impact frames
+     instead of one continuous ease. Within a shot the camera dollies subtly;
+     between shots it cuts. */
+  var SHOTS = {
+    ground: [
+      { t0: 0, t1: 0.55, p0: [0, 36, 56], p1: [3, 31, 48], l0: [0, 0, -2], l1: [0, 1.2, -2] },
+      { t0: 0.55, t1: 1.001, p0: [-30, 13, 36], p1: [-22, 10.5, 30], l0: [2, 1.4, 0], l1: [2, 1.2, -2] }
+    ],
+    duel: [
+      { t0: 0, t1: 0.30, p0: [-32, 9, -3], p1: [-26, 8, -2], l0: [0, 1.6, 0.6], l1: [0, 1.6, 0.6] },
+      { t0: 0.30, t1: 0.62, p0: [7.5, 3.6, 9.5], p1: [6.4, 3.1, 7.4], l0: [0, 1.4, 0.5], l1: [0, 1.4, -0.5] },
+      { t0: 0.62, t1: 1.001, p0: [4.8, 2.7, 6.2], p1: [4.3, 2.5, 5.4], l0: [0, 1.4, -0.4], l1: [0, 1.3, -0.6] }
+    ],
+    advance: [
+      { t0: 0, t1: 0.5, p0: [7, 17, 31], p1: [2, 13, 24], l0: [0, 1, -4], l1: [0, 1, -8] },
+      { t0: 0.5, t1: 1.001, p0: [-9, 3.4, -25], p1: [-5, 3.0, -21], l0: [0, 1.5, 5], l1: [0, 1.3, 3] }
+    ],
+    clash: [
+      { t0: 0, t1: 0.45, p0: [26, 9.5, 18], p1: [17, 7.5, 13], l0: [5, 1.2, 0], l1: [0, 1.0, -3] },
+      { t0: 0.45, t1: 1.001, p0: [29, 18, 19], p1: [21, 15, 13], l0: [-4, 0.8, -4], l1: [-8, 0.8, -8] }
+    ],
+    turn: [
+      { t0: 0, t1: 0.4, p0: [-8.6, 5.0, 8.6], p1: [-9.0, 4.4, 7.4], l0: [-9.4, 1.0, -0.4], l1: [-9.4, 1.0, -0.6] },
+      { t0: 0.4, t1: 0.75, p0: [-11.6, 3.3, 5.4], p1: [-11.2, 3.0, 4.8], l0: [-9.0, 0.95, -1.2], l1: [-9.0, 0.9, -1.4] },
+      { t0: 0.75, t1: 1.001, p0: [-11.8, 3.6, 3.4], p1: [-11.6, 3.4, 3.2], l0: [-9.0, 0.7, -1.6], l1: [-9.0, 0.7, -1.6] }
+    ],
+    rout: [
+      { t0: 0, t1: 0.35, p0: [-9.8, 2.6, 1.0], p1: [-9.8, 2.6, 1.0], l0: [-9.2, 0.7, -2.6], l1: [-9.2, 0.7, -2.6] },
+      { t0: 0.35, t1: 0.7, p0: [-9.8, 4.5, 5], p1: [-2, 17, 24], l0: [-9.2, 0.7, -2.6], l1: [-20, 0.5, -24] },
+      { t0: 0.7, t1: 1.001, p0: [6, 27, 27], p1: [1, 31, 31], l0: [-24, 0.5, -28], l1: [-26, 0.5, -28] }
+    ],
+    quiet: [
+      { t0: 0, t1: 0.45, p0: [0, 40, 80], p1: [4, 35, 70], l0: [0, 0, 8], l1: [0, 0, 6] },
+      { t0: 0.45, t1: 1.001, p0: [45, 7.5, 19], p1: [41, 5.8, 16], l0: [36, 1.2, 8], l1: [36, 1.0, 8] }
+    ]
   };
+  /* impact frames: a short camera knock at the duel kills, the first clash,
+     the strike in the sand, and Abu Jahl's fall */
+  var IMPACTS = [
+    { ph: 1, t: 0.72, amp: 0.045 }, { ph: 1, t: 0.86, amp: 0.04 }, { ph: 1, t: 0.93, amp: 0.045 },
+    { ph: 3, t: 0.02, amp: 0.035 }, { ph: 4, t: 0.52, amp: 0.04 }, { ph: 5, t: 0.09, amp: 0.05 }
+  ];
+  function shotShake(i, t) {
+    var sh = { x: 0, y: 0 };
+    if (reduce) return sh;
+    for (var k = 0; k < IMPACTS.length; k++) {
+      var im = IMPACTS[k];
+      if (im.ph !== i || t < im.t) continue;
+      var age = (t - im.t) * PHASES[i].dur;
+      if (age > 1.2) continue;
+      var amp = im.amp * Math.exp(-age * 4.2);
+      sh.x += Math.sin(age * 57 + k * 3) * amp;
+      sh.y += Math.cos(age * 47) * amp * 0.7;
+    }
+    return sh;
+  }
   var PRESETS = {
     ground:  { p: [0, 30, 44], l: [0, 1.4, 0] },
     aerial:  { p: [0, 80, 16], l: [0, 0, 6] },
@@ -1883,14 +2473,17 @@
       for (var fi = i; fi >= 0; fi--) {
         if (u.plan[fi].fallAt !== undefined) { fPhase = fi; break; }
       }
-      var fallen = 0;
+      var fallen = 0, deathT = 0, deathStart = 0;
       if (fPhase >= 0) {
         fallen = fPhase < i ? 1 : clamp01((t - u.plan[fPhase].fallAt) / 0.14);
+        deathT = fPhase < i ? 999 : (t - u.plan[fPhase].fallAt) * PHASES[fPhase].dur;
+        deathStart = fracOf(fPhase, u.plan[fPhase].fallAt) * TOTAL;
       }
       if (u._wound && (i > u._wound.i || (i === u._wound.i && t >= u._wound.at))) {
         p.tilt = Math.max(p.tilt, u._wound.tilt);
       }
       applyPose(u, p, fallen);
+      if (u.hero) driveHeroUnit(u, i, t, frac * TOTAL, fallen, deathT, deathStart);
     }
 
     updateVignette(i, t);
@@ -1903,6 +2496,15 @@
       ansarZ = 10.5 - 6.0 * ansarAdv + 6.0 * ansarBack;
     }
     ANSAR_MARKS.forEach(function (m) { m.position.z = ansarZ; });
+    /* the rigged Anṣār walk out, stand while the refusal holds, walk back */
+    if (HEROES.ready) {
+      var ansarWant = 'neutral', ansarFade = 0;
+      if (i === 1 && t >= 0.04 && t <= 0.20) { ansarWant = 'walk'; ansarFade = fracOf(1, 0.04) * TOTAL; }
+      else if (i === 1 && t >= 0.30 && t <= 0.44) { ansarWant = 'walk'; ansarFade = fracOf(1, 0.30) * TOTAL; }
+      else if (i === 1 && t > 0.20 && t <= 0.30) ansarFade = fracOf(1, 0.20) * TOTAL;
+      else if (i === 1 && t > 0.44) ansarFade = fracOf(1, 0.44) * TOTAL;
+      for (var ah = 0; ah < HEROES.ansar.length; ah++) heroDrive(HEROES.ansar[ah], ansarWant, frac * TOTAL, 0, null, ansarFade);
+    }
 
     /* Bilal's chase of Umayyah belongs to the rout: the standards wait off-stage */
     bilalMark.visible = i >= 5;
@@ -1938,7 +2540,7 @@
 
     /* the angels: gold motes over the Muslim line through the clash */
     var angelAmt = (i === 3) ? Math.sin(clamp01(t) * Math.PI) : (i === 4 && t < 0.45 ? (1 - t / 0.45) : 0);
-    angels.material.opacity = angelAmt * 0.7;
+    angels.material.opacity = angelAmt * 0.5;
     if (angelAmt > 0.02) {
       var ap = angels.geometry.attributes.position;
       var nowA = performance.now();
@@ -1963,9 +2565,21 @@
     var g = u.group;
     g.position.x = p.x; g.position.z = p.z;
     var fr = easeIO(clamp01(fallen));
-    g.rotation.x = -1.42 * fr; /* a fallen standard lies flat */
-    g.position.y = -0.1 * fr;
-    if (!fr && u === chU) g.rotation.x = 0.55 * p.tilt; /* the wounded ʻUbaydah's grievous kneel */
+    if (u.heroUnit) {
+      /* the standard topples; the rigged figure falls through its own death clip */
+      g.rotation.x = 0;
+      g.position.y = -0.02 * fr;
+      var bm = g.userData.banners;
+      if (bm) for (var bi = 0; bi < bm.length; bi++) bm[bi].rotation.x = -1.42 * fr;
+      if (u.hero) {
+        var wound = u._wound && (curPhaseIdx > u._wound.i || (curPhaseIdx === u._wound.i && curPhaseT >= u._wound.at)) ? 1 : 0;
+        u.hero.holder.rotation.x = 0.4 * wound; /* ʻUbaydah's hunched stagger */
+      }
+    } else {
+      g.rotation.x = -1.42 * fr; /* a fallen standard lies flat */
+      g.position.y = -0.1 * fr;
+      if (!fr && u === chU) g.rotation.x = 0.55 * p.tilt; /* the wounded ʻUbaydah's grievous kneel */
+    }
   }
   function spawnArrows(dt) {
     acc.arr += dt * (clock.speed || 1) * 14;
@@ -1998,37 +2612,63 @@
   var acc = { arr: 0 };
 
   /* ------------------------------ camera */
+  var lastShotKey = '';
   function applyCamera(i, t, snap) {
-    var tgt;
     if (camState.mode === 'orbit') return; /* orbit handled below */
-    if (camState.mode === 'preset') { tgt = camState.preset; }
-    else {
-      var ca = CAMS[PHASES[i].id].a, cb = CAMS[PHASES[i].id].b;
-      tgt = {
-        p: [ca.p[0] + (cb.p[0] - ca.p[0]) * t, ca.p[1] + (cb.p[1] - ca.p[1]) * t, ca.p[2] + (cb.p[2] - ca.p[2]) * t],
-        l: [ca.l[0] + (cb.l[0] - ca.l[0]) * t, ca.l[1] + (cb.l[1] - ca.l[1]) * t, ca.l[2] + (cb.l[2] - ca.l[2]) * t]
-      };
+    if (camState.mode === 'preset') {
+      lerpCam(camState.preset, snap ? 1 : (reduce ? 0.22 : 0.09));
+      return;
     }
+    var shots = SHOTS[PHASES[i].id];
+    var kShot = shots.length - 1;
+    for (var k = 0; k < shots.length; k++) {
+      if (t >= shots[k].t0 && t < shots[k].t1) { kShot = k; break; }
+    }
+    var shot = shots[kShot];
+    var u = clamp01((t - shot.t0) / (shot.t1 - shot.t0));
+    var key = PHASES[i].id + ':' + kShot;
+    var cut = key !== lastShotKey;
+    lastShotKey = key;
+    var tgt = {
+      p: [
+        shot.p0[0] + (shot.p1[0] - shot.p0[0]) * u,
+        shot.p0[1] + (shot.p1[1] - shot.p0[1]) * u,
+        shot.p0[2] + (shot.p1[2] - shot.p0[2]) * u
+      ],
+      l: [
+        shot.l0[0] + (shot.l1[0] - shot.l0[0]) * u,
+        shot.l0[1] + (shot.l1[1] - shot.l0[1]) * u,
+        shot.l0[2] + (shot.l1[2] - shot.l0[2]) * u
+      ]
+    };
+    var sh = shotShake(i, t);
+    tgt.p[0] += sh.x; tgt.p[1] += sh.y;
     /* portrait phones see a narrow horizontal slice: back the camera off and
-       lift it so all three Quraysh divisions stay in frame. The command beat is
-       the exception: it is a close, vertical lane shot, so keep it tight. */
+       lift it so all three Quraysh divisions stay in frame. The duel and the
+       sand beat are the exceptions: close lanes that fit the portrait slice. */
     if (camera.aspect < 1) {
-      if (PHASES[i].id === 'duel' && camState.mode !== 'preset') {
+      if (PHASES[i].id === 'duel') {
         tgt = { p: [0, 10, 20], l: [0, 1.5, 2] };
-      } else if (PHASES[i].id === 'turn' && camState.mode !== 'preset') {
-        /* the compact plinth fits the portrait slice; keep the phase path */
-      } else if (PHASES[i].id === 'rout' && camState.mode !== 'preset' && t < 0.35) {
-        /* hold the close rout view for the fall before pulling back */
+      } else if (PHASES[i].id === 'turn') {
+        /* the compact plinth fits the portrait slice; keep the shot path */
       } else {
-        var k = Math.min(2.1, Math.pow(1 / camera.aspect, 0.9));
+        var k2 = Math.min(2.1, Math.pow(1 / camera.aspect, 0.9));
         tgt.p = [
-          tgt.l[0] + (tgt.p[0] - tgt.l[0]) * k,
-          tgt.l[1] + (tgt.p[1] - tgt.l[1]) * k * 1.12,
-          tgt.l[2] + (tgt.p[2] - tgt.l[2]) * k
+          tgt.l[0] + (tgt.p[0] - tgt.l[0]) * k2,
+          tgt.l[1] + (tgt.p[1] - tgt.l[1]) * k2 * 1.12,
+          tgt.l[2] + (tgt.p[2] - tgt.l[2]) * k2
         ];
       }
     }
-    lerpCam(tgt, snap ? 1 : (reduce ? 0.22 : 0.09));
+    if (cut || snap) {
+      /* a cut is a cut: land on the shot's opening frame with no smear */
+      curCam.p.set(tgt.p[0], tgt.p[1], tgt.p[2]);
+      curCam.l.set(tgt.l[0], tgt.l[1], tgt.l[2]);
+      camera.position.copy(curCam.p);
+      camera.lookAt(curCam.l);
+      return;
+    }
+    lerpCam(tgt, reduce ? 0.22 : 0.085);
   }
   function lerpCam(tgt, k) {
     /* frame-rate independent: a slow phone must still reach the phase camera */
@@ -2442,8 +3082,25 @@
       return champs.map(function (u) {
         var n = 0, types = [];
         u.group.traverse(function (o) { if (o.isMesh) { n++; if (types.length < 6) types.push(o.geometry.type); } });
-        return { label: u.label, pos: u.group.position.toArray().map(function (v) { return +v.toFixed(2); }), meshes: n, types: types };
+        var hero = null;
+        if (u.hero) {
+          u.hero.holder.updateMatrixWorld(true);
+          var hb = new THREE.Box3().setFromObject(u.hero.root);
+          hero = {
+            clip: u.hero.cur, from: u.hero.from, ready: HEROES.ready,
+            pos: u.hero.holder.getWorldPosition(new THREE.Vector3()).toArray().map(function (v) { return +v.toFixed(2); }),
+            headY: (function () {
+              var hd = u.hero.root.getObjectByName('Head');
+              return hd ? +hd.getWorldPosition(new THREE.Vector3()).y.toFixed(2) : null;
+            })(),
+            h: +(hb.max.y - hb.min.y).toFixed(2), minY: +hb.min.y.toFixed(2)
+          };
+        }
+        return { label: u.label, pos: u.group.position.toArray().map(function (v) { return +v.toFixed(2); }), meshes: n, types: types, hero: hero };
       });
+    },
+    heroInfo: function () {
+      return { ready: HEROES.ready, count: HEROES.count, err: HEROES.err || null, ansar: HEROES.ansar.map(function (f) { return f.cur; }) };
     },
     camInfo: function () { return { fov: camera.fov, aspect: +camera.aspect.toFixed(3), p: camera.position.toArray().map(function (n) { return +n.toFixed(1); }), l: curCam.l.toArray().map(function (n) { return +n.toFixed(1); }), mode: camState.mode }; },
   };

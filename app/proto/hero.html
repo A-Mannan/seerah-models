@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>hero frame</title>
+<style>
+  html,body{margin:0;height:100%;background:#0d0b09;overflow:hidden;
+    font-family:"Iowan Old Style",Georgia,serif;color:#e9e0d0}
+  #gl{display:block;width:100%;height:100%}
+  .grade{position:fixed;inset:0;pointer-events:none}
+  .grade.vignette{background:radial-gradient(120% 90% at 50% 46%,rgba(0,0,0,0) 38%,rgba(24,14,6,.42) 100%)}
+  .grade.warm{mix-blend-mode:soft-light;background:linear-gradient(180deg,rgba(255,196,132,.16),rgba(38,30,44,.18))}
+  .grade.grain{opacity:.055;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>")}
+  .cap{position:fixed;left:22px;bottom:18px;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;
+    color:rgba(233,224,208,.62)}
+  .cap b{font-weight:500;color:rgba(255,222,170,.9)}
+  #status{position:fixed;right:22px;bottom:18px;font:10px/1.6 ui-monospace,monospace;color:rgba(233,224,208,.42);
+    text-align:right;white-space:pre}
+</style>
+</head>
+<body>
+<canvas id="gl"></canvas>
+<div class="grade warm"></div>
+<div class="grade grain"></div>
+<div class="grade vignette"></div>
+<div class="cap"><b>badr</b> · hero frame · advance → strike</div>
+<div id="status">loading</div>
+<script src="../assets/three.min.js"></script>
+<script src="../assets/fflate.js"></script>
+<script src="../assets/FBXLoader.js"></script>
+<script src="../assets/GLTFLoader.js"></script>
+<script src="../assets/SkeletonUtils.js"></script>
+<script src="hero.js"></script>
+</body>
+</html>

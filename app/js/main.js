@@ -223,11 +223,11 @@
   });
 
   /* ------------------------------ boot */
-  console.log('[badr] build 2026-10-23q · named figures, layout audit, dispersion, refined aftermath');
+  console.log('[badr] build 2026-10-25r · carved-maquette rebuild: rigged heroes, crowd gait, heightfield field, shot list');
   if (/[?&]debug=1/.test(location.search)) {
     var dbg = document.createElement('div');
     dbg.className = 'debug-build';
-    dbg.textContent = 'build q';
+    dbg.textContent = 'build r';
     document.body.appendChild(dbg);
   }
   setPlayState(false);
