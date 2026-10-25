@@ -53,12 +53,16 @@
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, MOBILE ? 1.5 : 2));
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFShadowMap;
-    renderer.outputEncoding = THREE.sRGBEncoding;
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = opts.exposure || 0.92;
+    if (opts.grade !== false) {
+      renderer.outputEncoding = THREE.sRGBEncoding;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = opts.exposure || 0.92;
+    }
     renderer.setClearColor(opts.clear || 0x232936, 1);
     var scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(opts.fogColor || 0xc39a6e, opts.fogDensity || (MOBILE ? 0.0046 : 0.0038));
+    scene.fog = opts.linearFog
+      ? new THREE.Fog(opts.fogColor || 0x8a7355, opts.fogNear || 130, opts.fogFar || 460)
+      : new THREE.FogExp2(opts.fogColor || 0xc39a6e, opts.fogDensity || (MOBILE ? 0.0046 : 0.0038));
     var camera = new THREE.PerspectiveCamera(opts.fov || 36, 1, 0.1, opts.far || 900);
     return { canvas: canvas, labelBox: labelBox, reduce: reduce, MOBILE: MOBILE, renderer: renderer, scene: scene, camera: camera };
   };
@@ -205,11 +209,12 @@
     lid.rotation.x = -Math.PI / 2;
     lid.position.y = opts.lidY || -6.5;
     ctx.scene.add(lid);
-    var ground = new THREE.Mesh(groundGeo, new THREE.MeshStandardMaterial({
+    var groundMat = opts.material || new THREE.MeshStandardMaterial({
       vertexColors: true, roughness: 1, metalness: 0,
       normalMap: rippleNormal(ctx.renderer, 256, opts.rippleRepeat || (ctx.MOBILE ? 30 : 42)),
       normalScale: new THREE.Vector2(0.24, 0.24)
-    }));
+    });
+    var ground = new THREE.Mesh(groundGeo, groundMat);
     ground.receiveShadow = true;
     ctx.scene.add(ground);
     return { ground: ground, lid: lid };

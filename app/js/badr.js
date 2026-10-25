@@ -11,14 +11,77 @@
   var easeIO = U.easeIO, clamp01 = U.clamp01, hash2 = U.hash2, smoothN = U.smoothN, fbm = ENGINE.fbm;
   var ctx = ENGINE.boot({
     failText: 'The 3D battle needs WebGL. The graded ledger in data/badr.json carries every fact; nothing is hidden behind the model.',
-    fogColor: 0xc39a6e, exposure: 0.92
+    grade: false, linearFog: true, fogColor: 0x8a7355
   });
   if (!ctx) return;
   var canvas = ctx.canvas, labelBox = ctx.labelBox, reduce = ctx.reduce, MOBILE = ctx.MOBILE;
   var renderer = ctx.renderer, scene = ctx.scene, camera = ctx.camera;
 
-  /* ------------------------------ dawn */
-  ENGINE.dawn(ctx, {});
+  /* ------------------------------ night-to-dawn sky and lights (build q) */
+  var skyGeo = new THREE.SphereGeometry(620, 32, 20);
+  var skyPos = skyGeo.attributes.position;
+  var skyCols = new Float32Array(skyPos.count * 3);
+  var zen = new THREE.Color(0x24304a), hor = new THREE.Color(0x9a7850), skyTmp = new THREE.Color();
+  for (var si = 0; si < skyPos.count; si++) {
+    var yy = Math.max(0, Math.min(1, skyPos.getY(si) / 620));
+    skyTmp.copy(hor).lerp(zen, Math.pow(yy, 0.55));
+    skyCols[si * 3] = skyTmp.r; skyCols[si * 3 + 1] = skyTmp.g; skyCols[si * 3 + 2] = skyTmp.b;
+  }
+  skyGeo.setAttribute('color', new THREE.BufferAttribute(skyCols, 3));
+  var skyDome = new THREE.Mesh(skyGeo, new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.BackSide, fog: false }));
+  skyDome.castShadow = false; skyDome.receiveShadow = false;
+  scene.add(skyDome);
+
+  var starGeo = new THREE.BufferGeometry();
+  var starPos = new Float32Array(520 * 3);
+  for (var st2 = 0; st2 < 520; st2++) {
+    var r1 = Math.random() * Math.PI * 2;
+    var r2 = Math.random() * Math.PI * 0.42 + 0.16;
+    starPos[st2 * 3] = Math.cos(r1) * Math.sin(r2) * 560;
+    starPos[st2 * 3 + 1] = Math.cos(r2) * 520 + 40;
+    starPos[st2 * 3 + 2] = Math.sin(r1) * Math.sin(r2) * 560;
+  }
+  starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+  var stars = new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xdfe4ee, size: 2.0, sizeAttenuation: false, transparent: true, opacity: 0.22, fog: false }));
+  scene.add(stars);
+
+  function softDisc(inner, outer, tint) {
+    var c = document.createElement('canvas');
+    c.width = c.height = 64;
+    var g = c.getContext('2d');
+    var gr = g.createRadialGradient(32, 32, 1, 32, 32, 31);
+    gr.addColorStop(0, inner);
+    gr.addColorStop(0.45, outer);
+    gr.addColorStop(1, 'rgba(0,0,0,0)');
+    g.fillStyle = gr; g.fillRect(0, 0, 64, 64);
+    var tex = new THREE.CanvasTexture(c);
+    return new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false, fog: false, blending: THREE.AdditiveBlending, color: tint || 0xffffff });
+  }
+  var moonGlow = new THREE.Mesh(new THREE.PlaneGeometry(70, 70), softDisc('rgba(226,232,244,0.25)', 'rgba(160,176,200,0.08)', 0xcfd8e6));
+  moonGlow.position.set(-160, 62, -240); moonGlow.lookAt(0, 0, 0);
+  scene.add(moonGlow);
+  var moonDisk = new THREE.Mesh(new THREE.CircleGeometry(5.4, 26), new THREE.MeshBasicMaterial({ color: 0xe9edf5, transparent: true, opacity: 0.3, fog: false }));
+  moonDisk.position.set(-160, 62, -240);
+  moonDisk.lookAt(0, 0, 0);
+  scene.add(moonDisk);
+
+  var hemi = new THREE.HemisphereLight(0x8fa0b8, 0x3a2f22, 0.44);
+  scene.add(hemi);
+  var sun = new THREE.DirectionalLight(0xffc27d, 0.9);
+  sun.position.set(64, 34, -46);
+  sun.castShadow = true;
+  sun.shadow.mapSize.set(MOBILE ? 1024 : 2048, MOBILE ? 1024 : 2048);
+  sun.shadow.camera.left = -72; sun.shadow.camera.right = 72;
+  sun.shadow.camera.top = 72; sun.shadow.camera.bottom = -72;
+  sun.shadow.camera.near = 5; sun.shadow.camera.far = 240;
+  sun.shadow.bias = -0.0006;
+  scene.add(sun); scene.add(sun.target);
+  var fill = new THREE.DirectionalLight(0x7d8ea8, 0.2);
+  fill.position.set(-40, 30, 40);
+  scene.add(fill);
+  var rim = new THREE.DirectionalLight(0xffd9b0, 0.3);
+  rim.position.set(10, 14, 60);
+  scene.add(rim);
   /* the lamp at the ʻarish and a glow at the wells */
   var brassLight = new THREE.PointLight(0xffb54d, 0.5, 14, 2);
   brassLight.position.set(-7.5, 2.6, 20.5);
@@ -49,7 +112,42 @@
     h += (fbm(x * 0.35, z * 0.35, 2) - 0.5) * 0.05 * (1 - out);
     return Math.max(-5, h);
   }
-  ENGINE.heightfield(ctx, heightAt, {});
+  /* build q's sand: a painted canvas texture with bump, vertex-coloured bright */
+  function sandTexture() {
+    var c = document.createElement('canvas'); c.width = c.height = 1024;
+    var g = c.getContext('2d');
+    g.fillStyle = '#eee6d4'; g.fillRect(0, 0, 1024, 1024);
+    var img = g.getImageData(0, 0, 1024, 1024), d = img.data;
+    for (var i = 0; i < d.length; i += 4) {
+      var n = (Math.random() - 0.5) * 22;
+      d[i] += n; d[i + 1] += n; d[i + 2] += n;
+    }
+    g.putImageData(img, 0, 0);
+    g.globalAlpha = 0.07;
+    for (var k = 0; k < 160; k++) {
+      g.strokeStyle = k % 2 ? '#fff8e8' : '#6b5f4a';
+      g.lineWidth = 1 + Math.random() * 2.4;
+      g.beginPath();
+      var yy = Math.random() * 1024;
+      g.moveTo(0, yy);
+      for (var x = 0; x <= 1024; x += 32) {
+        g.lineTo(x, yy + Math.sin(x * 0.018 + k) * 7 + Math.sin(x * 0.004 + k * 2.3) * 18);
+      }
+      g.stroke();
+    }
+    var tex = new THREE.CanvasTexture(c);
+    tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+    tex.repeat.set(26, 26);
+    return tex;
+  }
+  var sandTex = sandTexture();
+  sandTex.anisotropy = renderer.capabilities.getMaxAnisotropy();
+  var groundMat = new THREE.MeshPhongMaterial({ vertexColors: true, map: sandTex, bumpMap: sandTex, bumpScale: 0.12, shininess: 0 });
+  ENGINE.heightfield(ctx, heightAt, {
+    material: groundMat,
+    sand: new THREE.Color(0xd3bf9b), crest: new THREE.Color(0xe0cda8),
+    trough: new THREE.Color(0xb3a284), grit: new THREE.Color(0xc4b393)
+  });
 
   /* distant ridges: the valley closes against the horizon */
   var props = ENGINE.props(ctx, heightAt);
@@ -409,16 +507,6 @@
   chW.plan[6] = chW.plan[5] = chW.plan[4] = chW.plan[3] = chW.plan[2];
   chB.plan[6] = chB.plan[5] = chB.plan[4] = chB.plan[3] = chB.plan[2];
 
-  /* the champion's STANDARD stays with the line as the unit marker; the rigged
-     figure alone walks out to the duel ground. u.plan becomes the standard's
-     (home for every phase); u._figPlan keeps the figure's choreography. */
-  champs.forEach(function (u) {
-    u._figPlan = u.plan;
-    var home = P(u.home[0], u.home[1]);
-    u.plan = [];
-    for (var hp = 0; hp < 7; hp++) u.plan[hp] = home;
-  });
-
   /* Muslim bands: hold, then close around the wells, then hold through the quiet */
   mBands.forEach(function (u, idx) {
     var col = idx % 4, r = idx < 4 ? 0 : 1;
@@ -749,56 +837,61 @@
     ikrimah.group.position.y = ikrimah.baseY;
   }
 
-  /* ------------------------------ rigged heroes: the Badr cast.
-     The six duel champions and the three Anṣār (loaded by the engine).
-     Attack beats follow the graded ledger (BADR-028): Ḥamzah kills Shaybah,
-     ʿAlī kills al-Walīd, ʿUtbah wounds ʿUbaydah, Ḥamzah finishes ʿUtbah. */
-  var HERO_PAL = {
-    muslim: { body: 0xd8d2c4, legs: 0x5f5240, feet: 0x3f2f22, head: 0x2a2833 },
-    ansar: { body: 0xbfb2a0, legs: 0x54483a, feet: 0x3a2b20, head: 0x33303b },
-    quraysh: { body: 0x6d3d29, legs: 0x452e20, feet: 0x33251b, head: 0x3a2c25 }
-  };
-  var HERO_SPECS = [
-    /* the duel is a real exchange at sword range (BADR-028): Shaybah swings
-       first, Ḥamzah answers and kills him (0.74); al-Walīd and ʿAlī cross
-       blades and al-Walīd falls (0.86); ʿUtbah's thrust wounds ʿUbaydah
-       (0.9); Ḥamzah finishes ʿUtbah (0.93) */
-    { u: chH, kit: 'muslim', height: 1.80, weapon: 'sword', shield: true, wrap: { wrap: 0x2d2a35, band: 0xd8cdb2, dark: 0x6f5f49 }, ry: Math.PI, idle: 'idle', offT: 0.0, zoff: 0.38, faceHome: true,
-      walkWin: [{ i: 1, a: 0.06, b: 0.42 }, { i: 2, a: 0.12, b: 0.84 }],
-      attackWin: [{ i: 1, a: 0.60, b: 0.68 }, { i: 1, a: 0.87, b: 0.93 }] },
-    { u: chA, kit: 'muslim', height: 1.76, weapon: 'sword', shield: true, wrap: { wrap: 0x2f2c38, band: 0xcfc3a8, dark: 0x6f5f49 }, ry: Math.PI, idle: 'idle', offT: 1.7, zoff: 0.38, faceHome: true,
-      walkWin: [{ i: 1, a: 0.06, b: 0.42 }, { i: 2, a: 0.12, b: 0.84 }],
-      attackWin: [{ i: 1, a: 0.76, b: 0.86 }] },
-    { u: chU, kit: 'muslim', height: 1.82, weapon: 'spear', shield: true, wrap: { wrap: 0x35313d, band: 0xd0c4aa, dark: 0x6f5f49 }, ry: Math.PI, idle: 'neutral', offT: 3.1, zoff: 0.38, faceHome: true,
-      walkWin: [{ i: 1, a: 0.06, b: 0.42 }, { i: 2, a: 0.12, b: 0.84 }],
-      hitWin: [{ i: 1, a: 0.84, b: 0.90 }] },
-    { u: chS, kit: 'quraysh', height: 1.84, weapon: 'sword', shield: true, wrap: { wrap: 0x54554f, band: 0x7b7c74, dark: 0x33322e }, ry: 0, idle: 'idle', offT: 4.3, zoff: -0.38,
-      walkWin: [{ i: 1, a: 0.06, b: 0.42 }],
-      attackWin: [{ i: 1, a: 0.50, b: 0.58 }],
-      hitWin: [{ i: 1, a: 0.68, b: 0.74 }] },
-    { u: chW, kit: 'quraysh', height: 1.86, weapon: 'sword', shield: true, wrap: { wrap: 0x50514b, band: 0x77786f, dark: 0x31302c }, ry: 0, idle: 'idle', offT: 5.2, zoff: -0.38,
-      walkWin: [{ i: 1, a: 0.06, b: 0.42 }],
-      attackWin: [{ i: 1, a: 0.72, b: 0.80 }],
-      hitWin: [{ i: 1, a: 0.82, b: 0.86 }] },
-    { u: chB, kit: 'quraysh', height: 1.82, weapon: 'spear', shield: true, wrap: { wrap: 0x585951, band: 0x7d7e74, dark: 0x35342f }, ry: 0, idle: 'neutral', offT: 6.1, zoff: -0.38,
-      walkWin: [{ i: 1, a: 0.06, b: 0.42 }],
-      attackWin: [{ i: 1, a: 0.78, b: 0.88 }],
-      hitWin: [{ i: 1, a: 0.91, b: 0.93 }] },
-    { parent: ansarA, kit: 'ansar', height: 1.72, weapon: 'spear', shield: true, wrap: { wrap: 0x352f3a, band: 0xcfc3a8, dark: 0x7f6a4c }, ry: Math.PI, idle: 'neutral', offT: 7.4, zoff: 0.0 },
-    { parent: ansarB, kit: 'ansar', height: 1.70, weapon: 'spear', shield: true, wrap: { wrap: 0x3a3340, band: 0xc8bca0, dark: 0x7f6a4c }, ry: Math.PI, idle: 'neutral', offT: 8.3, zoff: 0.0 },
-    { parent: ansarC, kit: 'ansar', height: 1.74, weapon: 'spear', shield: true, wrap: { wrap: 0x322c36, band: 0xd4c8ac, dark: 0x7f6a4c }, ry: Math.PI, idle: 'neutral', offT: 9.2, zoff: 0.0 }
+  /* ------------------------------ the duel figures: the same faceless
+     maquette fighters as the Abu Jahl vignette (the owner's reference — no
+     async assets, nothing to fail). Each champion walks out with his
+     standard, like the Anṣār trio. The exchange is keyed to BADR-028:
+     Shaybah swings first, Ḥamzah answers and kills him (0.74); al-Walīd and
+     ʿAlī cross blades and al-Walīd falls (0.86); ʿUtbah's thrust wounds
+     ʿUbaydah (0.9); Ḥamzah finishes ʿUtbah (0.93). */
+  function attachFigure(group, opts) {
+    var f = makeFighter({
+      x: 0, y: 0, z: 0.35, ry: opts.ry || 0,
+      robe: opts.robe, robeDark: opts.robeDark,
+      weapon: opts.weapon, leftWeapon: opts.leftWeapon,
+      shield: opts.shield, helmet: opts.helmet, scale: opts.scale || 1.2
+    });
+    group.add(f.group);
+    f.group.position.set(0, 0, 0.35);
+    f.stump.visible = false; f.stump.userData.keep = true;
+    f.stepLeg.visible = false; f.stepLeg.userData.keep = true;
+    return f;
+  }
+  [
+    [chH, { ry: Math.PI, robe: 0xcfc6b2, robeDark: 0x8a7a60, weapon: 'sword', shield: true }],
+    [chA, { ry: Math.PI, robe: 0xcfc6b2, robeDark: 0x8a7a60, weapon: 'sword', shield: true }],
+    [chU, { ry: Math.PI, robe: 0xcfc6b2, robeDark: 0x8a7a60, weapon: 'spear', shield: true }],
+    [chS, { ry: 0, robe: 0x3a332a, robeDark: 0x241f19, weapon: 'sword', shield: true, helmet: true }],
+    [chW, { ry: 0, robe: 0x3a332a, robeDark: 0x241f19, weapon: 'sword', shield: true, helmet: true }],
+    [chB, { ry: 0, robe: 0x3a332a, robeDark: 0x241f19, weapon: 'spear', shield: true, helmet: true }]
+  ].forEach(function (x) { x[0].figure = attachFigure(x[0].group, x[1]); });
+  ANSAR_MARKS.forEach(function (g) {
+    attachFigure(g, { ry: Math.PI, robe: 0xcfc6b2, robeDark: 0x8a7a60, weapon: 'spear', shield: true, scale: 1.1 });
+  });
+  /* the duel exchange: each beat swings the fighter's weapon arm */
+  var DUEL_BEATS = [
+    { u: chS, win: [[0.50, 0.58]] },
+    { u: chH, win: [[0.60, 0.68], [0.87, 0.93]] },
+    { u: chW, win: [[0.72, 0.80]] },
+    { u: chA, win: [[0.76, 0.86]] },
+    { u: chB, win: [[0.78, 0.88]] },
+    { u: chU, win: [[0.84, 0.90]], wound: true }
   ];
-  ENGINE.heroes.load(
-    {
-      fbx: 'assets/models/quaternius/Adventurer.fbx',
-      sword: 'assets/models/quaternius/Sword.glb',
-      spear: 'assets/models/quaternius/Spear.glb',
-      shield: 'assets/models/quaternius/Shield_Round.glb'
-    },
-    HERO_PAL,
-    HERO_SPECS,
-    function () { applyFrac(clock.frac); }
-  );
+  function updateDuelArms(i, t) {
+    DUEL_BEATS.forEach(function (b) {
+      var f = b.u.figure;
+      if (!f) return;
+      var swing = 0;
+      if (i === 1) {
+        for (var k = 0; k < b.win.length; k++) {
+          var w = b.win[k];
+          if (t >= w[0] && t <= w[1]) { swing = Math.sin(clamp01((t - w[0]) / (w[1] - w[0])) * Math.PI); break; }
+        }
+      }
+      var arm = b.wound ? f.armL : f.armR;
+      arm.rotation.x = -0.25 - swing * 1.35;
+    });
+  }
 
   /* ------------------------------ squads and platoons.
      A squad is eight men (engine crowd): hooded body, upright spear, front shields. */
@@ -1054,51 +1147,20 @@
       if (i === 3 && !u.isChampion) { p.x += Math.sin(t * 9 + k * 1.7) * 0.14; p.z += Math.cos(t * 7 + k * 2.1) * 0.1; }
       /* fall: the latest keyed fallAt at or before this phase persists */
       var fPhase = -1;
-      var fallen = 0, deathT = 0, deathStart = 0;
-      /* falls live on the figure plan for rigged champions, the unit plan otherwise */
-      var fp = u._figPlan || u.plan;
+      var fallen = 0;
       for (var fi = i; fi >= 0; fi--) {
-        if (fp[fi].fallAt !== undefined) { fPhase = fi; break; }
+        if (u.plan[fi].fallAt !== undefined) { fPhase = fi; break; }
       }
       if (fPhase >= 0) {
-        fallen = fPhase < i ? 1 : clamp01((t - fp[fPhase].fallAt) / 0.14);
-        deathT = fPhase < i ? 999 : (t - fp[fPhase].fallAt) * PHASES[fPhase].dur;
-        deathStart = director.fracOf(fPhase, fp[fPhase].fallAt) * TOTAL;
+        fallen = fPhase < i ? 1 : clamp01((t - u.plan[fPhase].fallAt) / 0.14);
       }
       if (u._wound && (i > u._wound.i || (i === u._wound.i && t >= u._wound.at))) {
         p.tilt = Math.max(p.tilt, u._wound.tilt);
       }
-      applyPose(u, p, u.hero ? 0 : fallen);
-      if (u.hero) {
-        /* the figure walks its own plan while the standard holds the line;
-           the position window matches the walk clip so feet never slide */
-        var fStart = i === 0 ? fp[0] : fp[i - 1];
-        var fEnd = fp[i] || fp[fp.length - 1];
-        var fa = w0, fb = 0.84;
-        if (u._walkWin) for (var wj = 0; wj < u._walkWin.length; wj++) {
-          if (u._walkWin[wj].i === i) { fa = u._walkWin[wj].a; fb = u._walkWin[wj].b; break; }
-        }
-        var fw = easeIO(clamp01((t - fa) / (fb - fa)));
-        var wx = fStart.x + (fEnd.x - fStart.x) * fw;
-        var wz = fStart.z + (fEnd.z - fStart.z) * fw;
-        if (!u.labelAnchor) u.labelAnchor = new THREE.Vector3();
-        u.labelAnchor.set(wx, 0, wz);
-        u.hero.holder.position.set(wx - p.x, 0, wz + (u._zoff || 0) - p.z);
-        ENGINE.heroes.driveUnit(u, {
-          i: i, t: t, tl: frac * TOTAL, total: TOTAL,
-          fallen: fallen, deathT: deathT, deathStart: deathStart,
-          phaseDur: function (pi) { return PHASES[pi].dur; },
-          fracOf: director.fracOf
-        });
-        /* walking home in the advance: the champion turns toward his own line,
-           then faces the enemy again once the lines close */
-        if (u._faceHome && deathT <= 0.05) {
-          var walkingHome = i === 2 && t >= 0.12 && t <= 0.84;
-          u.hero.holder.rotation.y = walkingHome ? 0 : u.hero._baseRy;
-        }
-      }
+      applyPose(u, p, fallen);
     }
 
+    updateDuelArms(i, t);
     updateVignette(i, t);
 
     /* the Ansari trio steps out, is refused, and withdraws before the champions engage */
@@ -1109,17 +1171,6 @@
       ansarZ = 10.5 - 6.0 * ansarAdv + 6.0 * ansarBack;
     }
     ANSAR_MARKS.forEach(function (m) { m.position.z = ansarZ; });
-    /* the rigged Anṣār walk out, stand while the refusal holds, walk back */
-    if (ENGINE.heroes.state.ready) {
-      var ansarWant = 'neutral', ansarFade = 0;
-      if (i === 1 && t >= 0.04 && t <= 0.20) { ansarWant = 'walk'; ansarFade = director.fracOf(1, 0.04) * TOTAL; }
-      else if (i === 1 && t >= 0.30 && t <= 0.44) { ansarWant = 'walk'; ansarFade = director.fracOf(1, 0.30) * TOTAL; }
-      else if (i === 1 && t > 0.20 && t <= 0.30) ansarFade = director.fracOf(1, 0.20) * TOTAL;
-      else if (i === 1 && t > 0.44) ansarFade = director.fracOf(1, 0.44) * TOTAL;
-      for (var ah = 0; ah < ENGINE.heroes.state.ansar.length; ah++) {
-        ENGINE.heroes.drive(ENGINE.heroes.state.ansar[ah], ansarWant, frac * TOTAL, 0, null, ansarFade);
-      }
-    }
 
     /* the Bilāl (RA) / ʻUmayyah reckoning belongs to the rout (BADR-041):
        ʻUmayyah tries to slip away with the fleeing army, Bilāl's standard
@@ -1179,21 +1230,9 @@
     var g = u.group;
     g.position.x = p.x; g.position.z = p.z;
     var fr = easeIO(clamp01(fallen));
-    if (u.heroUnit) {
-      /* the standard topples; the rigged figure falls through its own death clip */
-      g.rotation.x = 0;
-      g.position.y = -0.02 * fr;
-      var bm = g.userData.banners;
-      if (bm) for (var bi = 0; bi < bm.length; bi++) bm[bi].rotation.x = -1.42 * fr;
-      if (u.hero) {
-        var wound = u._wound && (curPhaseIdx > u._wound.i || (curPhaseIdx === u._wound.i && curPhaseT >= u._wound.at)) ? 1 : 0;
-        u.hero.holder.rotation.x = 0.4 * wound; /* ʻUbaydah's hunched stagger */
-      }
-    } else {
-      g.rotation.x = -1.42 * fr; /* a fallen standard lies flat */
-      g.position.y = -0.1 * fr;
-      if (!fr && u === chU) g.rotation.x = 0.55 * p.tilt; /* the wounded ʻUbaydah's grievous kneel */
-    }
+    g.rotation.x = -1.42 * fr; /* a fallen standard lies flat, its figure with it */
+    g.position.y = -0.1 * fr;
+    if (!fr && u === chU) g.rotation.x = 0.55 * p.tilt; /* the wounded ʻUbaydah's grievous kneel */
   }
 
   /* the crowd env: computed once per frame, reused by benchMass.
@@ -1379,30 +1418,13 @@
       director.applyCamera(ph.i, ph.t, true);
     },
     debugChamp: function () {
-      var HEROES = ENGINE.heroes.state;
       return champs.map(function (u) {
         var n = 0, types = [];
         u.group.traverse(function (o) { if (o.isMesh) { n++; if (types.length < 6) types.push(o.geometry.type); } });
-        var hero = null;
-        if (u.hero) {
-          u.hero.holder.updateMatrixWorld(true);
-          var hb = new THREE.Box3().setFromObject(u.hero.root);
-          hero = {
-            clip: u.hero.cur, from: u.hero.from, ready: HEROES.ready,
-            pos: u.hero.holder.getWorldPosition(new THREE.Vector3()).toArray().map(function (v) { return +v.toFixed(2); }),
-            headY: (function () {
-              var hd = u.hero.root.getObjectByName('Head');
-              return hd ? +hd.getWorldPosition(new THREE.Vector3()).y.toFixed(2) : null;
-            })(),
-            h: +(hb.max.y - hb.min.y).toFixed(2), minY: +hb.min.y.toFixed(2)
-          };
-        }
-        return { label: u.label, pos: u.group.position.toArray().map(function (v) { return +v.toFixed(2); }), meshes: n, types: types, hero: hero };
+        var fig = null;
+        if (u.figure) fig = { meshes: u.figure.group.children.length };
+        return { label: u.label, pos: u.group.position.toArray().map(function (v) { return +v.toFixed(2); }), meshes: n, types: types, figure: fig };
       });
-    },
-    heroInfo: function () {
-      var HEROES = ENGINE.heroes.state;
-      return { ready: HEROES.ready, count: HEROES.count, err: HEROES.err || null, ansar: HEROES.ansar.map(function (f) { return f.cur; }) };
     },
     camInfo: function () { return director.camInfo(); },
     ray: function (nx, ny) {

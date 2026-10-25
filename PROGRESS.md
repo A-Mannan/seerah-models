@@ -1,7 +1,30 @@
 # Progress
 
-## Build s — review fixes (local, not pushed)
-Badr · the battle. Cache-bust `?v=20261025s`. Owner review of build r drove this round.
+## Build t — back to the maquette language (local, not pushed)
+Badr · the battle. Cache-bust `?v=20261025t`. The owner's verdict on build s: the rigged GLTF
+cast never loaded in their setup (async FBX fetch — standards without men) and the darker dawn
+palette read as a downgrade. This build reverses both.
+
+### Changed in build t
+- **The duel cast is the proven maquette language again.** The six champions and the three
+  Anṣār are the same faceless makeFighter figures as the Abu Jahl vignette — inline geometry,
+  nothing to load, nothing to fail. Each champion walks out WITH his standard like the Anṣār
+  trio did; the exchange swings the weapon arm at the BADR-028 beats (Shaybah first, Ḥamzah
+  answers, al-Walīd/ʿAlī cross, ʿUtbah's thrust wounds ʿUbaydah, Ḥamzah finishes) and the
+  fallen lie with their standards, as in build q.
+- **Build q light and color restored**: linear fog, the vertex-gradient night-to-dawn sky with
+  the bright cream canvas-sand ground (painted texture + bump on the heightfield), original
+  light intensities, no ACES/sRGB. The dunes, tents, wells and camps keep their sculpted shapes.
+- **The pushed build q camera paths remain** (one continuous move per phase). The FBX/GLTF
+  loader scripts are off the page; the engine keeps the hero-rig capability for a future
+  owner-approved return, dormant.
+
+### Kept from the review rounds
+Bilāl (RA) pursuing ʻUmayyah in the rout (BADR-041); the Abu Jahl vignette striking with
+swords simultaneously (BADR-037); the march gait matched to travel speed; no floating motes;
+the quiet 8:9 shimmer; the UI polish (frosted bar/deck, mobile phase name, scrub head).
+
+## Build s — review fixes (superseded by build t)
 
 ### Changed after the owner's review
 - **The 3v3 is now a fight.** The six champions walk out bare of their standards (the standards

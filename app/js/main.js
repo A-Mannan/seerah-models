@@ -226,11 +226,11 @@
   });
 
   /* ------------------------------ boot */
-  console.log('[badr] build 2026-10-25s · review fixes: 3v3 duel fight, restored cameras, Bilal-Umayyah reckoning, sword vignette');
+  console.log('[badr] build 2026-10-25t · maquette figures restored, build q light, duel fight, Bilal-Umayyah reckoning');
   if (/[?&]debug=1/.test(location.search)) {
     var dbg = document.createElement('div');
     dbg.className = 'debug-build';
-    dbg.textContent = 'build s';
+    dbg.textContent = 'build t';
     document.body.appendChild(dbg);
   }
   setPlayState(false);
