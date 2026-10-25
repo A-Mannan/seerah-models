@@ -35,6 +35,13 @@ A pure-visual, interactive 3D seerah series. **Badr** is the live model; **Uhud*
 - Visual probes live in `.taste-skill/`; review `.taste-skill/inspect/`.
 - Perf: keep draw calls low via instancing; check `BATTLE.info()` and `BATTLE.benchMass()`. Headless RAF at 2–3 fps is not a perf signal.
 
+## Visual quality (current)
+- The owner rejected the primitive “Minecraft” look. Direction: **hybrid carved maquette** — sculpted matte forms, one dawn key, haze and a restrained post grade.
+- Named heroes: **heroes-only CC0 rigged GLTF**, faces covered by helmet/hood/turban + veil. Round 1 (Gobkit human003) was rejected as chibi with exposed faces; round 2 tests KayKit Adventurers and Quaternius Animated Men/Modular Men.
+- Crowd and field stay procedural/instanced; the crowd must have a gait/thrust, not slide.
+- **Hero-frame gate:** do not rebuild the full scene until the owner approves the standalone hero frame in `openspec/changes/battle-visual-quality/`.
+- Build q is local; no push.
+
 ## Docs roles
 - `openspec/changes/` — the plan and checklist for the current change; archived when accepted.
 - `AGENTS.md` — standing rules and constraints.

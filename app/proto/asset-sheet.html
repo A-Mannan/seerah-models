@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>asset sheet</title>
+<style>
+html,body{margin:0;height:100%;background:#171310;color:#e8e0d0;font-family:Georgia,serif;overflow:hidden}
+#gl{display:block;width:100%;height:100%}
+.names{position:fixed;left:0;right:0;bottom:28px;display:flex;justify-content:center;gap:0;pointer-events:none}
+.names span{width:16.66%;text-align:center;font-size:12px;color:#cfc5b4;letter-spacing:.06em}
+h1{position:fixed;top:22px;left:24px;font-weight:500;font-size:16px;letter-spacing:.12em;text-transform:uppercase;color:#c8a84b;margin:0}
+</style></head>
+<body><canvas id="gl"></canvas><h1>Gobkit · human003 · idle</h1>
+<div class="names"><span>FOOTMAN</span><span>SCOUT</span><span>ARCHER</span><span>HEAVY</span><span>KNIGHT</span><span>MILITIA</span></div>
+<script src="../assets/three.min.js"></script>
+<script src="../assets/GLTFLoader.js"></script>
+<script>
+const canvas=document.getElementById('gl');
+const renderer=new THREE.WebGLRenderer({canvas,antialias:true});
+renderer.setPixelRatio(Math.min(2,devicePixelRatio||1));renderer.setSize(innerWidth,innerHeight);
+renderer.outputEncoding=THREE.sRGBEncoding;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;
+renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x2a2119);
+const cam=new THREE.PerspectiveCamera(30,innerWidth/innerHeight,.1,200);cam.position.set(0,2.3,13.5);cam.lookAt(0,1.05,0);
+scene.add(new THREE.HemisphereLight(0xffe7c4,0x2a2119,.75));
+const sun=new THREE.DirectionalLight(0xffd29a,2.4);sun.position.set(-6,8,8);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);scene.add(sun);
+const rim=new THREE.DirectionalLight(0x8fb4c4,1.2);rim.position.set(6,5,-6);scene.add(rim);
+const g=new THREE.Mesh(new THREE.PlaneGeometry(80,40),new THREE.MeshStandardMaterial({color:0x8c7557,roughness:1}));g.rotation.x=-Math.PI/2;g.receiveShadow=true;scene.add(g);
+const loader=new THREE.GLTFLoader();
+const names=['Footman','Scout','Archer','HeavyWarrior','KnightCaptain','PeasantMilitia'];
+let done=0;
+names.forEach((n,i)=>{
+  loader.load('../assets/models/'+n+'.glb',(gltf)=>{
+    const m=gltf.scene;m.rotation.y=0;
+    m.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true;o.frustumCulled=false;}});
+    m.scale.setScalar(7.0);
+    m.position.set(-6.4+i*2.56,0,0);
+    scene.add(m);
+    const mixer=new THREE.AnimationMixer(m);
+    const clip=THREE.AnimationClip.findByName(gltf.animations,'Idle')||gltf.animations[0];
+    if(clip)mixer.clipAction(clip).play();
+    m.userData.mixer=mixer;
+    done++;
+  },undefined,(e)=>console.error(n,e));
+});
+const clock=new THREE.Clock();
+function frame(){requestAnimationFrame(frame);const dt=clock.getDelta();scene.traverse(o=>{if(o.userData&&o.userData.mixer)o.userData.mixer.update(dt);});renderer.render(scene,cam);}
+frame();
+addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
+window.ASSET={n:()=>done};
+</script></body></html>

@@ -44,8 +44,8 @@ Some of this work is already in the working tree (plinth and five figures, mass 
 
 ## 7. Follow-up, blocked work
 
-- [ ] 7.1 Confirm the architecture direction with the owner before Uhud/Khandaq: modular vanilla shared engine (recommended) or a React UI shell. Record the decision in AGENTS.md.
-- [ ] 7.2 Write a separate OpenSpec change for the shared engine split (renderer, camera, clock, labels, orbit, particles, merge) plus per-battle data/scene modules. Do not implement it in this change.
+- [x] 7.1 Architecture direction confirmed with the owner (2026-10-25): hybrid carved maquette, modular vanilla engine, heroes-only CC0 rigged GLTF, no React 3D rewrite. Recorded in AGENTS.md.
+- [x] 7.2 New OpenSpec change `battle-visual-quality` created; its task 3.6 covers the shared engine/per-battle split. Not implemented in this change.
 - [x] 7.3 Confirm the fonts render as intended: Cormorant Garamond display, Archivo UI, Noto Nastaliq Urdu. Verify with a desktop and phone screenshot.
 - [x] 7.4 Keep Uhud and Khandaq ledgers, scenes and labels blocked until the owner explicitly approves them.
 
