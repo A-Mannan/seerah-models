@@ -2,10 +2,10 @@
 
 ## 1. Ledger grading (blocks everything else)
 
-- [ ] 1.1 Locate the Khaybar chapter in the owned spine PDF and record exact page ranges in `data/ledger/khaybar.json` (`spine_source.khaybar_chapter_pages`).
-- [ ] 1.2 Live-verify every skeleton entry against sunnah.com (HTML pages) and api.alquran.cloud; set grades per the grading policy; convert the worst-known variant clusters into DISPUTED entries with both variants recorded.
-- [ ] 1.3 Decide the render set: which entries are solid, approx or hidden; draft no dialogue beyond what a solid/report grade supports.
-- [ ] 1.4 Add Khaybar terms to `data/ledger/glossary.json` (al-ḥarra, al-Qamūṣ, the fort names).
+- [x] 1.1 Locate the Khaybar chapter in the owned spine PDF and record exact page ranges in `data/ledger/khaybar.json` (`spine_source.khaybar_chapter_pages`). — pp. 233-239, print page = PDF page.
+- [x] 1.2 Live-verify every skeleton entry against sunnah.com (HTML pages) and api.alquran.cloud; set grades per the grading policy; convert the worst-known variant clusters into DISPUTED entries with both variants recorded. — sunnah.com via web reader only (WebFetch/curl 403); 21 entries: 11 CERTAIN, 8 REPORTED, 2 DISPUTED.
+- [x] 1.3 Decide the render set: which entries are solid, approx or hidden; draft no dialogue beyond what a solid/report grade supports. — 9 solid / 9 approx / 3 hidden; render_as set per entry.
+- [x] 1.4 Add Khaybar terms to `data/ledger/glossary.json` (al-ḥarra, al-Qamūṣ, the fort names). — 15 places + new khaybar_people group (7); ʿAlī/az-Zubair notes extended.
 - [ ] 1.5 **Owner gate:** present the graded ledger; do not start section 2 choreography-facing work until approved.
 
 ## 2. Engine additions (additive only)
