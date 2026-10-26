@@ -1,0 +1,82 @@
+{
+  "battle": "khaybar",
+  "title": "The Campaign of Khaybar (Muḥarram 7 AH)",
+  "version": "0.1-skeleton",
+  "phase": "4",
+  "status": "skeleton_ungraded",
+  "compiled": "2026-10-26",
+  "app_target": "3D Seerah learning app for ages 12-25 (interactive 3D scenes; battle timeline; verse overlays)",
+  "spine_source": {
+    "work": "Raheeq al-Makhtum (MSA NIU English ed.), Saifur Rahman al-Mubarakpuri, trans. Issam Diab (Dar-us-Salam)",
+    "file": "/home/abdul-mannan/Documents/English_ArRaheeq_AlMakhtum_THE_SEALED_NECTAR.pdf",
+    "khaybar_chapter_pages": "UNLOCATED — task 1.1 of the build-khaybar change; locate in the owned PDF before grading",
+    "citation_format": "Raheeq al-Makhtum (MSA NIU English ed.), p. N"
+  },
+  "skeleton_note": "Entries below are DRAFT claims from general seerah knowledge, written to seed grading work. NONE is graded. Every entry must pass live verification (sunnah.com HTML pages + api.alquran.cloud) and spine-page confirmation before its grade is set; no choreography may key to any entry before the owner reviews the graded ledger (build-khaybar task 1.5).",
+  "conventions": {
+    "block_tagging": "Same as badr.json: all entries HISTORY; no reflections in this phase.",
+    "honorifics": "The Prophet is referenced as 'the Prophet (PBUH)' in rendered text; Companions carry honorifics at first mention per block. No figural depiction of the Prophet (PBUH) or any face.",
+    "quote_cap": "Direct on-screen quotes <= 15 words; Quran fetched live from api.alquran.cloud at build time.",
+    "no_harmonization": "DISPUTED entries display ranges/both versions, never merged. UNKNOWN = not yet verifiable this session; hidden by default.",
+    "secondary_sirah": "Ibn Hisham/Ibn Ishaq-derived claims are cited via Raheeq or online reproductions logged in live_verification_log."
+  },
+  "grading_policy": {
+    "CERTAIN": ">= 2 independent sources, at least one canonical (Quran > Sahih Bukhari/Muslim > other canonical collections > sirah Ibn Hisham/Ibn Ishaq, Ibn Sa'd, al-Tabari > modern critical works). Raheeq al-Makhtum alone never certifies.",
+    "REPORTED": "Solid single-chain sirah/hadith detail; accurate to attribute but from one lineage or modern retelling only; rendered with no certainty implied.",
+    "DISPUTED": "Transmitted variants conflict; app must show ranges/both versions, never harmonized.",
+    "UNKNOWN": "Cannot be verified from owned + live sources; never rendered without user approval."
+  },
+  "render_as_policy": {
+    "solid": "Canonical or >=2 independent sources; safe as primary on-screen facts, may carry direct quotes.",
+    "approx": "Reported or contested detail; render visually/ambiguously, quotes flagged, no Fame-of-truth framing.",
+    "hidden": "Do not render in current phase; visible only in an app 'scholar's mode' if the user approves."
+  },
+  "verse_anchors": [],
+  "entries": [
+  {"id": "KHY-001", "section": "prelude", "tag": "HISTORY", "claim": "DRAFT — After al-Ḥudaybiyyah (6 AH), the Prophet (PBUH) marched north on Khaybar in Muḥarram 7 AH: a fortified Jewish oasis whose leaders had mustered confederates against Madinah at the Trench.", "sources": [{"work": "Raheeq al-Makhtum (pages to locate)", "ref": "unlocated", "quote": null}], "grade": "UNKNOWN", "variants": [], "render_as": "hidden", "notes": "Core context beat; expected CERTAIN after spine + one canonical cross-check. Verify the month (Muḥarram 7 AH) explicitly."},
+
+  {"id": "KHY-002", "section": "prelude", "tag": "HISTORY", "claim": "DRAFT — The Muslim force is commonly reported at about 1,400 men with around 100-200 horses; specific figures vary by narration.", "sources": [{"work": "proposed: sunnah.com search for the 1,400 narration (ʿUmar listing)", "ref": "unverified", "quote": null}], "grade": "UNKNOWN", "variants": [{"note": "The '1,400' figure appears in hadith wordings whose Khaybar attachment must be verified; other counts circulate in sīrah.", "sources": ["researcher note"]}], "render_as": "hidden", "notes": "Crowd-count source for the scene. Do not render any total until graded; if DISPUTED, show the range."},
+
+  {"id": "KHY-003", "section": "prelude", "tag": "HISTORY", "claim": "DRAFT — Khaybar lies roughly 90-140 km north of Madinah in volcanic ḥarra terrain: black rock uplands over an oasis of palm groves and fields, forts built on high ground.", "sources": [{"work": "proposed: live geography checks (madainproject/Wikipedia/Saudipedia)", "ref": "unverified", "quote": null}], "grade": "UNKNOWN", "variants": [], "render_as": "hidden", "notes": "Terrain brief for the heightfield. Distance band needs fresh live checks like BADR-017."},
+
+  {"id": "KHY-004", "section": "field", "tag": "HISTORY", "claim": "DRAFT — Khaybar was a chain of fortresses; name-sets in circulation include al-Naʿīm, al-Qamūṣ, al-Shaqq, Naṭāh, al-Katībah, al-Waṭīḥ and al-Sulālim.", "sources": [{"work": "Raheeq al-Makhtum (pages to locate)", "ref": "unlocated", "quote": null}], "grade": "UNKNOWN", "variants": [{"note": "Fort name-sets and their spellings differ across sīrah sources; expected DISPUTED after grading.", "sources": ["researcher note"]}], "render_as": "hidden", "notes": "Scene shows a small number of distinct forts; label only the forts the graded set supports."},
+
+  {"id": "KHY-005", "section": "field", "tag": "HISTORY", "claim": "DRAFT — The order in which the forts fell differs by report; the app must stage a range, never one confident order.", "sources": [{"work": "Raheeq al-Makhtum (pages to locate)", "ref": "unlocated", "quote": null}], "grade": "UNKNOWN", "variants": [{"note": "Expected to become DISPUTED once the spine and one more source are compared (e.g., Naʿīm-first vs Qamūṣ-last orderings).", "sources": ["researcher note"]}], "render_as": "hidden", "notes": "Direct input to choreography task 3.2. Do not harmonize."},
+
+  {"id": "KHY-006", "section": "field", "tag": "HISTORY", "claim": "DRAFT — The campaign is commonly reported at about one month overall, with the al-Qamūṣ siege sometimes given at 10-14 days.", "sources": [{"work": "Raheeq al-Makhtum (pages to locate)", "ref": "unlocated", "quote": null}], "grade": "UNKNOWN", "variants": [], "render_as": "hidden", "notes": "Affects phase pacing labels; keep durations off-screen unless graded."},
+
+  {"id": "KHY-007", "section": "battle", "tag": "HISTORY", "claim": "DRAFT — The army arrived at Khaybar by night and engagement opened in the morning; associated sayings of that night/morning exist in the collections and must be verified verbatim before any use.", "sources": [{"work": "proposed: sunnah.com search (Khaybar arrival narration)", "ref": "unverified", "quote": null}], "grade": "UNKNOWN", "variants": [], "render_as": "hidden", "notes": "Phase 2 (march/night arrival) hinge. No on-screen text until verified."},
+
+  {"id": "KHY-008", "section": "battle", "tag": "HISTORY", "claim": "DRAFT — The forts were taken one by one in sequence rather than in a single assault.", "sources": [{"work": "Raheeq al-Makhtum (pages to locate)", "ref": "unlocated", "quote": null}], "grade": "UNKNOWN", "variants": [], "render_as": "hidden", "notes": "Underpins the sequential-siege choreography; expected uncontroversial but must be graded."},
+
+  {"id": "KHY-009", "section": "battle", "tag": "HISTORY", "claim": "DRAFT — The Prophet (PBUH) said he would give the banner 'tomorrow' to a man who loves Allah and His Messenger and whom Allah and His Messenger love, and gave it to ʿAlī (RA).", "sources": [{"work": "proposed: Sahih al-Bukhari (Sahl b. Saʿd chain) — locate exact number", "ref": "unverified", "quote": null}], "grade": "UNKNOWN", "variants": [{"note": "ʿAlī's accompanying vow wording ('fight until they believe') needs separate verification.", "sources": ["researcher note"]}], "render_as": "hidden", "notes": "The standard-grant beat. Expected CERTAIN after the Bukhari number is confirmed; the vow may grade separately."},
+
+  {"id": "KHY-010", "section": "battle", "tag": "HISTORY", "claim": "DRAFT — ʿAlī (RA) had an eye ailment at Khaybar before receiving the banner; details are sīrah-level.", "sources": [{"work": "Raheeq al-Makhtum (pages to locate)", "ref": "unlocated", "quote": null}], "grade": "UNKNOWN", "variants": [], "render_as": "hidden", "notes": "Humanizing detail; keep out of render unless graded at least REPORTED; no depiction of the affliction beyond a label."},
+
+  {"id": "KHY-011", "section": "battle", "tag": "HISTORY", "claim": "DRAFT — Marḥab, a Khaybar champion, came out in armour and boasted in verse; ʿAlī (RA) met him in single combat and killed him.", "sources": [{"work": "Raheeq al-Makhtum (pages to locate)", "ref": "unlocated", "quote": null}, {"work": "proposed: locate any canonical parallel (sunnah.com search 'Marhab')", "ref": "unverified", "quote": null}], "grade": "UNKNOWN", "variants": [{"note": "The boast poetry wording varies by chain; the named pair and the kill are the stable core.", "sources": ["researcher note"]}], "render_as": "hidden", "notes": "Signature duel beat (build-khaybar task 3.4). No dialogue on screen beyond what a solid/report grade supports; never render the boast verbatim unless graded."},
+
+  {"id": "KHY-012", "section": "battle", "tag": "HISTORY", "claim": "DRAFT — After Marḥab fell, his brother Yāsir engaged ʿAlī (RA) and was killed.", "sources": [{"work": "Raheeq al-Makhtum (pages to locate)", "ref": "unlocated", "quote": null}], "grade": "UNKNOWN", "variants": [], "render_as": "hidden", "notes": "Optional second beat inside the duel phase; stage only if graded."},
+
+  {"id": "KHY-013", "section": "battle", "tag": "HISTORY", "claim": "DRAFT — Al-Qamūṣ, the chief fortress, fell after a siege; reports differ on the manner of its fall. A report of a Jewess dropping a millstone on a Muslim at the fort circulates.", "sources": [{"work": "Raheeq al-Makhtum (pages to locate)", "ref": "unlocated", "quote": null}], "grade": "UNKNOWN", "variants": [{"note": "Fall-manner variants expected DISPUTED; millstone report single-lineage.", "sources": ["researcher note"]}], "render_as": "hidden", "notes": "The siege phase's climax; stage the siege, keep the fall manner per graded variants."},
+
+  {"id": "KHY-014", "section": "battle", "tag": "HISTORY", "claim": "DRAFT — A Khaybar shepherd tending the flocks asked about Islam, accepted it, and joined the army; the flocks are reported to have followed without being driven.", "sources": [{"work": "Raheeq al-Makhtum (pages to locate)", "ref": "unlocated", "quote": null}], "grade": "UNKNOWN", "variants": [], "render_as": "hidden", "notes": "Candidate vignette; the flocks detail is the part to grade carefully before staging animals."},
+
+  {"id": "KHY-015", "section": "result", "tag": "HISTORY", "claim": "DRAFT — The Khaybar people were allowed to remain and farm, yielding half the produce to the Muslims — the first fayʾ.", "sources": [{"work": "proposed: Sahih al-Bukhari (Ibn ʿUmar narration) — locate exact number", "ref": "unverified", "quote": null}], "grade": "UNKNOWN", "variants": [], "render_as": "hidden", "notes": "Reckoning phase backbone; expected CERTAIN after verification."},
+
+  {"id": "KHY-016", "section": "result", "tag": "HISTORY", "claim": "DRAFT — Ṣafiyyah bint Ḥuyayy (RA) was among those captured, was freed, and her freedom became her dowry; the Prophet (PBUH) married her.", "sources": [{"work": "proposed: Sahih al-Bukhari / Sahih Muslim (Ṣafiyyah narrations) — locate exact numbers", "ref": "unverified", "quote": null}], "grade": "UNKNOWN", "variants": [], "render_as": "hidden", "notes": "Rendered as a label beat only; no depiction issues arise since no face is shown anywhere."},
+
+  {"id": "KHY-017", "section": "result", "tag": "HISTORY", "claim": "DRAFT — A Jewish woman roasted a sheep and poisoned it; Bishr b. al-Barāʾ (RA) ate and died (timing varies by report); the Prophet (PBUH) spat saying the shoulder had told him it was poisoned; the woman confessed.", "sources": [{"work": "proposed: Sahih al-Bukhari + Sahih Muslim parallel — locate exact numbers", "ref": "unverified", "quote": null}], "grade": "UNKNOWN", "variants": [{"note": "Name of the woman (Zaynab bint al-Ḥārith) and Bishr's death timing vary; grade the core event and the names separately.", "sources": ["researcher note"]}], "render_as": "hidden", "notes": "Sober-history beat for the reckoning; parental-guidance framing like BADR-056."},
+
+  {"id": "KHY-018", "section": "result", "tag": "HISTORY", "claim": "DRAFT — Fadak came to terms without fighting, offering half its produce.", "sources": [{"work": "Raheeq al-Makhtum (pages to locate)", "ref": "unlocated", "quote": null}], "grade": "UNKNOWN", "variants": [], "render_as": "hidden", "notes": "One-line map beat only; keep out of the 3D scene unless the owner wants it."},
+
+  {"id": "KHY-019", "section": "result", "tag": "HISTORY", "claim": "DRAFT — Jaʿfar b. Abī Ṭālib (RA) returned from Abyssinia around the time of Khaybar's conquest; the Prophet (PBUH) said he could not tell which gladened him more.", "sources": [{"work": "proposed: sīrah chain + any canonical parallel — verify wording", "ref": "unverified", "quote": null}], "grade": "UNKNOWN", "variants": [], "render_as": "hidden", "notes": "Warm closing beat; wording must be verified verbatim before any quote."},
+
+  {"id": "KHY-020", "section": "aftermath", "tag": "HISTORY", "claim": "DRAFT — Sūrah al-Fatḥ's context (the Ḥudaybiyyah aftermath) is linked by mufassirin to the clear gain at Khaybar; 48:20-21's 'much booty' is tied to Khaybar by some exegeses.", "sources": [{"work": "proposed: tafsir + live fetch of 48:20/21 en.sahih", "ref": "unverified", "quote": null}], "grade": "UNKNOWN", "variants": [{"note": "Verse-to-battle attribution is exegetical, not explicit; render as bridge only if the owner accepts the framing.", "sources": ["researcher note"]}], "render_as": "hidden", "notes": "Bridge card toward Muʾtah/Makkan models."}
+  ],
+  "live_verification_log": {
+    "quran_endpoint": "api.alquran.cloud/v1/ayah/{c}:{v}/en.sahih — no anchors fetched yet (verse_anchors empty)",
+    "hadith_endpoint": "sunnah.com/{collection}:{n} HTML pages (api.sunnah.com returns 403 without key — same as badr.json)",
+    "verified_this_session": [],
+    "known_failures": ["api.sunnah.com needs API key (403); use HTML pages", "nothing Khaybar-specific verified yet — this skeleton is ungraded"]
+  }
+}

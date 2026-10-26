@@ -78,3 +78,18 @@ Rollback: the hero prototype is isolated under `app/proto/`; the main Badr scene
 - Resolved: Quaternius for all three, differentiated by palette (linen/ochre) and headwear (turban vs helm).
 - Is a full crowd gait affordable at 1,313 men on the phone? Still open; the hero frame only benches three rigged figures (186 calls / 111k tris).
 - Does the owner want a specific historical silhouette for the turban/veil? No reference supplied; use the carved-maquette abstraction.
+
+## Resolution (2026-10-26 — owner verdict)
+
+The direction was settled on the live scene, not the prototype:
+
+- **Rigged heroes are dormant.** The Quaternius rig loaded in dev but failed in the owner's setup
+  (large async FBX), and successive rebuilt looks were judged a regression. Build **t** restored the
+  inline faceless maquette figures on build-q light (no grade shader) — that is the approved
+  on-screen language. `ENGINE.heroes` remains in the engine, unused, gated behind an owner decision.
+- **No cuts or shakes.** The shot-list decision is revised: each phase is one continuous directed
+  shot, restored verbatim from the pushed build-q camera table; mid-phase cuts and impact shakes
+  were explicitly rejected by the owner.
+- Kept from this change: the crowd gait (per-leg instances), the heightfield field, labels, the
+  engine/battle split, and the standalone frame test as the standing owner gate for any future
+  figure-language change.

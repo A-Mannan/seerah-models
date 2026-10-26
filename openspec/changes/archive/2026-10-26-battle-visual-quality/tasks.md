@@ -1,7 +1,9 @@
 # Tasks
 
-**Current:** all 15 tasks complete (2026-10-25). Build **r** committed locally (7bdc6e3) and the
-engine split landed on top. Ready for owner review, then archive.
+**Current:** all 15 tasks complete; direction resolved through owner review (2026-10-26). The owner
+rejected the rebuilt rigged-figure look and the cut/shake camera direction, so build **t** (8722cd5,
+local) ships the approved faceless maquette figures on build-q light with one continuous shot per
+phase; the rigged-hero capability stays in `engine.js` but dormant. Archived 2026-10-26.
 
 **Done:** 1.x direction/assets/licence · 2.x hero frame + owner gate (approved 2026-10-25) ·
 3.1 rigged champions · 3.2 crowd gait · 3.3 field rebuild · 3.4 shot list · 3.5 build **r** ·
@@ -50,5 +52,5 @@ engine split landed on top. Ready for owner review, then archive.
 
 ## Workflow follow-up
 
-- Archive after the owner accepts the rebuilt Badr and the local commit.
+- Archived 2026-10-26 after the owner accepted build **t**; delta synced to the main spec first.
 - Never push without explicit owner approval.
