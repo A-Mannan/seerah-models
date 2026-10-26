@@ -1,15 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<title>seerah models · Badr</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta http-equiv="refresh" content="0; url=app/index.html">
-<link rel="canonical" href="app/index.html">
-<style>body{margin:0;background:#14120f;color:#ece8df;font-family:Georgia,serif;display:flex;align-items:center;justify-content:center;height:100vh}a{color:#c8a84b}</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>The Seerah Atlas · Badr, Uhud and Khandaq in 3D</title>
+<meta name="description" content="Badr, Uhud and Khandaq as interactive 3D models. Enter the field, orbit the ground, and follow each battle's day.">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0b100e">
+<link rel="icon" href="assets/landing/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="assets/landing/fonts/cormorant.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/landing/fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/landing/fonts/amiri.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" as="image" href="assets/landing/img/badr-day-2-1400.webp" imagesrcset="assets/landing/img/badr-day-2-800.webp 800w, assets/landing/img/badr-day-2-1400.webp 1400w" imagesizes="100vw" fetchpriority="high">
+<link rel="preload" as="image" href="assets/landing/img/uhud-flank-1400.webp" imagesrcset="assets/landing/img/uhud-flank-800.webp 800w, assets/landing/img/uhud-flank-1400.webp 1400w" imagesizes="100vw">
+<link rel="preload" as="image" href="assets/landing/img/khandaq-field-1400.webp" imagesrcset="assets/landing/img/khandaq-field-800.webp 800w, assets/landing/img/khandaq-field-1400.webp 1400w" imagesizes="100vw">
+<link rel="stylesheet" href="assets/landing/fonts/fonts.css">
+<link rel="stylesheet" href="assets/landing/css/landing.css">
+<script>document.documentElement.classList.add('js');</script>
 </head>
 <body>
-<p>Opening <a href="app/index.html">Badr — the battle in 3D</a>…</p>
-<script>location.replace('app/index.html');</script>
+<a class="skip" href="#doors">Skip to the models</a>
+
+<header class="masthead">
+  <div class="masthead-lockup">
+    <a class="masthead-mark" href="index.html">The Seerah Atlas</a>
+    <p class="masthead-sub">The life of the Prophet <span class="hon" lang="ar">ﷺ</span>, mapped in 3D.</p>
+  </div>
+  <span class="masthead-ar" lang="ar" dir="rtl">أطلس السيرة</span>
+</header>
+
+<h1 class="sr-only">The Seerah Atlas: the battles of Badr, Uhud and Khandaq in 3D</h1>
+
+<main class="gate" id="gate" data-battle="badr">
+
+  <div class="stage" aria-hidden="true">
+    <div class="stage-layer stage-layer--badr">
+      <img class="day-frame" data-frame="0" src="assets/landing/img/badr-day-0-1400.webp" srcset="assets/landing/img/badr-day-0-800.webp 800w, assets/landing/img/badr-day-0-1400.webp 1400w" sizes="100vw" width="1400" height="875" alt="" loading="lazy" decoding="async">
+      <img class="day-frame" data-frame="1" src="assets/landing/img/badr-day-1-1400.webp" srcset="assets/landing/img/badr-day-1-800.webp 800w, assets/landing/img/badr-day-1-1400.webp 1400w" sizes="100vw" width="1400" height="875" alt="" loading="lazy" decoding="async">
+      <img class="day-frame is-on" data-frame="2" src="assets/landing/img/badr-day-2-1400.webp" srcset="assets/landing/img/badr-day-2-800.webp 800w, assets/landing/img/badr-day-2-1400.webp 1400w" sizes="100vw" width="1400" height="875" alt="" fetchpriority="high" decoding="async">
+      <img class="day-frame" data-frame="3" src="assets/landing/img/badr-day-3-1400.webp" srcset="assets/landing/img/badr-day-3-800.webp 800w, assets/landing/img/badr-day-3-1400.webp 1400w" sizes="100vw" width="1400" height="875" alt="" loading="eager" decoding="async">
+      <img class="day-frame" data-frame="4" src="assets/landing/img/badr-day-4-1400.webp" srcset="assets/landing/img/badr-day-4-800.webp 800w, assets/landing/img/badr-day-4-1400.webp 1400w" sizes="100vw" width="1400" height="875" alt="" loading="eager" decoding="async">
+      <img class="day-frame" data-frame="5" src="assets/landing/img/badr-day-5-1400.webp" srcset="assets/landing/img/badr-day-5-800.webp 800w, assets/landing/img/badr-day-5-1400.webp 1400w" sizes="100vw" width="1400" height="875" alt="" loading="lazy" decoding="async">
+    </div>
+
+    <div class="stage-layer stage-layer--uhud">
+      <img src="assets/landing/img/uhud-flank-1400.webp" srcset="assets/landing/img/uhud-flank-800.webp 800w, assets/landing/img/uhud-flank-1400.webp 1400w" sizes="100vw" width="1400" height="875" alt="" loading="eager" decoding="async">
+    </div>
+
+    <div class="stage-layer stage-layer--khandaq">
+      <img src="assets/landing/img/khandaq-field-1400.webp" srcset="assets/landing/img/khandaq-field-800.webp 800w, assets/landing/img/khandaq-field-1400.webp 1400w" sizes="100vw" width="1400" height="875" alt="" loading="lazy" decoding="async">
+    </div>
+  </div>
+
+  <div class="band">
+    <nav class="doors" id="doors" aria-label="Enter a battle model" tabindex="-1">
+      <a class="door door--badr" href="badr/index.html" data-door="badr">
+        <span class="door-top">
+          <span class="door-meta">The first battle · 2 AH</span>
+          <span class="door-name">
+            <span class="door-en">Badr</span>
+            <span class="door-ar" lang="ar" dir="rtl">بدر</span>
+          </span>
+        </span>
+        <span class="door-cta">
+          <span class="door-label">Enter Badr</span>
+          <span class="door-arrow" aria-hidden="true">
+            <svg width="30" height="16" viewBox="0 0 30 16" focusable="false"><path d="M0 8h27M20 1l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+          </span>
+        </span>
+      </a>
+
+      <a class="door door--uhud" href="uhud/index.html" data-door="uhud">
+        <span class="door-top">
+          <span class="door-meta">The second battle · 3 AH</span>
+          <span class="door-name">
+            <span class="door-en">Uhud</span>
+            <span class="door-ar" lang="ar" dir="rtl">أحد</span>
+          </span>
+        </span>
+        <span class="door-cta">
+          <span class="door-label">Enter Uhud</span>
+          <span class="door-arrow" aria-hidden="true">
+            <svg width="30" height="16" viewBox="0 0 30 16" focusable="false"><path d="M0 8h27M20 1l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+          </span>
+        </span>
+      </a>
+
+      <a class="door door--khandaq" href="khandaq/index.html" data-door="khandaq">
+        <span class="door-top">
+          <span class="door-meta">The third battle · 5 AH</span>
+          <span class="door-name">
+            <span class="door-en">Khandaq</span>
+            <span class="door-ar" lang="ar" dir="rtl">الخندق</span>
+          </span>
+        </span>
+        <span class="door-cta">
+          <span class="door-label">Enter Khandaq</span>
+          <span class="door-arrow" aria-hidden="true">
+            <svg width="30" height="16" viewBox="0 0 30 16" focusable="false"><path d="M0 8h27M20 1l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+          </span>
+        </span>
+      </a>
+    </nav>
+
+  </div>
+
+</main>
+
+<script src="assets/landing/js/landing.js" defer></script>
 </body>
 </html>

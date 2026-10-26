@@ -105,8 +105,15 @@
       }
     },
     isOn: function () { return on; },
-    cue: function (i) {
+    /* a battle page passes its own cue table: { rumble, time, crack } per phase */
+    cue: function (i, table) {
       if (!ctx || !on) return;
+      var c = table && table[i];
+      if (c) {
+        if (c.rumble !== undefined) ramp(rumbleGain, c.rumble, c.time || 0.9);
+        if (c.crack) crack();
+        return;
+      }
       /* the clash swells, the gravel cast cracks, the rout fades */
       if (i === 3) ramp(rumbleGain, 0.26, 0.9);
       else if (i === 4) { crack(); ramp(rumbleGain, 0.36, 0.5); }

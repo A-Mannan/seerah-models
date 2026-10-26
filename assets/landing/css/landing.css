@@ -1,0 +1,526 @@
+/* The Seerah Atlas · the gate.
+   One field, three doors. Ink, bone, one verdigris light.
+   The whole lower index is the call to action. */
+
+:root {
+  --ink: #0b100e;
+  --ink-deep: #070b09;
+  --bone: #ece5d3;
+  --bone-soft: #ded5c0;
+  --muted: #a49d8c;
+  --muted-ink: #635d4e;
+  --accent: #9bc4ae;
+  --accent-deep: #3a6250;
+  --bone-dim: rgba(236, 229, 211, 0.62);
+  --serif: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --sans: "Archivo", "Cormorant Garamond", "Helvetica Neue", sans-serif;
+  --arabic: "Amiri", "Cormorant Garamond", serif;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --edge: clamp(20px, 3.4vw, 56px);
+  --head: 80px;
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html {
+  background: var(--ink);
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  background: var(--ink);
+  color: var(--bone);
+  font-family: var(--sans);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img { display: block; max-width: 100%; height: auto; }
+a { color: inherit; text-decoration: none; }
+h1, p { margin: 0; }
+::selection { background: var(--accent); color: var(--ink); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip {
+  position: fixed;
+  top: -120px;
+  left: var(--edge);
+  z-index: 100;
+  padding: 12px 16px;
+  background: var(--bone);
+  color: var(--ink);
+  font-size: 15px;
+  transition: top 0.2s var(--ease);
+}
+.skip:focus { top: 12px; }
+
+/* ------------------------------ masthead */
+
+.masthead {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  height: var(--head);
+  padding: 0 var(--edge);
+  background: var(--ink);
+}
+
+.masthead-lockup {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.masthead-mark {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  min-height: 26px;
+  font-family: var(--serif);
+  font-size: 21px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.012em;
+  color: var(--bone);
+}
+
+.masthead-sub {
+  font-family: var(--sans);
+  font-size: 12.5px;
+  font-weight: 400;
+  line-height: 1.25;
+  letter-spacing: 0.012em;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.masthead-sub .hon {
+  margin: 0 0.06em 0 0.04em;
+  font-family: var(--arabic);
+  font-size: 1.45em;
+  line-height: 1;
+  color: var(--bone-soft);
+}
+
+.masthead-ar {
+  flex: none;
+  font-family: var(--arabic);
+  font-size: 18px;
+  line-height: 1.2;
+  color: var(--muted);
+}
+
+/* ------------------------------ the gate */
+
+.gate {
+  display: grid;
+  grid-template-rows: minmax(280px, 1fr) auto;
+  min-height: calc(100svh - var(--head));
+  background: var(--ink);
+}
+
+/* ------------------------------ the field */
+
+.stage {
+  position: relative;
+  min-height: 280px;
+  overflow: hidden;
+  background: var(--ink-deep);
+}
+
+.stage-layer {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: scale(1);
+  transition:
+    opacity 0.8s var(--ease),
+    transform 12s var(--ease);
+}
+
+.gate[data-battle="badr"] .stage-layer--badr,
+.gate[data-battle="uhud"] .stage-layer--uhud,
+.gate[data-battle="khandaq"] .stage-layer--khandaq {
+  opacity: 1;
+  transform: scale(1.025);
+}
+
+.stage-layer img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 48%;
+}
+
+.stage-layer--uhud img { object-position: 50% 46%; }
+
+.stage-layer--khandaq img { object-position: 50% 45%; }
+
+.day-frame {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1.1s linear;
+}
+
+.day-frame.is-on { opacity: 1; }
+
+/* ------------------------------ the band */
+
+.band {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: var(--bone);
+  color: var(--ink);
+}
+
+.doors {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.door {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: clamp(250px, 29svh, 310px);
+  padding: clamp(24px, 2.4vw, 34px) clamp(22px, 2.2vw, 32px) clamp(18px, 1.8vw, 24px);
+  overflow: hidden;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.door:first-child { padding-left: var(--edge); }
+.door:last-child { padding-right: var(--edge); }
+
+.door::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: var(--ink);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.55s var(--ease);
+}
+
+.door--badr:hover::before,
+.door--uhud:hover::before,
+.door--khandaq:hover::before {
+  transform: scaleX(1);
+}
+
+/* the selected door keeps a lit threshold, never a box */
+.door::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  height: 6px;
+  background: var(--accent-deep);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.55s var(--ease), background 0.3s var(--ease);
+}
+
+.gate[data-battle="badr"] .door--badr::after,
+.gate[data-battle="uhud"] .door--uhud::after,
+.gate[data-battle="khandaq"] .door--khandaq::after {
+  transform: scaleX(1);
+}
+
+.door--badr:hover::after,
+.door--uhud:hover::after,
+.door--khandaq:hover::after {
+  background: var(--accent);
+}
+
+.door-top,
+.door-cta {
+  position: relative;
+  z-index: 1;
+}
+
+.door-top {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 1.2vw, 16px);
+  min-width: 0;
+}
+
+.door-meta {
+  font-size: 13px;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  color: var(--muted-ink);
+  transition: color 0.2s var(--ease) 0.32s;
+}
+
+.gate[data-battle="badr"] .door--badr .door-meta,
+.gate[data-battle="uhud"] .door--uhud .door-meta,
+.gate[data-battle="khandaq"] .door--khandaq .door-meta {
+  color: var(--ink);
+}
+
+.door-name {
+  display: flex;
+  align-items: flex-end;
+  gap: clamp(10px, 1vw, 16px);
+  min-width: 0;
+}
+
+.door-en {
+  font-family: var(--serif);
+  font-size: clamp(54px, 6.1vw, 90px);
+  font-weight: 400;
+  line-height: 0.8;
+  letter-spacing: -0.045em;
+  color: var(--ink);
+  transition: color 0.2s var(--ease) 0.32s;
+}
+
+.door-ar {
+  display: inline-block;
+  margin-bottom: clamp(2px, 0.3vw, 5px);
+  font-family: var(--arabic);
+  font-size: clamp(22px, 2.1vw, 32px);
+  font-weight: 400;
+  line-height: 1.2;
+  color: var(--ink);
+  transition: color 0.2s var(--ease) 0.32s;
+}
+
+.door-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: clamp(14px, 1.6vw, 20px);
+}
+
+.door-label {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0.008em;
+  color: var(--ink);
+  transition: transform 0.45s var(--ease), color 0.2s var(--ease);
+  transition-delay: 0s, 0.32s;
+}
+
+.door-arrow {
+  flex: none;
+  display: block;
+  color: var(--ink);
+  transition: transform 0.45s var(--ease), color 0.2s var(--ease);
+  transition-delay: 0s, 0.06s;
+}
+
+/* the flood is the dark stage: the type flips with the leading edge */
+.door--badr:hover .door-en,
+.door--badr:hover .door-ar,
+.door--badr:hover .door-label,
+.door--uhud:hover .door-en,
+.door--uhud:hover .door-ar,
+.door--uhud:hover .door-label,
+.door--khandaq:hover .door-en,
+.door--khandaq:hover .door-ar,
+.door--khandaq:hover .door-label {
+  color: var(--bone);
+  transition-delay: 0.06s;
+}
+
+.door--badr:hover .door-meta,
+.door--uhud:hover .door-meta,
+.door--khandaq:hover .door-meta {
+  color: var(--bone-dim);
+  transition-delay: 0.06s;
+}
+
+/* the active door is ink-on-bone at rest; on hover its meta must flip with the flood */
+.gate[data-battle="badr"] .door--badr:hover .door-meta,
+.gate[data-battle="uhud"] .door--uhud:hover .door-meta,
+.gate[data-battle="khandaq"] .door--khandaq:hover .door-meta {
+  color: var(--bone-dim);
+}
+
+.door--badr:hover .door-label,
+.door--uhud:hover .door-label,
+.door--khandaq:hover .door-label {
+  transition-delay: 0s, 0.06s;
+}
+
+.door--badr:hover .door-arrow,
+.door--uhud:hover .door-arrow,
+.door--khandaq:hover .door-arrow {
+  color: var(--accent);
+  transition-delay: 0s, 0.32s;
+}
+
+.door--badr:is(:hover, :focus-visible) .door-label,
+.door--uhud:is(:hover, :focus-visible) .door-label,
+.door--khandaq:is(:hover, :focus-visible) .door-label {
+  transform: translateX(2px);
+}
+
+.door--badr:is(:hover, :focus-visible) .door-arrow,
+.door--uhud:is(:hover, :focus-visible) .door-arrow,
+.door--khandaq:is(:hover, :focus-visible) .door-arrow {
+  transform: translateX(6px);
+}
+
+.door--badr:active .door-label,
+.door--uhud:active .door-label,
+.door--khandaq:active .door-label {
+  transform: translateX(3px);
+}
+
+.door--badr:active .door-arrow,
+.door--uhud:active .door-arrow,
+.door--khandaq:active .door-arrow {
+  transform: translateX(9px);
+}
+
+.door--badr:focus-visible,
+.door--uhud:focus-visible,
+.door--khandaq:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: -4px;
+  box-shadow: inset 0 0 0 2px var(--bone); /* taste-skill-ignore: dual tone focus ring */
+}
+
+/* ------------------------------ entrance */
+
+@media (prefers-reduced-motion: no-preference) {
+  .js .stage { animation: settle 1.8s var(--ease) both; }
+  .js .masthead { animation: fade-in 0.7s var(--ease) both; }
+  .js .door-top,
+  .js .door-cta { animation: door-rise 0.8s var(--ease) both; }
+  .js .door--badr .door-top { animation-delay: 0.12s; }
+  .js .door--badr .door-cta { animation-delay: 0.2s; }
+  .js .door--uhud .door-top { animation-delay: 0.18s; }
+  .js .door--uhud .door-cta { animation-delay: 0.26s; }
+  .js .door--khandaq .door-top { animation-delay: 0.24s; }
+  .js .door--khandaq .door-cta { animation-delay: 0.32s; }
+}
+
+@keyframes settle {
+  from { transform: scale(1.02); }
+  to { transform: scale(1); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes door-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* ------------------------------ tablet and phone: the index becomes a list */
+
+@media (max-width: 900px) {
+  .doors { grid-template-columns: 1fr; }
+
+  .door {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px 20px;
+    min-height: 0;
+    padding-top: 16px;
+    padding-bottom: 18px;
+  }
+
+  .door-top { gap: 5px; }
+
+  .door-name { gap: 9px; }
+
+  .door-en { font-size: clamp(42px, 6.4vw, 58px); }
+  .door-ar { font-size: clamp(19px, 2.6vw, 25px); }
+
+  .door-cta {
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 0;
+  }
+
+  .door-label { font-size: 14px; }
+}
+
+@media (max-width: 700px) {
+  :root {
+    --head: 76px;
+    --edge: 20px;
+  }
+
+  .masthead-mark { font-size: 18px; }
+  .masthead-sub { font-size: 11.5px; }
+  .masthead-ar { font-size: 16px; }
+
+  .gate { grid-template-rows: minmax(300px, 1fr) auto; }
+
+  .door {
+    gap: 8px 14px;
+    padding-top: 15px;
+    padding-bottom: 17px;
+  }
+
+  .door-meta { font-size: 12px; }
+  .door-en { font-size: clamp(40px, 10.6vw, 46px); }
+  .door-ar { font-size: clamp(18px, 5vw, 22px); }
+  .door-label { font-size: 13.5px; }
+  .door-arrow svg { width: 26px; height: 14px; }
+}
+
+@media (max-width: 380px) {
+  :root { --head: 72px; }
+
+  .masthead-ar { display: none; }
+  .masthead-sub { font-size: 11px; }
+  .door-meta { font-size: 11.5px; }
+  .door-en { font-size: 38px; }
+  .door-label { font-size: 13px; }
+}
+
+/* ------------------------------ reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

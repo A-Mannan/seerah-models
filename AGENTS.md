@@ -1,14 +1,15 @@
 # AGENTS.md — seerah-models
 
 ## What this is
-A pure-visual, interactive 3D seerah series. **Badr** is the live model; **Uhud** and **Khandaq** are blocked pending owner approval. No article, narration, captions, info cards, references, or scholar's mode. The model speaks for itself.
+A pure-visual, interactive 3D seerah series. **Badr, Uhud and Khandaq** are live model pages on the shared engine; the Uhud and Khandaq ledgers still await owner review. No article, narration, captions, info cards, references, or scholar's mode. The model speaks for itself.
 
 ## Stack / run
 - Static site, no build step: `python3 -m http.server 8000` → `/app/index.html`.
 - Vanilla JS + Three.js r128; no npm, no bundler, no React in the shipped app.
-- `app/js/battle.js` — scene, formations, choreography, cameras, labels.
-- `app/js/main.js` — clock, timeline, speeds, language, UI. `app/js/audio.js` — procedural sound.
-- `app/index.html`, `app/css/style.css`; ledger in `data/ledger/badr.json`, bundled to `app/assets/data.js`.
+- `app/js/engine.js` — the shared engine: renderer, sky, heightfield, props, merge, crowd, labels, camera director, runner.
+- `app/js/badr.js`, `app/js/uhud.js`, `app/js/khandaq.js` — battle scenes on that engine.
+- `app/js/shell.js`, `app/js/*-page.js` — the shared UI shell and per-page descriptors. `app/js/audio.js` — procedural sound.
+- Pages `app/index.html`, `app/uhud.html`, `app/khandaq.html`; generated routes `badr/`, `uhud/`, `khandaq/`; ledgers in `data/ledger/*.json`, bundled to `app/assets/data.js`.
 
 ## Before changing anything
 - Read `PROGRESS.md` and the active change under `openspec/changes/`.
@@ -26,21 +27,21 @@ A pure-visual, interactive 3D seerah series. **Badr** is the live model; **Uhud*
 - Speeds 0.5× / 1× / 1.5× / 2×. Play button reads “play”. Urdu timeline runs right-to-left.
 - No camera-preset chip row: the phase cameras and free orbit carry the story. The “sand” phase is the action-vignette beat.
 - Mobile first-class: portrait framing, safe areas, no clipped labels or controls.
-- Brand reads **badr · the battle**.
+- Brand reads **badr · the battle**, **uhud · the battle**, **khandaq · the battle**.
 
 ## Quality gates
-- `node --check app/js/battle.js` and `app/js/main.js`.
-- `node .agents/skills/design-taste-frontend/scripts/lint.mjs --app app/index.html app/css/style.css app/js/battle.js app/js/main.js app/js/audio.js`
-- `node .agents/skills/design-taste-frontend/scripts/inspect.mjs --app --allow font-not-dealt,gradient,mixed-font-headline,palette-cream app/index.html` (gradient = the approved dawn post grade; mixed face + cream = the intentional brand).
-- Visual probes live in `.taste-skill/`; review `.taste-skill/inspect/`.
+- `node --check` on every touched script under `app/js/` (engine, shell, scene modules included).
+- `node .agents/skills/design-taste-frontend/scripts/lint.mjs --app app/index.html app/css/style.css app/js/engine.js app/js/shell.js app/js/audio.js app/js/badr.js app/js/uhud.js app/js/khandaq.js`
+- `node .agents/skills/design-taste-frontend/scripts/inspect.mjs --app --allow font-not-dealt,gradient,mixed-font-headline,palette-cream app/khandaq.html` (gradient = the approved dawn post grade; mixed face + cream = the intentional brand). Run it for the page you touched.
+- Visual probes live in `.taste-skill/`; review `.taste-skill/inspect/`. Check every phase at 390×844 as well as desktop.
 - Perf: keep draw calls low via instancing; check `BATTLE.info()` and `BATTLE.benchMass()`. Headless RAF at 2–3 fps is not a perf signal.
 
 ## Visual quality (current)
 - The owner rejected the primitive “Minecraft” look. Direction: **hybrid carved maquette** — sculpted matte forms, one dawn key, haze and a restrained post grade.
-- Named heroes: **heroes-only CC0 rigged GLTF**, faces covered by helmet/hood/turban + veil. Round 1 (Gobkit human003) was rejected as chibi with exposed faces; round 2 tests KayKit Adventurers and Quaternius Animated Men/Modular Men.
+- The rigged-GLTF experiment was rejected (chibi, exposed faces); the approved figure language is the faceless procedural maquette. The hero-rig hook stays dormant in the engine.
 - Crowd and field stay procedural/instanced; the crowd must have a gait/thrust, not slide.
-- **Hero-frame gate:** do not rebuild the full scene until the owner approves the standalone hero frame in `openspec/changes/battle-visual-quality/`.
-- Build q is local; no push.
+- Portrait framing is part of the look: a scene may cap the shared portrait pull and supply per-shot portrait endpoints. Every phase must be re-shot at 390×844, not assumed from desktop.
+- Build v is local; no push.
 
 ## Docs roles
 - `openspec/changes/` — the plan and checklist for the current change; archived when accepted.
@@ -50,13 +51,13 @@ A pure-visual, interactive 3D seerah series. **Badr** is the live model; **Uhud*
 
 ## Git / release
 - Commit locally. **Never push to GitHub without explicit owner approval.**
-- Cutting a build: bump the build letter in the `app/js/main.js` console log and `?debug=1` tag, bump every `?v=` query in `app/index.html`, add one entry to the `PROGRESS.md` build log.
+- Cutting a build: bump the build letter in every `app/js/*-page.js` descriptor, bump every `?v=` query in all three model pages, run `node scripts/build-routes.mjs`, and add one entry to the `PROGRESS.md` build log.
 - Do not add a public version string.
 
 ## Architecture / next battles
-- Split done (build r): `app/js/engine.js` is the shared engine (renderer boot, dawn sky, heightfield, props, merge, crowd, rigged heroes, labels, camera director with clock/orbit/shots, particles); `app/js/badr.js` is the Badr scene module (layout, plans, vignette, choreography, `BATTLE` API). A new battle is a data/scene module on the same engine. React/R3F is optional for the UI shell only — not the instanced 3D engine.
-- Uhud/Khandaq ledgers and scenes remain blocked until the owner approves.
+- Split done (build r): `app/js/engine.js` is the shared engine (renderer boot, dawn sky, heightfield, props, merge, crowd, labels, camera director with clock/orbit/shots, particles, runner); `badr.js`, `uhud.js` and `khandaq.js` are scene modules supplying layout, plans, choreography, shots and copy. A new battle is a data/scene module on the same engine. React/R3F is optional for the UI shell only — not the instanced 3D engine.
+- Badr, Uhud and Khandaq are live on the shared engine; the Uhud and Khandaq ledgers remain `awaiting_owner_review`.
 - OpenSpec: planning artifacts live in `openspec/changes/<change>/`; implement through the apply workflow; archive when accepted.
 
 ## Current focus
-The active OpenSpec change lists the remaining Badr work.
+`openspec/changes/khandaq-battle/` records the completed Khandaq pass. `build-khaybar` is planned and remains behind its owner ledger gate.

@@ -2,15 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Badr — the battle in 3D · seerah models</title>
-<meta name="description" content="The battle of Badr as an interactive 3D model: the ground, the 3-versus-3 champions' duel, the full-scale battle, the rout.">
-<link rel="preconnect" href="https://api.fontshare.com">
-<link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/style.css?v=20261025t">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Badr · The Seerah Atlas</title>
+<meta name="description" content="The battle of Badr as an interactive 3D terrain model: the ground, the wells, the 3-versus-3 duel, the clash, the rout. Faceless figures; the Prophet ﷺ is never depicted.">
+<link rel="icon" href="../assets/landing/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/landing/fonts/cormorant.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/landing/fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/landing/fonts/fonts.css?v=20261026w">
+<link rel="stylesheet" href="css/style.css?v=20261026w">
 <script>document.documentElement.classList.add('js')</script>
 </head>
 <body>
@@ -25,7 +24,7 @@
   });
 </script>
 
-<canvas id="gl" aria-label="Interactive 3D model of the battle of Badr: valley, wells, the basin, the ʻarish, standards, and faceless stylized soldiers. The Prophet ﷺ is never depicted."></canvas>
+<canvas id="gl" aria-label="Interactive 3D model of the battle of Badr: valley, wells, the basin, the ʻarish and faceless stylized soldiers. The Prophet ﷺ is never depicted."></canvas>
 
 <div class="grade grade-warm"></div>
 <div class="grade grade-grain"></div>
@@ -37,6 +36,10 @@
     <span class="brand-name" data-i18n="brand">badr <em>· the battle</em></span>
   </h1>
   <nav class="bar-tools" aria-label="Experience tools">
+    <a class="tool home-link" href="../index.html" aria-label="Back to The Seerah Atlas">
+      <svg class="back-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M14 8H2m5-5L2 8l5 5" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+      <span data-i18n="home">atlas</span>
+    </a>
     <button id="langBtn" class="tool" aria-pressed="false">اردو</button>
     <button id="soundBtn" class="tool" aria-pressed="false">sound off</button>
   </nav>
@@ -45,13 +48,14 @@
 <div class="labels" id="labels"></div>
 
 <div class="legend">
-  <p class="legend-row legend-m"><span class="swatch"></span><span data-i18n="legendM"><b>Muslims</b> · about 313, lightly equipped</span></p>
-  <p class="legend-row legend-q"><span class="swatch"></span><span data-i18n="legendQ"><b>Quraysh</b> · about 1,000, fully equipped</span></p>
+  <p class="legend-row legend-m"><span class="swatch"></span><span data-i18n="legendM"><b>Muslims</b> · lightly equipped</span></p>
+  <p class="legend-row legend-q"><span class="swatch"></span><span data-i18n="legendQ"><b>Quraysh</b> · fully equipped</span></p>
 </div>
 
 <footer class="deck" id="deck">
   <div class="deck-row">
-    <button id="playBtn" class="deck-btn" aria-pressed="false"><span class="glyph">▶</span><span class="txt">play</span></button>    <div class="timeline" id="timeline" aria-label="Battle timeline: drag to scrub">
+    <button id="playBtn" class="deck-btn" aria-pressed="false"><span class="glyph">▶</span><span class="txt">play</span></button>
+    <div class="timeline" id="timeline" aria-label="Battle timeline: drag to scrub">
       <div class="segs" id="segs"></div>
       <div class="scrub-head" id="scrubHead"></div>
     </div>
@@ -70,12 +74,12 @@
   at the wells; the sand; the rout; the field gone quiet. Figures are faceless; the Prophet ﷺ is never depicted.</p>
 </noscript>
 
-<script src="assets/three.min.js?v=20261025t"></script>
-<script>window.THREE || document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\\/script>')</script>
-<script src="assets/data.js?v=20261025t"></script>
-<script src="js/audio.js?v=20261025t" defer></script>
-<script src="js/engine.js?v=20261025t" defer></script>
-<script src="js/badr.js?v=20261025t" defer></script>
-<script src="js/main.js?v=20261025t" defer></script>
+<script src="assets/three.min.js?v=20261026w"></script>
+<script src="assets/data.js?v=20261026w"></script>
+<script src="js/audio.js?v=20261026w" defer></script>
+<script src="js/engine.js?v=20261026w" defer></script>
+<script src="js/badr.js?v=20261026w" defer></script>
+<script src="js/badr-page.js?v=20261026w" defer></script>
+<script src="js/shell.js?v=20261026w" defer></script>
 </body>
 </html>

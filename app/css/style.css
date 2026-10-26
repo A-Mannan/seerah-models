@@ -66,9 +66,9 @@ h1, h2, p { margin: 0; }
 /* ------------------------------ top bar */
 .bar {
   position: fixed; top: 0; left: 0; right: 0; z-index: 10;
-  height: var(--bar-h);
+  height: calc(var(--bar-h) + env(safe-area-inset-top, 0px));
   display: flex; align-items: center; justify-content: space-between;
-  padding: 0 22px;
+  padding: env(safe-area-inset-top, 0px) 22px 0;
   background: rgba(16, 14, 12, 0.34);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -88,10 +88,13 @@ h1, h2, p { margin: 0; }
 }
 .tool:hover { color: var(--ink); background: rgba(236, 232, 223, 0.06); }
 .tool[aria-pressed="true"] { color: var(--brass); }
+.home-link { display: inline-flex; align-items: center; gap: 6px; }
+.back-arrow { width: 14px; height: 14px; flex: none; }
+[dir="rtl"] .back-arrow { transform: scaleX(-1); }
 
 /* ------------------------------ legend */
 .legend {
-  position: fixed; top: calc(var(--bar-h) + 10px); right: 22px; z-index: 9;
+  position: fixed; top: calc(var(--bar-h) + env(safe-area-inset-top, 0px) + 10px); right: 22px; z-index: 9;
   display: flex; flex-direction: column; gap: 7px;
   padding: 12px 14px;
   background: rgba(16, 14, 12, 0.72);
@@ -110,6 +113,8 @@ h1, h2, p { margin: 0; }
 }
 .legend-m .swatch { background: #ece5d3; }
 .legend-q .swatch { background: #3a3328; border: 1px solid rgba(236, 232, 223, 0.25); }
+
+
 
 /* ------------------------------ labels */
 .labels { position: fixed; inset: 0; z-index: 5; pointer-events: none; overflow: hidden; }
@@ -224,7 +229,7 @@ h1, h2, p { margin: 0; }
   .brand em { display: inline; font-size: 11px; letter-spacing: 0; }
   .tool { font-size: 12px; padding: 7px 8px; }
   #langBtn { font-size: 13.5px; padding: 4px 10px; }
-  .legend { top: calc(var(--bar-h) + 8px); right: 12px; left: auto; max-width: 200px; padding: 7px 9px; }
+  .legend { top: calc(var(--bar-h) + env(safe-area-inset-top, 0px) + 8px); right: 12px; left: auto; max-width: 200px; padding: 7px 9px; }
   .legend-row { font-size: 11px; line-height: 1.35; gap: 6px; }
   .legend-row .swatch { width: 8px; height: 8px; }
   .deck { padding: 8px 12px calc(12px + env(safe-area-inset-bottom, 0px)); gap: 3px; }

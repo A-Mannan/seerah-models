@@ -1,0 +1,525 @@
+{
+  "battle": "khandaq",
+  "title": "The Battle of the Trench (Ghazwat al-Khandaq / Al-Ahzab)",
+  "version": "1.0",
+  "phase": "1",
+  "status": "awaiting_owner_review",
+  "compiled": "2026-10-26",
+  "app_target": "3D Seerah model in the seerah-models series: interactive 3D scenes and a battle timeline, no narration or article",
+  "spine_source": {
+    "work": "Raheeq al-Makhtum (MSA NIU English ed.), Saifur Rahman al-Mubarakpuri, trans. Issam Diab (Dar-us-Salam)",
+    "file": "data/raw/page_195.txt ... page_203.txt (extracted text, print page = source page)",
+    "khandaq_chapter_pages": "pp. 195-203",
+    "citation_format": "Raheeq al-Makhtum (MSA NIU English ed.), p. N"
+  },
+  "conventions": {
+    "block_tagging": "All ledger entries are HISTORY. The model ships no article, narration, captions or info cards; labels carry names and counts only.",
+    "honorifics": "The Prophet is referenced as 'the Prophet (PBUH)' in any text; Companions carry (RA). No figural depiction of the Prophet (PBUH) or of any identifiable named person.",
+    "quote_cap": "Direct on-screen quotes are short; Qur'an anchors are fetched live from api.alquran.cloud and the exact text is recorded below.",
+    "no_harmonization": "DISPUTED entries display ranges or both versions. UNKNOWN is never rendered.",
+    "secondary_sirah": "Ibn Hisham/Ibn Ishaq-derived detail is cited as it appears in Raheeq; no full translation is owned locally."
+  },
+  "grading_policy": {
+    "CERTAIN": ">= 2 independent sources, at least one canonical (Quran > Sahih Bukhari/Muslim > other canonical collections > sirah Ibn Hisham/Ibn Ishaq, Ibn Sa'd, al-Tabari > modern critical works). Raheeq al-Makhtum alone never certifies.",
+    "REPORTED": "Solid single-chain sirah/hadith detail; accurate to attribute but from one lineage or a modern retelling only; rendered with no certainty implied.",
+    "DISPUTED": "Transmitted variants conflict; the model must show a range or both versions, never one figure.",
+    "UNKNOWN": "Cannot be verified from owned + live sources; never rendered."
+  },
+  "render_as_policy": {
+    "solid": "Canonical or >= 2 independent sources; safe as a primary on-screen fact.",
+    "approx": "Reported or contested detail; render visually/ambiguously, no certainty implied.",
+    "range": "DISPUTED counts; show the range, never a single figure.",
+    "hidden": "Do not render."
+  },
+  "verse_anchors": [
+    { "id": "QA-33:9", "ref": "33:9", "url": "https://api.alquran.cloud/v1/ayah/33:9/en.sahih", "translation": "Saheeh International", "verified": "fetched live (2026-10-26 session)", "used_by": ["KHANDAQ-002", "KHANDAQ-023", "KHANDAQ-036"], "note": "The armies that came, and the wind and unseen hosts sent upon them.", "quote": "when armies came to [attack] you and We sent upon them a wind and armies [of angels] you did not see" },
+    { "id": "QA-33:10", "ref": "33:10", "url": "https://api.alquran.cloud/v1/ayah/33:10/en.sahih", "translation": "Saheeh International", "verified": "fetched live (2026-10-26 session)", "used_by": ["KHANDAQ-017", "KHANDAQ-037"], "note": "The confederates came from above and below; eyes shifted and hearts reached the throats.", "quote": "when they came at you from above you and from below you" },
+    { "id": "QA-33:11", "ref": "33:11", "url": "https://api.alquran.cloud/v1/ayah/33:11/en.sahih", "translation": "Saheeh International", "verified": "fetched live (2026-10-26 session)", "used_by": ["KHANDAQ-017"], "note": "The believers were tested and shaken.", "quote": "There the believers were tested and shaken with a severe shaking" },
+    { "id": "QA-33:12", "ref": "33:12", "url": "https://api.alquran.cloud/v1/ayah/33:12/en.sahih", "translation": "Saheeh International", "verified": "fetched live (2026-10-26 session)", "used_by": ["KHANDAQ-018"], "note": "The hypocrites called the promise a delusion.", "quote": "Allah and His Messenger did not promise us except delusion" },
+    { "id": "QA-33:13", "ref": "33:13", "url": "https://api.alquran.cloud/v1/ayah/33:13/en.sahih", "translation": "Saheeh International", "verified": "fetched live (2026-10-26 session)", "used_by": ["KHANDAQ-018"], "note": "A faction asked to return home, saying the houses were unprotected.", "quote": "O people of Yathrib, there is no stability for you [here], so return [home]" },
+    { "id": "QA-33:22", "ref": "33:22", "url": "https://api.alquran.cloud/v1/ayah/33:22/en.sahih", "translation": "Saheeh International", "verified": "fetched live (2026-10-26 session)", "used_by": ["KHANDAQ-007"], "note": "When the believers saw the confederates they said this is what Allah and His Messenger promised.", "quote": "This is what Allah and His Messenger had promised us, and Allah and His Messenger spoke the truth" },
+    { "id": "QA-33:25", "ref": "33:25", "url": "https://api.alquran.cloud/v1/ayah/33:25/en.sahih", "translation": "Saheeh International", "verified": "fetched live (2026-10-26 session)", "used_by": ["KHANDAQ-025"], "note": "Allah repelled those who disbelieved in their rage; they obtained no good.", "quote": "And Allah repelled those who disbelieved, in their rage, not having obtained any good" },
+    { "id": "QA-33:26", "ref": "33:26", "url": "https://api.alquran.cloud/v1/ayah/33:26/en.sahih", "translation": "Saheeh International", "verified": "fetched live (2026-10-26 session)", "used_by": ["KHANDAQ-032"], "note": "The People of the Scripture who supported them were brought down from their fortresses; the aftermath of Banu Qurayza, outside this model's visual scope.", "quote": "And He brought down those who supported them among the People of the Scripture from their fortresses" },
+    { "id": "QA-33:27", "ref": "33:27", "url": "https://api.alquran.cloud/v1/ayah/33:27/en.sahih", "translation": "Saheeh International", "verified": "fetched live (2026-10-26 session)", "used_by": ["KHANDAQ-032"], "note": "The inheritance of their land and homes; Banu Qurayza, outside this model's visual scope.", "quote": "And He caused you to inherit their land and their homes and their properties" }
+  ],
+  "entries": [
+    {
+      "id": "KHANDAQ-001",
+      "section": "prelude",
+      "tag": "HISTORY",
+      "claim": "After their exile, about twenty chiefs of the Jews of Banu Nadir went to Makkah and incited Quraysh, Kinanah and the tribes of Tihama to a confederate war against the Prophet (PBUH); the same delegation went to Ghatfan and the eastern tribes, who agreed to join.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 195", "quote": "Twenty chiefs of the Jews with some celebrities of Bani Nadir went to Makkah to negotiate an unholy alliance with Quraish" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "Sirah framing for the coalition; no figure counted on screen."
+    },
+    {
+      "id": "KHANDAQ-002",
+      "section": "forces",
+      "tag": "HISTORY",
+      "claim": "Quraysh, Kinanah and their allies from Tihama raised four thousand men under Abu Sufyan; the eastern tribes of Banu Saleem, Ghatfan and Bani Murrah joined, and the confederate army gathered before Madinah numbered about ten thousand.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 195", "quote": "four thousand men under the leadership of Abu Sufyan ... a great army of ten thousand fighters" },
+        { "work": "Qur'an 33:9", "ref": "33:9", "quote": "when armies came to [attack] you" }
+      ],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "The Qur'an attests the armies, not the count. The model states 'about 10,000' and 'Quraysh 4,000' as the spine gives them."
+    },
+    {
+      "id": "KHANDAQ-003",
+      "section": "trench",
+      "tag": "HISTORY",
+      "claim": "The Prophet (PBUH) called a council to plan the defence of Madinah; Salman al-Farisi (RA) proposed digging a trench as the Persians did in siege warfare, and the plan was adopted.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 195", "quote": "it was agreed, on the proposal of an honourable Companion, Salman Al-Farisi, to dig trenches as defensive lines" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "The model's spine: the trench is the act that defines the battle."
+    },
+    {
+      "id": "KHANDAQ-004",
+      "section": "trench",
+      "tag": "HISTORY",
+      "claim": "The Muslims dug the trench in parties: forty yards were allocated to each group of ten, and they worked by day and returned home in the evening for several days until the trench was complete before the enemy arrived.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "pp. 195-196", "quote": "Forty yards was allocated to each group of ten to dig ... they used to work on it during the day, and go back home in the evening" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "The digging beat; no dimensions beyond the spine are rendered."
+    },
+    {
+      "id": "KHANDAQ-005",
+      "section": "ground",
+      "tag": "HISTORY",
+      "claim": "The northern side of Madinah was its most vulnerable approach, the other sides being protected by mountains and palm orchards; the Prophet (PBUH) understood that the Confederates would march that way and ordered the trench on that side.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 196", "quote": "The northern part of Madinah was the most vulnerable, all the other sides being surrounded by mountains and palm tree orchards" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "Defines the model's axes: open northern approach, Madinah and its groves behind the Muslim line."
+    },
+    {
+      "id": "KHANDAQ-006",
+      "section": "ground",
+      "tag": "HISTORY",
+      "claim": "The Confederate army camped in the vicinity of Madinah at places called al-Asyal and Uhud; the Muslims, three thousand strong, came out and entrenched at Sila' mountain with the trench standing between them and the enemy.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 196", "quote": "places called Al-Asyal and Uhud ... They entrenched themselves in Sila‘ Mountain with the trench standing as a barrier between them and the disbelievers" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "The model's two camps and the mountain at the Muslim rear."
+    },
+    {
+      "id": "KHANDAQ-007",
+      "section": "siege",
+      "tag": "HISTORY",
+      "claim": "When the believers saw the confederate companies they said, 'This is what Allah and His Messenger had promised us, and Allah and His Messenger spoke the truth,' and it increased them in faith.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 196", "quote": "And when the believers saw ‘Al- Ahzab’ (the confederates), they said ..." },
+        { "work": "Qur'an 33:22", "ref": "33:22", "quote": "This is what Allah and His Messenger had promised us" }
+      ],
+      "grade": "CERTAIN",
+      "variants": [],
+      "render_as": "solid",
+      "notes": "The verse is quoted by the spine at this point."
+    },
+    {
+      "id": "KHANDAQ-008",
+      "section": "forces",
+      "tag": "HISTORY",
+      "claim": "The Muslim force that came out against the Confederates numbered three thousand, with the Prophet (PBUH) at their head.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 196", "quote": "Three thousand Muslims, with Muhammad [pbuh] at their head, came out to encounter the idolaters" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "The model shows the 3,000 as three battalions without naming commanders the spine does not name for this battle."
+    },
+    {
+      "id": "KHANDAQ-009",
+      "section": "siege",
+      "tag": "HISTORY",
+      "claim": "The Confederates were surprised by the trench, a stratagem unknown in Arabia before; unable to break through, they laid siege, probed for a crossing, and exchanged arrows and skirmishes with the Muslims.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 196", "quote": "a wide trench, a new stratagem unknown in Arabia before ... To deter their enemies ... the Muslims hurled arrows, and engaged in skirmishes" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "The siege is a standoff; the model does not stage a general engagement."
+    },
+    {
+      "id": "KHANDAQ-010",
+      "section": "siege",
+      "tag": "HISTORY",
+      "claim": "The battle of the Trench took place in the fifth year Hijri; the siege of Madinah began in Shawwal and ended in Dhul Qa'dah, lasting over a month.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 200", "quote": "The battle of the Trench took place in the fifth year Hijri ... it lasted for over a month" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "The model's date line. Other transmitted durations are not in the owned spine and are not shown."
+    },
+    {
+      "id": "KHANDAQ-011",
+      "section": "crossing",
+      "tag": "HISTORY",
+      "claim": "A group of Quraysh fighters led by Amr ibn Abd Wudd, Ikrimah ibn Abi Jahl and Dirar ibn al-Khattab worked its way through the trench; their horsemen took the marshy ground between the trench and Sila' mountain.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 196", "quote": "a group of fighters led by ‘Amr bin ‘Abd- e- Wudd, ‘Ikrima bin Abi Jahl and Dirar bin Al- Khattab, should work its way through the trench ... captured a marshy area between the trench and Sila‘ Mountain" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "The narrow crossing is the model's eastern pass; the marsh is a landmark."
+    },
+    {
+      "id": "KHANDAQ-012",
+      "section": "crossing",
+      "tag": "HISTORY",
+      "claim": "Amr ibn Abd Wudd challenged the Muslims to single combat; Ali ibn Abi Talib (RA) was sent against him, and after a short fierce fight Ali killed him, obliging the others to withdraw in panic.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 196", "quote": "‘Amr challenged the Muslims to a duel, and ‘Ali bin Abi Talib was deputed. After a short but fierce engagement, ‘Ali killed ‘Amr" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "Staged as two standards at the crossing, one falling; no named figure and no gore."
+    },
+    {
+      "id": "KHANDAQ-013",
+      "section": "siege",
+      "tag": "HISTORY",
+      "claim": "Sa'd ibn Mu'adh (RA) was struck by an arrow that pierced an artery; he asked Allah either to let him live for more fighting or to take him after revenge on Banu Qurayza. He died of the wound after the siege.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 197", "quote": "Sa‘d bin Mu‘adh was shot by an arrow that pierced his artery" },
+        { "work": "Sahih al-Bukhari 3/591", "ref": "Bukhari 3/591", "quote": null }
+      ],
+      "grade": "CERTAIN",
+      "variants": [],
+      "render_as": "solid",
+      "notes": "Recorded, never staged as a body; the line's loss is told by the quiet and the label."
+    },
+    {
+      "id": "KHANDAQ-014",
+      "section": "covenant",
+      "tag": "HISTORY",
+      "claim": "Huyai ibn Akhtab, chief of Banu Nadir, went to Ka'b ibn Asad, chief of Banu Qurayza, and persuaded him to break his pact with the Prophet (PBUH) and join the Confederates.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 197", "quote": "Huyai ... went on in this manner until he later managed to win Ka‘b to his side and persuade him to break his covenant with the Muslims" },
+        { "work": "Ibn Hisham 3/337", "ref": "Ibn Hisham 3/337", "quote": null }
+      ],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "The model shows the Qurayza fort and the broken pact, never a named figure."
+    },
+    {
+      "id": "KHANDAQ-015",
+      "section": "covenant",
+      "tag": "HISTORY",
+      "claim": "After breaking the pact, Banu Qurayza began attacking the isolated garrisons holding the women and children of the Muslims; Safiyya bint Abdul Muttalib (RA) killed a lurking man with a bar of wood while Hassan ibn Thabit was in the fort.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 197", "quote": "I took a bar of wood, went down and struck the Jew to death" },
+        { "work": "Ibn Hisham 2/228", "ref": "Ibn Hisham 2/228", "quote": null }
+      ],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "Rendered as the walls and the guarded quarter; no figure for Safiyya (RA)."
+    },
+    {
+      "id": "KHANDAQ-016",
+      "section": "covenant",
+      "tag": "HISTORY",
+      "claim": "The Prophet (PBUH) sent Sa'd ibn Mu'adh, Sa'd ibn Ubada, Abdullah ibn Rawaha and Khawat ibn Jubair (RA) to investigate the news of the breach; they found it true and Banu Qurayza openly renouncing the pact.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 198", "quote": "the four men discovered that the news was true and that the Jews announced openly that no pact of alliance existed any longer" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "The covenant phase's turn."
+    },
+    {
+      "id": "KHANDAQ-017",
+      "section": "covenant",
+      "tag": "HISTORY",
+      "claim": "The believers were tried and shaken: the Confederates came from above and below, eyes shifted, and hearts reached the throats.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 198", "quote": "And when the eyes grew wild and the hearts reached to the throats" },
+        { "work": "Qur'an 33:10", "ref": "33:10", "quote": "when they came at you from above you and from below you" },
+        { "work": "Qur'an 33:11", "ref": "33:11", "quote": "There the believers were tested and shaken with a severe shaking" }
+      ],
+      "grade": "CERTAIN",
+      "variants": [],
+      "render_as": "solid",
+      "notes": "The mood of the covenant beat; no figure for the Prophet (PBUH)."
+    },
+    {
+      "id": "KHANDAQ-018",
+      "section": "covenant",
+      "tag": "HISTORY",
+      "claim": "The hypocrites called the promise a delusion and a faction asked permission to return home, saying their houses were unprotected, though they were not.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 198", "quote": "The hypocrites taunted them with having indulged in delusive hopes" },
+        { "work": "Qur'an 33:12", "ref": "33:12", "quote": "Allah and His Messenger did not promise us except delusion" },
+        { "work": "Qur'an 33:13", "ref": "33:13", "quote": "O people of Yathrib, there is no stability for you [here], so return [home]" }
+      ],
+      "grade": "CERTAIN",
+      "variants": [],
+      "render_as": "solid",
+      "notes": "Ledger and label only; no individual shown leaving."
+    },
+    {
+      "id": "KHANDAQ-019",
+      "section": "covenant",
+      "tag": "HISTORY",
+      "claim": "The Prophet (PBUH) wrapped himself in his robe and meditated on the perfidy of Banu Qurayza, then announced good tidings of victory and sent fighters back to Madinah to guard the women and children.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 198", "quote": "he rose to his feet saying: 'Allâh is Great. Hearken you Muslims, to Allâh’s good tidings of victory and support.'" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "The Prophet (PBUH) is never depicted; his station is a standard. The guard detachment is a small band moving south."
+    },
+    {
+      "id": "KHANDAQ-020",
+      "section": "covenant",
+      "tag": "HISTORY",
+      "claim": "The Prophet (PBUH) considered giving the chiefs of Ghatfan a third of Madinah's fruit crops to buy peace; Sa'd ibn Mu'adh and Sa'd ibn Ubada (RA) advised against it, saying they had no need of such a course now that Allah had honoured them with Islam, and the Prophet (PBUH) set it aside.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "pp. 198-199", "quote": "if it is a new course you want to follow just to provide security for us then we don’t need it" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "Ledger only; not staged."
+    },
+    {
+      "id": "KHANDAQ-021",
+      "section": "covenant",
+      "tag": "HISTORY",
+      "claim": "Nu'aym ibn Mas'ud, a man of Ghatfan who had embraced Islam secretly, offered his help; with the Prophet's (PBUH) permission he moved between Banu Qurayza, Quraysh and Ghatfan, inciting each to distrust the others; the allies began to demand hostages, and suspicion undermined the coalition.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 199", "quote": "A man from the tribe of Ghatfan called Na‘im bin Mas‘ud ... asked the Prophet [pbuh] to order him do anything that might benefit the Muslims" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "Shown as the enemy camp's standards drawing apart; no figure."
+    },
+    {
+      "id": "KHANDAQ-022",
+      "section": "storm",
+      "tag": "HISTORY",
+      "claim": "The Prophet (PBUH) invoked Allah against the Confederates: 'O Allah, You are quick in account, You are the sender of the Book, we beseech You to defeat the confederates.'",
+      "sources": [
+        { "work": "Sahih al-Bukhari 1/411", "ref": "Bukhari 1/411", "quote": null },
+        { "work": "Sahih al-Bukhari 2/590", "ref": "Bukhari 2/590", "quote": null },
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 199", "quote": "we beseech You to defeat the confederates" }
+      ],
+      "grade": "CERTAIN",
+      "variants": [],
+      "render_as": "solid",
+      "notes": "Ledger and the quiet of the line; never a figure for the Prophet (PBUH)."
+    },
+    {
+      "id": "KHANDAQ-023",
+      "section": "storm",
+      "tag": "HISTORY",
+      "claim": "Allah answered: a wind, rain and cold wearied the Confederates, blew down their tents and overturned their cooking vessels; the Qur'an records the wind and unseen hosts.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 199", "quote": "forces of nature — wind, rain and cold wearied them, tents were blown down, cooking vessels and other equipage overthrown" },
+        { "work": "Qur'an 33:9", "ref": "33:9", "quote": "We sent upon them a wind and armies [of angels] you did not see" }
+      ],
+      "grade": "CERTAIN",
+      "variants": [],
+      "render_as": "solid",
+      "notes": "The storm is staged as weather and tents, never as figures of angels."
+    },
+    {
+      "id": "KHANDAQ-024",
+      "section": "storm",
+      "tag": "HISTORY",
+      "claim": "On that cold night the Prophet (PBUH) sent Hudhayfah ibn al-Yaman (RA) to find news of the enemy; he found them preparing to leave, unable to achieve their aim.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 199", "quote": "That very cold night the Messenger of Allâh [pbuh] despatched Hudhaifa bin Al-Yaman to hunt around for news about the enemy" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "Shown as a small standard moving to the enemy camp in the storm."
+    },
+    {
+      "id": "KHANDAQ-025",
+      "section": "storm",
+      "tag": "HISTORY",
+      "claim": "The Confederates withdrew; Allah repelled those who disbelieved in their rage, and they obtained no good.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 199", "quote": "He found out that they were preparing to leave frustrated for their inability to achieve their target" },
+        { "work": "Qur'an 33:25", "ref": "33:25", "quote": "And Allah repelled those who disbelieved, in their rage, not having obtained any good" }
+      ],
+      "grade": "CERTAIN",
+      "variants": [],
+      "render_as": "solid",
+      "notes": "The camp empties; the trench remains."
+    },
+    {
+      "id": "KHANDAQ-026",
+      "section": "aftermath",
+      "tag": "HISTORY",
+      "claim": "With the Confederates gone, the Prophet (PBUH) declared that from then on he would take the initiative in war and would not wait for the land of Islam to be invaded.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 200", "quote": "thenceforth he would take the initiative in war and would not wait for the land of Islam to be invaded" },
+        { "work": "Sahih al-Bukhari 2/590", "ref": "Bukhari 2/590", "quote": null }
+      ],
+      "grade": "CERTAIN",
+      "variants": [],
+      "render_as": "solid",
+      "notes": "The reckoning's closing line; no figure for the Prophet (PBUH)."
+    },
+    {
+      "id": "KHANDAQ-027",
+      "section": "aftermath",
+      "tag": "HISTORY",
+      "claim": "Because the trench stood between the two parties, no direct engagement took place; the fighting was confined to arrows, and the siege claimed six Muslims and ten polytheists, one or two of them killed by the sword.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 197", "quote": "the fight claimed the lives of a small number of fighters, six Muslims and ten polytheists, one or two killed by sword" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "The model's casualty label: '6 Muslims · 10 Confederates killed' as the spine gives them."
+    },
+    {
+      "id": "KHANDAQ-028",
+      "section": "aftermath",
+      "tag": "HISTORY",
+      "claim": "The siege was a battle of nerves rather than of losses, and one of the most decisive battles of early Islam: it proved that no force, however large, could exterminate the Muslim state in Madinah.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 200", "quote": "It was in fact a battle of nerves rather than of losses ... one of the most decisive battles in the early history of Islam" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "The reckoning's meaning; the model states only what the spine says."
+    },
+    {
+      "id": "KHANDAQ-029",
+      "section": "siege",
+      "tag": "HISTORY",
+      "claim": "The fighting detained the Prophet (PBUH) from some prayers; he prayed the afternoon prayer at Buthan after the sun had set and then the sunset prayer, and he invoked Allah to fill the enemies' houses and graves with fire.",
+      "sources": [
+        { "work": "Sahih al-Bukhari 2/590", "ref": "Bukhari 2/590", "quote": null },
+        { "work": "Sahih Muslim 1/227", "ref": "Muslim 1/227", "quote": null },
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 197", "quote": "he invoked Allâh’s wrath on his enemies" }
+      ],
+      "grade": "CERTAIN",
+      "variants": [],
+      "render_as": "hidden",
+      "notes": "Recorded for the ledger; not rendered."
+    },
+    {
+      "id": "KHANDAQ-030",
+      "section": "trench",
+      "tag": "HISTORY",
+      "claim": "A stubborn rock stood in the trench; the Prophet (PBUH) struck it with a spade and it broke, and he spoke of the keys of Syria, Persia and Yemen as he struck.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 196", "quote": "The Prophet [pbuh] took the spade and struck, and the rock immediately turned into a loose sand dune" },
+        { "work": "Ibn Hisham 3/330-331", "ref": "Ibn Hisham 3/330-331", "quote": null }
+      ],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "hidden",
+      "notes": "A Prophetic sign recorded in the spine; not staged, as the series does not depict the Prophet (PBUH)."
+    },
+    {
+      "id": "KHANDAQ-031",
+      "section": "trench",
+      "tag": "HISTORY",
+      "claim": "Jabir ibn Abdullah's sheep and barley fed the thousand men digging the trench, and a woman's handful of dates increased until they dropped over the Prophet's cloak.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "pp. 195-196", "quote": "the Prophet [pbuh] gathered all the thousand people engaged in digging the trench and they started to eat until they were all completely full" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "hidden",
+      "notes": "Recorded for the ledger; not rendered."
+    },
+    {
+      "id": "KHANDAQ-032",
+      "section": "aftermath",
+      "tag": "HISTORY",
+      "claim": "After the siege the Prophet (PBUH) marched on Banu Qurayza with three thousand foot and thirty horse; their forts were besieged for twenty-five days, their fighting men were judged by Sa'd ibn Mu'adh (RA), and six to seven hundred were killed; their arms and wealth passed to the Muslims.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "pp. 201-203", "quote": "a number of Jews between six and seven hundred were beheaded therein ... the siege of Banu Quraiza’s forts lasted for 25 days" },
+        { "work": "Qur'an 33:26", "ref": "33:26", "quote": "And He brought down those who supported them among the People of the Scripture from their fortresses" },
+        { "work": "Qur'an 33:27", "ref": "33:27", "quote": "And He caused you to inherit their land and their homes and their properties" }
+      ],
+      "grade": "REPORTED",
+      "variants": ["600", "700"],
+      "render_as": "hidden",
+      "notes": "The Qurayza expedition is the sequel in the spine, outside this model's visual scope. The model shows only the broken pact and the fort; the judgment is never staged."
+    },
+    {
+      "id": "KHANDAQ-033",
+      "section": "ground",
+      "tag": "HISTORY",
+      "claim": "The Prophet (PBUH) remained with the Muslim force at Sila' and directed the defence; his station is marked by a standard and is never a figure.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "pp. 196-198", "quote": "Three thousand Muslims, with Muhammad [pbuh] at their head ... The Messenger of Allâh, [pbuh] wrapped himself in his robe and began to meditate" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "The series' depiction rule: the Prophet (PBUH) is never depicted in any form."
+    },
+    {
+      "id": "KHANDAQ-034",
+      "section": "forces",
+      "tag": "HISTORY",
+      "claim": "The Confederates were a coalition, not one army: Quraysh and their Tihama allies under Abu Sufyan, Ghatfan and the eastern tribes, and the Jewish delegation that had incited them.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 195", "quote": "Quraish, Kinanah and other allies from Tihama ... From the east there came tribes of Banu Saleem, Ghatfan, Bani Murrah" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "The model arrays them as three camps with separate standards."
+    },
+    {
+      "id": "KHANDAQ-035",
+      "section": "covenant",
+      "tag": "HISTORY",
+      "claim": "After breaking their pact, Banu Qurayza supplied the Confederates in support of their war against the Muslims, though the attack on the women's garrison had been discouraged.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 197", "quote": "they, however, went on providing the idolaters with supplies in token of their support against the Muslims" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "Shown as the fort's gate opening to the enemy side; no figure."
+    },
+    {
+      "id": "KHANDAQ-036",
+      "section": "prelude",
+      "tag": "HISTORY",
+      "claim": "The expedition is called al-Ahzab (the Confederates) in the Qur'an and al-Khandaq (the trench) in the sirah.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "pp. 195, 200", "quote": "Al-Ahzab (the Confederates) Invasion ... The battle of the Trench" },
+        { "work": "Qur'an 33:9", "ref": "33:9", "quote": "when armies came to [attack] you" }
+      ],
+      "grade": "CERTAIN",
+      "variants": [],
+      "render_as": "solid",
+      "notes": "The page title and brand: Khandaq, the trench; the Qur'anic name is the Confederates."
+    },
+    {
+      "id": "KHANDAQ-037",
+      "section": "prelude",
+      "tag": "HISTORY",
+      "claim": "The confederate army gathered in the vicinity of Madinah at al-Asyal and Uhud, north of the city, where the open approach lay.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 196", "quote": "settled in the vicinity of Madinah in places called Al- Asyal and Uhud" },
+        { "work": "Qur'an 33:10", "ref": "33:10", "quote": "when they came at you from above you and from below you" }
+      ],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "The enemy camps are placed on the open northern side; the label says 'the northern approach'."
+    },
+    {
+      "id": "KHANDAQ-038",
+      "section": "siege",
+      "tag": "HISTORY",
+      "claim": "The horsemen who crossed the trench held the marshy ground between the trench and Sila' until Ali (RA) killed Amr and they withdrew.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 196", "quote": "their horsemen captured a marshy area between the trench and Sila‘ Mountain ... ‘Ali killed ‘Amr and obliged the others to evacuate in a state of panic" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "The crossing vignette's cavalry probe."
+    }
+  ],
+  "live_verification_log": {
+    "quran": "api.alquran.cloud v1, edition en.sahih, fetched 2026-10-26: 33:9, 33:10, 33:11, 33:12, 33:13, 33:22, 33:25, 33:26, 33:27. Text recorded verbatim in verse_anchors.",
+    "bukhari": "Sahih al-Bukhari references carried through the spine: 1/411 and 2/590 (the supplication against the Confederates; the prayer at Buthan), 3/591 and 2/591 (Sa'd ibn Mu'adh's wound and death); one independent copy not held locally, cited as transmitted by Raheeq.",
+    "muslim": "Sahih Muslim 1/227 (the prayers detained by the fighting); cited as transmitted by Raheeq.",
+    "ibn_hisham": "Ibn Hisham 3/330-331 (the rock), 3/337 (the Qurayza breach), 2/228 (the women's garrison), 2/237-238 (the date); carried through the spine.",
+    "own_limits": "No canonical collection is held as a local file in this repository; canonical references are verified only as the spine transmits them. That is why most numbers stay REPORTED rather than CERTAIN."
+  }
+}

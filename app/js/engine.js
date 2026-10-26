@@ -154,6 +154,93 @@
     return { hemi: hemi, sun: sun, fill: fill, rim: rim, stars: stars, moonGlow: moonGlow, moonDisk: moonDisk };
   };
 
+  /* ------------------------------ the build-q dawn sky.
+     A vertex-gradient dome over a bright horizon, a low moon, stars and the
+     four-light rig. Each battle passes its own palette; the shape is shared. */
+  ENGINE.sky = function (ctx, opts) {
+    opts = opts || {};
+    var scene = ctx.scene, MOBILE = ctx.MOBILE;
+    var R = opts.radius || 620;
+    var skyGeo = new THREE.SphereGeometry(R, 32, 20);
+    var skyPos = skyGeo.attributes.position;
+    var skyCols = new Float32Array(skyPos.count * 3);
+    var zen = new THREE.Color(opts.zenith || 0x24304a), hor = new THREE.Color(opts.horizon || 0x9a7850), tmp = new THREE.Color();
+    for (var si = 0; si < skyPos.count; si++) {
+      var yy = Math.max(0, Math.min(1, skyPos.getY(si) / R));
+      tmp.copy(hor).lerp(zen, Math.pow(yy, opts.skyCurve || 0.55));
+      skyCols[si * 3] = tmp.r; skyCols[si * 3 + 1] = tmp.g; skyCols[si * 3 + 2] = tmp.b;
+    }
+    skyGeo.setAttribute('color', new THREE.BufferAttribute(skyCols, 3));
+    var dome = new THREE.Mesh(skyGeo, new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.BackSide, fog: false }));
+    dome.castShadow = false; dome.receiveShadow = false;
+    scene.add(dome);
+
+    var stars = null;
+    var nStars = opts.stars === undefined ? 520 : opts.stars;
+    if (nStars > 0) {
+      var starGeo = new THREE.BufferGeometry();
+      var starPos = new Float32Array(nStars * 3);
+      for (var st = 0; st < nStars; st++) {
+        var r1 = Math.random() * Math.PI * 2;
+        var r2 = Math.random() * Math.PI * 0.42 + 0.16;
+        starPos[st * 3] = Math.cos(r1) * Math.sin(r2) * (R - 60);
+        starPos[st * 3 + 1] = Math.cos(r2) * (R - 100) + 40;
+        starPos[st * 3 + 2] = Math.sin(r1) * Math.sin(r2) * (R - 60);
+      }
+      starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+      stars = new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xdfe4ee, size: 2.0, sizeAttenuation: false, transparent: true, opacity: opts.starOpacity === undefined ? 0.22 : opts.starOpacity, fog: false }));
+      scene.add(stars);
+    }
+
+    var moonGlow = null, moonDisk = null;
+    if (opts.moon !== false) {
+      var mp = opts.moonPos || [-160, 62, -240];
+      function softDisc(inner, outer, tint) {
+        var c = document.createElement('canvas');
+        c.width = c.height = 64;
+        var g = c.getContext('2d');
+        var gr = g.createRadialGradient(32, 32, 1, 32, 32, 31);
+        gr.addColorStop(0, inner);
+        gr.addColorStop(0.45, outer);
+        gr.addColorStop(1, 'rgba(0,0,0,0)');
+        g.fillStyle = gr; g.fillRect(0, 0, 64, 64);
+        var tex = new THREE.CanvasTexture(c);
+        return new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false, fog: false, blending: THREE.AdditiveBlending, color: tint || 0xffffff });
+      }
+      moonGlow = new THREE.Mesh(new THREE.PlaneGeometry(70, 70), softDisc('rgba(226,232,244,0.25)', 'rgba(160,176,200,0.08)', 0xcfd8e6));
+      moonGlow.position.set(mp[0], mp[1], mp[2]); moonGlow.lookAt(0, 0, 0);
+      scene.add(moonGlow);
+      moonDisk = new THREE.Mesh(new THREE.CircleGeometry(5.4, 26), new THREE.MeshBasicMaterial({ color: 0xe9edf5, transparent: true, opacity: opts.moonOpacity === undefined ? 0.3 : opts.moonOpacity, fog: false }));
+      moonDisk.position.set(mp[0], mp[1], mp[2]);
+      moonDisk.lookAt(0, 0, 0);
+      scene.add(moonDisk);
+    }
+
+    var hemi = new THREE.HemisphereLight(opts.hemiSky || 0x8fa0b8, opts.hemiGround || 0x3a2f22, opts.hemi === undefined ? 0.44 : opts.hemi);
+    scene.add(hemi);
+    var sun = new THREE.DirectionalLight(opts.sunColor || 0xffc27d, opts.sun === undefined ? 0.9 : opts.sun);
+    var sp = opts.sunPos || [64, 34, -46];
+    sun.position.set(sp[0], sp[1], sp[2]);
+    sun.castShadow = opts.shadows !== false;
+    var sm = opts.shadowMap || (MOBILE ? 1024 : 2048);
+    sun.shadow.mapSize.set(sm, sm);
+    var sb = opts.shadowBounds || 72;
+    sun.shadow.camera.left = -sb; sun.shadow.camera.right = sb;
+    sun.shadow.camera.top = sb; sun.shadow.camera.bottom = -sb;
+    sun.shadow.camera.near = 5; sun.shadow.camera.far = opts.shadowFar || 240;
+    sun.shadow.bias = -0.0006;
+    scene.add(sun); scene.add(sun.target);
+    var fill = new THREE.DirectionalLight(opts.fillColor || 0x7d8ea8, opts.fill === undefined ? 0.2 : opts.fill);
+    var fp = opts.fillPos || [-40, 30, 40];
+    fill.position.set(fp[0], fp[1], fp[2]);
+    scene.add(fill);
+    var rim = new THREE.DirectionalLight(opts.rimColor || 0xffd9b0, opts.rim === undefined ? 0.3 : opts.rim);
+    var rp = opts.rimPos || [10, 14, 60];
+    rim.position.set(rp[0], rp[1], rp[2]);
+    scene.add(rim);
+    return { dome: dome, stars: stars, moonGlow: moonGlow, moonDisk: moonDisk, hemi: hemi, sun: sun, fill: fill, rim: rim };
+  };
+
   /* ------------------------------ heightfield terrain */
   function rippleNormal(renderer, size, repeat) {
     var c = document.createElement('canvas'); c.width = c.height = size;
@@ -200,6 +287,12 @@
       var t = Math.min(1, Math.max(0, y * 0.30 + 0.32 + (v - 0.5) * 0.40));
       tmp.copy(cTrough).lerp(cSand, Math.min(1, t * 1.6)).lerp(cCrest, Math.max(0, t - 0.52) * 1.5);
       tmp.lerp(cGrit, fbm(x * 0.38, z * 0.38, 2) * 0.34);
+      /* a battle may recolour by place (rock on the massif, sand on the plain);
+         Badr passes nothing and keeps the plain height ramp */
+      if (opts.colorAt) {
+        var over = opts.colorAt(x, z, y, tmp);
+        if (over) tmp.copy(over);
+      }
       colors[i * 3] = tmp.r; colors[i * 3 + 1] = tmp.g; colors[i * 3 + 2] = tmp.b;
     }
     groundGeo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
@@ -218,6 +311,55 @@
     ground.receiveShadow = true;
     ctx.scene.add(ground);
     return { ground: ground, lid: lid };
+  };
+
+  /* ------------------------------ the painted sand ground.
+     Build q's sand: a canvas texture with wind scoring, a bump map and bright
+     vertex colours over the heightfield. One texture per scene. */
+  ENGINE.ground = function (ctx, heightAt, opts) {
+    opts = opts || {};
+    var size = opts.texSize || 1024;
+    var c = document.createElement('canvas'); c.width = c.height = size;
+    var g = c.getContext('2d');
+    g.fillStyle = opts.base || '#eee6d4'; g.fillRect(0, 0, size, size);
+    var img = g.getImageData(0, 0, size, size), d = img.data;
+    var grain = opts.grain === undefined ? 22 : opts.grain;
+    for (var i = 0; i < d.length; i += 4) {
+      var n = (Math.random() - 0.5) * grain;
+      d[i] += n; d[i + 1] += n; d[i + 2] += n;
+    }
+    g.putImageData(img, 0, 0);
+    g.globalAlpha = opts.scoreAlpha === undefined ? 0.07 : opts.scoreAlpha;
+    for (var k = 0; k < 160; k++) {
+      g.strokeStyle = k % 2 ? (opts.light || '#fff8e8') : (opts.dark || '#6b5f4a');
+      g.lineWidth = 1 + Math.random() * 2.4;
+      g.beginPath();
+      var yy = Math.random() * size;
+      g.moveTo(0, yy);
+      for (var x = 0; x <= size; x += 32) {
+        g.lineTo(x, yy + Math.sin(x * 0.018 + k) * 7 + Math.sin(x * 0.004 + k * 2.3) * 18);
+      }
+      g.stroke();
+    }
+    var tex = new THREE.CanvasTexture(c);
+    tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+    tex.repeat.set(opts.repeat || 26, opts.repeat || 26);
+    tex.anisotropy = ctx.renderer.capabilities.getMaxAnisotropy();
+    var mat = opts.material || new THREE.MeshPhongMaterial({
+      vertexColors: true, map: tex, bumpMap: tex,
+      bumpScale: opts.bumpScale === undefined ? 0.12 : opts.bumpScale, shininess: 0
+    });
+    var field = ENGINE.heightfield(ctx, heightAt, {
+      material: mat,
+      size: opts.size, seg: opts.seg,
+      sand: opts.sand === undefined ? 0xd3bf9b : opts.sand,
+      crest: opts.crest === undefined ? 0xe0cda8 : opts.crest,
+      trough: opts.trough === undefined ? 0xb3a284 : opts.trough,
+      grit: opts.grit === undefined ? 0xc4b393 : opts.grit,
+      colorAt: opts.colorAt,
+      lidColor: opts.lidColor, lidY: opts.lidY
+    });
+    return { tex: tex, material: mat, ground: field.ground, lid: field.lid };
   };
 
   /* ------------------------------ static merge */
@@ -360,6 +502,289 @@
     return mesh;
   }
   ENGINE.merge = { isMergeable: isMergeable, collectMergeable: collectMergeable, mergeMeshList: mergeMeshList, mergeParts: mergeParts, bakeToMesh: bakeToMesh };
+
+  /* ------------------------------ the shared cast.
+     A band is a stand of spears under one banner; a champion's standard is the
+     pole and the cloth alone; an event standard marks a named act without a
+     figure. The faceless fighter is the approved maquette body (no eyes, nose
+     or mouth). Every battle uses these builders; none draws a face. */
+  ENGINE.cast = function (ctx, opts) {
+    opts = opts || {};
+    var scene = ctx.scene;
+    var poleM = new THREE.MeshLambertMaterial({ color: 0x6b5f4a });
+    var poleQ = new THREE.MeshLambertMaterial({ color: 0x2c271f });
+    var ironM = new THREE.MeshLambertMaterial({ color: 0x9a9382 });
+    var ironQ = new THREE.MeshLambertMaterial({ color: 0x565043 });
+    var brassM = new THREE.MeshLambertMaterial({ color: 0xc39a33, emissive: 0x241804 });
+    var clothM = new THREE.MeshLambertMaterial({ color: 0xf2ead8, side: THREE.DoubleSide, emissive: 0x3d3529 });
+    var clothQ = new THREE.MeshLambertMaterial({ color: 0x342c22, side: THREE.DoubleSide, emissive: 0x0d0a07 });
+    var shieldM = new THREE.MeshLambertMaterial({ color: 0xb5a583, side: THREE.DoubleSide });
+    var shieldQ = new THREE.MeshLambertMaterial({ color: 0x4a4132, side: THREE.DoubleSide });
+    var skinM = new THREE.MeshLambertMaterial({ color: 0x9a7a5c });
+    var leatherM = new THREE.MeshLambertMaterial({ color: 0x4a3a28 });
+    var steelM = new THREE.MeshLambertMaterial({ color: 0xb9b4a6 });
+    var woundM = new THREE.MeshLambertMaterial({ color: 0x5e2b22 });
+    var sandalM = new THREE.MeshLambertMaterial({ color: 0xd8c7a4 });
+    var woodM = new THREE.MeshLambertMaterial({ color: 0x5c4f3a });
+    var WAVERS = [];
+
+    function seedRand(seed) {
+      var t = seed + 0x6D2B79F5;
+      return function () {
+        t = Math.imul(t ^ (t >>> 15), t | 1);
+        t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+    }
+
+    function vPart(parent, geo, mat, x, y, z, rx, ry, rz) {
+      var m = new THREE.Mesh(geo, mat);
+      m.position.set(x, y, z);
+      m.rotation.set(rx || 0, ry || 0, rz || 0);
+      m.castShadow = true; m.receiveShadow = true;
+      parent.add(m);
+      return m;
+    }
+    function vSpear(parent) {
+      var w = new THREE.Group();
+      var shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.024, 2.0, 5), woodM);
+      shaft.position.y = 0.72; w.add(shaft);
+      var tip = new THREE.Mesh(new THREE.ConeGeometry(0.04, 0.18, 4), brassM);
+      tip.position.y = 1.78; w.add(tip);
+      var butt = new THREE.Mesh(new THREE.ConeGeometry(0.03, 0.1, 4), brassM);
+      butt.position.y = -0.32; butt.rotation.x = Math.PI; w.add(butt);
+      w.traverse(function (o) { if (o.isMesh) { o.castShadow = true; } });
+      parent.add(w); return w;
+    }
+    function vSword(parent) {
+      var w = new THREE.Group();
+      var blade = new THREE.Mesh(new THREE.BoxGeometry(0.045, 0.72, 0.012), steelM);
+      blade.position.y = 0.4; w.add(blade);
+      var guard = new THREE.Mesh(new THREE.BoxGeometry(0.17, 0.03, 0.045), brassM);
+      guard.position.y = 0.05; w.add(guard);
+      var hilt = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.03, 0.16, 5), leatherM);
+      hilt.position.y = -0.05; w.add(hilt);
+      w.traverse(function (o) { if (o.isMesh) { o.castShadow = true; } });
+      parent.add(w); return w;
+    }
+    function vShield(parent) {
+      var s = new THREE.Group();
+      var disc = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.035, 12), new THREE.MeshLambertMaterial({ color: 0x5a4f3c }));
+      disc.rotation.x = Math.PI / 2; s.add(disc);
+      var rimT = new THREE.Mesh(new THREE.TorusGeometry(0.3, 0.015, 5, 14), leatherM);
+      s.add(rimT);
+      var boss = new THREE.Mesh(new THREE.SphereGeometry(0.05, 6, 5), brassM);
+      boss.position.z = 0.03; s.add(boss);
+      s.position.set(-0.1, -0.34, 0.06);
+      s.traverse(function (o) { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+      parent.add(s); return s;
+    }
+
+    function makeFighter(o) {
+      var g = new THREE.Group();
+      var robe = new THREE.MeshLambertMaterial({ color: o.robe });
+      var robeDark = new THREE.MeshLambertMaterial({ color: o.robeDark });
+      vPart(g, new THREE.CylinderGeometry(0.16, 0.2, 0.55, 7), robe, 0, 0.95, 0);
+      vPart(g, new THREE.CylinderGeometry(0.2, 0.27, 0.38, 7), robeDark, 0, 0.6, 0);
+      vPart(g, new THREE.CylinderGeometry(0.21, 0.21, 0.06, 7), leatherM, 0, 0.79, 0);
+      vPart(g, new THREE.CylinderGeometry(0.05, 0.06, 0.1, 6), skinM, 0, 1.26, 0);
+      vPart(g, new THREE.SphereGeometry(0.12, 8, 6), skinM, 0, 1.36, 0);
+      if (o.helmet) {
+        vPart(g, new THREE.SphereGeometry(0.135, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2), steelM, 0, 1.4, 0);
+        vPart(g, new THREE.ConeGeometry(0.022, 0.1, 4), steelM, 0, 1.56, 0);
+        vPart(g, new THREE.BoxGeometry(0.025, 0.12, 0.02), steelM, 0, 1.35, 0.125);
+      } else {
+        vPart(g, new THREE.CylinderGeometry(0.14, 0.14, 0.09, 8), robeDark, 0, 1.44, 0);
+        vPart(g, new THREE.SphereGeometry(0.135, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2), robeDark, 0, 1.39, 0);
+      }
+      vPart(g, new THREE.SphereGeometry(0.07, 6, 5), robe, 0.18, 1.16, 0);
+      vPart(g, new THREE.SphereGeometry(0.07, 6, 5), robe, -0.18, 1.16, 0);
+      vPart(g, new THREE.CylinderGeometry(0.06, 0.07, 0.55, 5), robeDark, 0.09, 0.28, 0);
+      vPart(g, new THREE.CylinderGeometry(0.06, 0.07, 0.55, 5), robeDark, -0.09, 0.28, 0);
+      vPart(g, new THREE.BoxGeometry(0.11, 0.06, 0.2), leatherM, 0.09, 0.03, 0.04);
+      vPart(g, new THREE.BoxGeometry(0.11, 0.06, 0.2), leatherM, -0.09, 0.03, 0.04);
+      function arm(sx) {
+        var a = new THREE.Group();
+        a.position.set(sx * 0.18, 1.16, 0);
+        g.add(a);
+        vPart(a, new THREE.CylinderGeometry(0.05, 0.055, 0.3, 5), robe, 0, -0.15, 0);
+        vPart(a, new THREE.CylinderGeometry(0.045, 0.05, 0.28, 5), skinM, 0, -0.42, 0);
+        vPart(a, new THREE.SphereGeometry(0.055, 6, 5), skinM, 0, -0.58, 0.02);
+        return a;
+      }
+      var armR = arm(1), armL = arm(-1);
+      vPart(armR, new THREE.CylinderGeometry(0.06, 0.06, 0.05, 6), woundM, 0, -0.02, 0);
+      var stump = vPart(g, new THREE.CylinderGeometry(0.06, 0.07, 0.09, 6), woundM, 0.18, 1.11, 0);
+      stump.visible = false;
+      /* the stepping leg: a shin and foot that swings forward onto the severed arm */
+      var stepLeg = new THREE.Group();
+      stepLeg.position.set(0.18, 0.62, 0.0);
+      g.add(stepLeg);
+      vPart(stepLeg, new THREE.CylinderGeometry(0.075, 0.085, 0.3, 5), robeDark, 0, -0.12, 0.08, 0.45, 0, 0);
+      vPart(stepLeg, new THREE.CylinderGeometry(0.06, 0.07, 0.32, 5), robeDark, 0, -0.36, 0.22, -0.2, 0, 0);
+      vPart(stepLeg, new THREE.BoxGeometry(0.14, 0.07, 0.24), sandalM, 0, -0.55, 0.30);
+      vPart(stepLeg, new THREE.BoxGeometry(0.16, 0.025, 0.27), sandalM, 0, -0.59, 0.31);
+      stepLeg.visible = false;
+      var weaponR = null, weaponL = null;
+      if (o.weapon === 'spear') { weaponR = vSpear(armR); weaponR.position.set(0, -0.58, 0.06); }
+      if (o.weapon === 'sword') { weaponR = vSword(armR); weaponR.position.set(0, -0.58, 0.06); }
+      if (o.leftWeapon === 'spear') { weaponL = vSpear(armL); weaponL.position.set(0, -0.58, 0.06); }
+      if (o.leftWeapon === 'sword') { weaponL = vSword(armL); weaponL.position.set(0, -0.58, 0.06); }
+      if (o.shield) vShield(armL);
+      var sc = o.scale || 1;
+      g.scale.setScalar(sc);
+      g.position.set(o.x, o.y || 0, o.z);
+      g.rotation.y = o.ry || 0;
+      scene.add(g);
+      return { group: g, armR: armR, armL: armL, weaponR: weaponR, weaponL: weaponL, stump: stump, stepLeg: stepLeg, scale: sc, baseY: o.y || 0 };
+    }
+
+    function banner(side, g, champion, rnd) {
+      var ph = side ? poleQ : poleM;
+      var iron = side ? ironQ : ironM;
+      var clothMat = side ? clothQ : clothM;
+      var poleH = champion ? 4.15 : 3.45;
+      var pole = new THREE.Mesh(new THREE.CylinderGeometry(champion ? 0.13 : 0.08, champion ? 0.18 : 0.11, poleH, 7), ph);
+      pole.position.y = poleH / 2;
+      g.add(pole);
+      var shoe = new THREE.Mesh(new THREE.CylinderGeometry(champion ? 0.18 : 0.12, champion ? 0.24 : 0.15, champion ? 0.18 : 0.1, 7), brassM);
+      shoe.position.y = champion ? 0.09 : 0.05;
+      g.add(shoe);
+      var fin = new THREE.Mesh(new THREE.SphereGeometry(champion ? 0.14 : 0.075, 8, 6), brassM);
+      fin.position.y = poleH + 0.05;
+      g.add(fin);
+      var tip = new THREE.Mesh(new THREE.ConeGeometry(0.045, 0.22, 6), brassM);
+      tip.position.y = poleH + 0.2;
+      g.add(tip);
+      var cw = champion ? 2.05 : 1.65, chh = champion ? 1.2 : 0.95;
+      var barLen = cw * 0.62;
+      var bar = new THREE.Mesh(new THREE.CylinderGeometry(champion ? 0.052 : 0.04, champion ? 0.052 : 0.04, barLen, 5), ph);
+      bar.rotation.z = Math.PI / 2;
+      bar.position.set(0.18 + barLen / 2, poleH - 0.1, 0);
+      g.add(bar);
+      var geo = new THREE.PlaneGeometry(cw, chh, 12, 8);
+      var pa = geo.attributes.position;
+      for (var vi = 0; vi < pa.count; vi++) {
+        var vx = pa.getX(vi), vy = pa.getY(vi);
+        var u = (vx + cw / 2) / cw;
+        if (vy > 0) pa.setY(vi, vy - u * u * 0.1);
+      }
+      geo.computeVertexNormals();
+      var cloth = new THREE.Mesh(geo, clothMat);
+      cloth.position.set(0.16 + cw / 2, poleH - 0.2 - chh / 2, 0);
+      cloth.castShadow = true;
+      cloth.receiveShadow = false;
+      g.add(cloth);
+      for (var lp = 0; lp < 3; lp++) {
+        var loop = new THREE.Mesh(new THREE.TorusGeometry(0.04, 0.011, 5, 8), brassM);
+        loop.position.set(0.3 + lp * (barLen - 0.2) / 2, poleH - 0.14, 0);
+        g.add(loop);
+      }
+      [0.18, 0.18 + barLen].forEach(function (tx) {
+        var tas = new THREE.Mesh(new THREE.ConeGeometry(0.028, 0.2, 5), brassM);
+        tas.position.set(tx, poleH - 0.28, 0);
+        tas.rotation.x = Math.PI;
+        g.add(tas);
+      });
+      var rose = new THREE.Mesh(new THREE.CylinderGeometry(0.075, 0.075, 0.02, 10), brassM);
+      rose.rotation.x = Math.PI / 2;
+      rose.position.set(0, poleH - 0.62, 0.06);
+      g.add(rose);
+      WAVERS.push({ mesh: cloth, base: geo.attributes.position.array.slice(0), w: cw, phase: rnd() * 6.28 });
+      if (champion) return;
+      var nSp = side ? 7 : 3;
+      for (var k = 0; k < nSp; k++) {
+        var h = 1.9 + rnd() * 0.4;
+        var sp = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.045, h, 5), iron);
+        var a = rnd() * Math.PI * 2, rr = 0.15 + rnd() * 0.5;
+        sp.position.set(Math.cos(a) * rr, h / 2, Math.sin(a) * rr);
+        sp.rotation.set((rnd() - 0.5) * 0.08, 0, (rnd() - 0.5) * 0.08);
+        sp.castShadow = true;
+        g.add(sp);
+        var tipH = 0.2;
+        var blade = new THREE.Mesh(new THREE.BoxGeometry(0.06, tipH, 0.022), iron);
+        blade.position.set(sp.position.x, h + tipH / 2, sp.position.z);
+        g.add(blade);
+        var collar = new THREE.Mesh(new THREE.CylinderGeometry(0.026, 0.03, 0.05, 5), brassM);
+        collar.position.set(sp.position.x, h - 0.03, sp.position.z);
+        g.add(collar);
+      }
+      var nSh = side ? 2 : 1;
+      for (var sh = 0; sh < nSh; sh++) {
+        var shm = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.05, 14), side ? shieldQ : shieldM);
+        shm.position.set(-0.55 + sh * 0.85, 0.5, 0.55 - sh * 0.18);
+        shm.rotation.x = Math.PI / 2 - 0.08;
+        shm.rotation.z = 0.04;
+        g.add(shm);
+        var boss = new THREE.Mesh(new THREE.SphereGeometry(0.07, 8, 6), brassM);
+        boss.position.set(-0.55 + sh * 0.85, 0.5, 0.66 - sh * 0.18);
+        g.add(boss);
+      }
+      if (side) {
+        for (var hl = 0; hl < 2; hl++) {
+          var helm = new THREE.Mesh(new THREE.SphereGeometry(0.13, 8, 6), ironM);
+          helm.position.set(0.3 + hl * 0.3, 0.13, -0.5 - hl * 0.25);
+          g.add(helm);
+        }
+      } else {
+        var rest = new THREE.Mesh(new THREE.SphereGeometry(0.14, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2), ironM);
+        rest.position.set(0.75, 0.14, -0.45);
+        rest.rotation.y = 0.8;
+        g.add(rest);
+        var jar = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.2, 0.34, 8), new THREE.MeshLambertMaterial({ color: 0x8a7a5a }));
+        jar.position.set(0.45, 0.17, 0.55);
+        g.add(jar);
+      }
+    }
+
+    function band(side, x, z, label, entry) {
+      var g = new THREE.Group();
+      banner(side, g, false, seedRand(Math.round((x + 100) * 733 + (z + 100) * 191)));
+      g.position.set(x, 0, z);
+      g.traverse(function (o) { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+      scene.add(g);
+      return { side: side, group: g, flag: g.children[4], phase: Math.random() * 6.28, home: [x, z], label: label || null, entry: entry || null, isChampion: false };
+    }
+    function championUnit(side, x, z, label, entry) {
+      var g = new THREE.Group();
+      banner(side, g, true, seedRand(Math.round((x + 200) * 311 + (z + 200) * 97)));
+      g.position.set(x, 0, z);
+      g.traverse(function (o) { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+      scene.add(g);
+      return { side: side, group: g, flag: g.children[4], phase: Math.random() * 6.28, home: [x, z], label: label || null, entry: entry || null, isChampion: true, hideAfterPhase: 1 };
+    }
+
+    /* a named act marked by a standard or a spear, never by a figure */
+    function eventStandard(x, z, side, tilt, fallen, parent) {
+      var g = new THREE.Group();
+      var pole = new THREE.Mesh(new THREE.CylinderGeometry(0.032, 0.032, 3.2, 6), poleM);
+      pole.position.y = 1.6;
+      g.add(pole);
+      var cloth = new THREE.Mesh(new THREE.PlaneGeometry(0.85, 0.6),
+        new THREE.MeshLambertMaterial({ color: side ? 0x2b2620 : 0xe8e2d2, side: THREE.DoubleSide }));
+      cloth.position.set(0.46, 2.72, 0);
+      g.add(cloth);
+      var tip = new THREE.Mesh(new THREE.ConeGeometry(0.06, 0.18, 4), brassM);
+      tip.position.y = 3.3;
+      g.add(tip);
+      g.traverse(function (o) { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+      if (fallen) { g.rotation.z = 1.25; g.position.set(x, 0.18, z); }
+      else { g.rotation.z = tilt || 0; g.position.set(x, 0, z); }
+      (parent || scene).add(g);
+      return g;
+    }
+
+    return {
+      mats: { poleM: poleM, poleQ: poleQ, ironM: ironM, ironQ: ironQ, brassM: brassM, clothM: clothM, clothQ: clothQ,
+        shieldM: shieldM, shieldQ: shieldQ, skinM: skinM, leatherM: leatherM, steelM: steelM, woundM: woundM,
+        sandalM: sandalM, woodM: woodM },
+      wavers: WAVERS,
+      seedRand: seedRand,
+      makeFighter: makeFighter,
+      vPart: vPart, vSpear: vSpear, vSword: vSword, vShield: vShield,
+      banner: banner, band: band, championUnit: championUnit, eventStandard: eventStandard
+    };
+  };
 
   /* ------------------------------ props */
   ENGINE.props = function (ctx, heightAt) {
@@ -809,10 +1234,49 @@
       return g;
     }
 
+    /* a carved massif, not a dome: a displaced icosahedron with stepped
+       flanks, flat-shaded so it reads as broken rock at maquette distance */
+    var RIDGE_GEO = null;
+    function ridgeGeo() {
+      if (RIDGE_GEO) return RIDGE_GEO;
+      var geo = new THREE.IcosahedronGeometry(1, 5);
+      var pos = geo.attributes.position;
+      var col = new Float32Array(pos.count * 3);
+      var v = new THREE.Vector3();
+      for (var i = 0; i < pos.count; i++) {
+        v.fromBufferAttribute(pos, i);
+        var n1 = fbm(v.x * 1.9 + 2.1, v.z * 1.9 + 4.4, 4);
+        var n2 = fbm(v.y * 2.6 + 9.0, v.x * 2.6 + 1.3, 3);
+        var r = 1 + (n1 - 0.5) * 0.62 + (n2 - 0.5) * 0.2;
+        /* strata: the flank steps out in shelves rather than swelling smoothly */
+        var shelf = 0.12;
+        var q = Math.round(r / shelf) * shelf;
+        r = q * 0.55 + r * 0.45;
+        /* the crest breaks instead of doming */
+        var top = Math.max(0, v.y);
+        r -= top * top * 0.16 * (fbm(v.x * 3.3 + 5.1, v.z * 3.3 + 2.7, 2) - 0.4);
+        pos.setXYZ(i, v.x * r, v.y * r, v.z * r);
+        /* light strata: the base sits in shadow, the crest catches the key */
+        var yn = Math.max(0, Math.min(1, (v.y + 1) / 2));
+        var s = 0.68 + 0.44 * yn + 0.07 * Math.sin(v.y * 15.0 + n1 * 6.0);
+        col[i * 3] = s; col[i * 3 + 1] = s; col[i * 3 + 2] = s;
+      }
+      geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
+      geo.computeVertexNormals();
+      RIDGE_GEO = geo;
+      return geo;
+    }
     function ridge(x, z, sx, sy, color) {
-      var ridgeM = new THREE.Mesh(new THREE.SphereGeometry(1, 20, 12), new THREE.MeshLambertMaterial({ color: color || 0xb0a184 }));
+      var ridgeM = new THREE.Mesh(ridgeGeo(), new THREE.MeshStandardMaterial({
+        color: color || 0xb0a184, roughness: 1, metalness: 0, flatShading: true, vertexColors: true
+      }));
       ridgeM.scale.set(sx, sy, sx * 0.55);
-      ridgeM.position.set(x, heightAt(x, z) - 1.5, z);
+      ridgeM.rotation.y = (Math.abs(Math.sin(x * 12.9898 + z * 78.233)) % 1) * Math.PI;
+      ridgeM.position.set(x, heightAt(x, z) - sy * 0.34, z);
+      ridgeM.castShadow = true;
+      ridgeM.receiveShadow = true;
+      /* keep the strata shading: the static merge flattens to one colour */
+      ridgeM.userData.keep = true;
       scene.add(ridgeM);
       return ridgeM;
     }
@@ -834,6 +1298,7 @@
     arr[o + 8] = sy; arr[o + 9] = -sa * cy; arr[o + 10] = ca * cy; arr[o + 11] = 0;
     arr[o + 12] = tx; arr[o + 13] = ty; arr[o + 14] = tz; arr[o + 15] = 1;
   }
+  var LOD_FLIP = 0;
   ENGINE.crowd = {
     all: function () { return MASS; },
     build: function (opts) {
@@ -862,17 +1327,18 @@
       var ironC = new THREE.Color(side ? 0x565043 : 0x9a9382);
       var woodC = new THREE.Color(0x6b5c42);
       /* upper body only: the legs are their own instances so the march has a gait */
-      var manGeo = mergeParts([
+      var manParts = [
         { geo: bodyGeo, p: [0, 0.86, 0], c: bodyC },
         { geo: skirtGeo, p: [0, 0.62, 0], c: bodyC },
-        { geo: beltGeo, p: [0, 0.79, 0], c: beltC },
+        (opts.belt === false ? null : { geo: beltGeo, p: [0, 0.79, 0], c: beltC }),
         { geo: headGeo, p: [0, 1.34, 0], c: headC },
         side
           ? { geo: helmGeo, p: [0, 1.38, 0], c: ironC }
           : { geo: turbanGeo, p: [0, 1.42, 0], c: clothC },
         { geo: armGeo, p: [-0.18, 0.9, 0.02], r: [0, 0, 0.22], c: bodyC },
         { geo: armGeo, p: [0.18, 0.9, 0.02], r: [0, 0, -0.22], c: bodyC }
-      ]);
+      ];
+      var manGeo = mergeParts(manParts.filter(Boolean));
       var men = new THREE.InstancedMesh(manGeo, new THREE.MeshLambertMaterial({ vertexColors: true }), count);
       men.castShadow = true;
       /* each leg pivots at the hip (y 0.56): leg + foot in one rigid piece */
@@ -906,7 +1372,8 @@
         }
         shields.instanceColor.needsUpdate = true;
       }
-      var rims = new THREE.InstancedMesh(new THREE.TorusGeometry(0.345, 0.02, 5, 14), new THREE.MeshLambertMaterial({ color: side ? 0x565043 : 0xc39a33 }), squads * shieldsPer);
+      var rims = new THREE.InstancedMesh(new THREE.TorusGeometry(0.345, 0.02, 5, 14), new THREE.MeshLambertMaterial({ color: side ? 0x565043 : 0xc39a33 }), opts.rims === false ? 1 : squads * shieldsPer);
+      rims.visible = opts.rims !== false;
       var swords = new THREE.InstancedMesh(new THREE.BoxGeometry(0.045, 0.72, 0.013), new THREE.MeshLambertMaterial({ color: 0xc9c4b6 }), squads);
       var guards = new THREE.InstancedMesh(new THREE.BoxGeometry(0.2, 0.03, 0.05), new THREE.MeshLambertMaterial({ color: side ? 0x565043 : 0xc39a33 }), squads);
       var helms = new THREE.InstancedMesh(new THREE.SphereGeometry(0.145, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2), new THREE.MeshLambertMaterial({ color: side ? 0x565043 : 0x9a9382 }), squads);
@@ -916,10 +1383,21 @@
         var rk = Math.floor(s / cols), cl = s % cols;
         var hsh = Math.abs(Math.sin(s * 12.9898) * 43758.5453) % 1;
         var cx;
+        var divFiles = opts.divFiles || 0;
         if (side && cols === 21) {
           /* three divisions of seven files: 1,000 men read as one army */
           var seg = cl < 7 ? -1 : (cl < 14 ? 0 : 1);
           cx = seg * 18 + ((cl % 7) - 3) * 2.0 + (rk % 2 ? 1.0 : 0);
+        } else if (divFiles > 0) {
+          /* the same division rhythm at any scale: colFiles per block with a
+             gap between blocks (Uhud fields 3,000 in three wings, not one slab) */
+          var ndiv = Math.max(1, Math.ceil(cols / divFiles));
+          var dseg = Math.floor(cl / divFiles);
+          var inDiv = cl % divFiles;
+          var pitch = opts.divPitch || 36;
+          cx = (dseg - (ndiv - 1) / 2) * pitch
+            + (inDiv - (divFiles - 1) / 2) * dxS
+            + (rk % 2 ? dxS * 0.5 : 0);
         } else {
           cx = (cl - (cols - 1) / 2) * dxS + (rk % 2 ? dxS * 0.5 : 0);
         }
@@ -949,7 +1427,7 @@
         }
       }
       scene.add(men); scene.add(legsL); scene.add(legsR); scene.add(spears); scene.add(shields); scene.add(rims); scene.add(swords); scene.add(guards); scene.add(helms);
-      var M = { men: men, legsL: legsL, legsR: legsR, spears: spears, shields: shields, rims: rims, swords: swords, guards: guards, helms: helms, shieldsPer: shieldsPer, sq: sq, recs: recs, blocks: blocks, h: h, side: side };
+      var M = { men: men, legsL: legsL, legsR: legsR, spears: spears, shields: shields, rims: rims, swords: swords, guards: guards, helms: helms, shieldsPer: shieldsPer, sq: sq, recs: recs, blocks: blocks, h: h, side: side, full: false };
       MASS.push(M);
       return M;
     },
@@ -958,6 +1436,8 @@
       var dm = new THREE.Object3D();
       var ph = env.ph;
       var fight = env.fight, disp = env.disp, marching = env.marching;
+      var lod = !!env.lod;
+      var parity = lod ? (LOD_FLIP ^= 1) : 0;
       var now = performance.now() / 1000;
       var gaitPh = env.frac * env.total * env.gaitHz * 6.283;
       var gaitAmp = env.gaitAmp;
@@ -973,7 +1453,12 @@
         var legLArr = M.legsL.instanceMatrix.array;
         var legRArr = M.legsR.instanceMatrix.array;
         var spArr = M.spears.instanceMatrix.array;
+        /* on a phone the crowd updates half its men each frame: the motion is
+           still 30 Hz, the frame keeps its budget, and the first pass fills all */
+        var full = !M.full;
+        M.full = true;
         for (var i = 0; i < M.recs.length; i++) {
+          if (lod && !full && (i & 1) !== parity) continue;
           var rec = M.recs[i], a = anchors[rec.s];
           var px = a[0] + rec.ox * (1 + 0.45 * disp) + Math.sin(rec.fp * 2.7 + now * 0.35) * 0.1 * disp;
           var pz = a[1] + rec.oz + Math.sin(rec.fp * 1.9 + now * 0.3) * 0.14 * disp;
@@ -997,10 +1482,11 @@
             px + 0.22 * cy + 0.06 * sy, bob + 1.0 * rec.hs, pz + lunge - 0.22 * sy + 0.06 * cy,
             spLean, cy, sy, 1);
         }
-        var si = 0;
         for (var s2 = 0; s2 < M.sq.length; s2++) {
+          if (lod && !full && (s2 & 1) !== parity) continue;
           var a2 = anchors[s2];
           var sqv = M.sq[s2], sv = 0.9 + sqv.hsh * 0.18;
+          var si = s2 * M.shieldsPer;
           for (var k = 0; k < M.shieldsPer; k++) {
             var off = (k - (M.shieldsPer - 1) / 2) * 0.62;
             var face = M.side ? 0.58 : -0.58;
@@ -1010,11 +1496,12 @@
             if (M.side) dm.rotation.y = Math.PI;
             dm.scale.set(sv, 1, sv);
             dm.updateMatrix();
-            M.shields.setMatrixAt(si, dm.matrix);
-            dm.rotation.x = 0;
-            dm.updateMatrix();
-            M.rims.setMatrixAt(si, dm.matrix);
-            si++;
+            M.shields.setMatrixAt(si + k, dm.matrix);
+            if (M.rims.visible) {
+              dm.rotation.x = 0;
+              dm.updateMatrix();
+              M.rims.setMatrixAt(si + k, dm.matrix);
+            }
           }
           /* the squad's helm-rack behind the shields */
           dm.position.set(a2[0] - (M.side ? 0.8 : -0.8), 0.14, a2[1] - (M.side ? 0.5 : -0.5));
@@ -1037,7 +1524,7 @@
         M.legsR.instanceMatrix.needsUpdate = true;
         M.spears.instanceMatrix.needsUpdate = true;
         M.shields.instanceMatrix.needsUpdate = true;
-        M.rims.instanceMatrix.needsUpdate = true;
+        if (M.rims.visible) M.rims.instanceMatrix.needsUpdate = true;
         M.swords.instanceMatrix.needsUpdate = true;
         M.guards.instanceMatrix.needsUpdate = true;
         M.helms.instanceMatrix.needsUpdate = true;
@@ -1389,6 +1876,8 @@
 
   /* ------------------------------ labels */
   ENGINE.labels = {
+    /* screen areas the HUD owns (the legend, the deck): labels stay out of them */
+    reserved: [],
     mkLabel: function (labelBox, txt, cls) {
       var d = document.createElement('span');
       d.className = 'hud-label' + (cls ? ' ' + cls : '');
@@ -1401,14 +1890,15 @@
       var camera = env.camera, w = env.w, h = env.h;
       for (var q = 0; q < list.length; q++) {
         var it = list[q];
-        /* the champions' names belong to the duel; afterwards the field keeps the standards only */
-        if (isUnit && it.u.isChampion && env.phaseIdx > 1) { it.el.style.visibility = 'hidden'; continue; }
+        /* a name that belongs to one beat hides after it; the field keeps the standards */
+        if (isUnit && it.u.hideAfterPhase !== undefined && env.phaseIdx > it.u.hideAfterPhase) { it.el.style.visibility = 'hidden'; continue; }
+        if (isUnit && it.u.hideBeforePhase !== undefined && env.phaseIdx < it.u.hideBeforePhase) { it.el.style.visibility = 'hidden'; continue; }
         if (isUnit && it.u.ph && it.u.ph.indexOf(env.phaseIdx) < 0) { it.el.style.visibility = 'hidden'; continue; }
         if (isUnit && it.u.tRange && (env.phaseT < it.u.tRange[0] || env.phaseT > it.u.tRange[1])) { it.el.style.visibility = 'hidden'; continue; }
         if (!isUnit && it.ph && it.ph.indexOf(env.phaseIdx) < 0) { it.el.style.visibility = 'hidden'; continue; }
         if (!isUnit && it.tRange && (env.phaseT < it.tRange[0] || env.phaseT > it.tRange[1])) { it.el.style.visibility = 'hidden'; continue; }
         var lY = isUnit ? (it.u.labelY !== undefined ? it.u.labelY : (it.u.isChampion ? 3.9 : 4.0)) : 0;
-        if (env.MOBILE && isUnit && (it.u.k === 'abujahlFig' || it.u.k === 'ikrimahFig')) lY -= 0.8;
+        if (env.MOBILE && isUnit && it.u.mobileDY) lY += it.u.mobileDY;
         /* a rigged champion's label follows the walking figure, not the standard */
         var base = isUnit ? (it.u.labelAnchor || it.u.group.position) : null;
         var v = (isUnit ? base.clone().add(new THREE.Vector3(0, lY, 0)) : it.v.clone());
@@ -1455,6 +1945,7 @@
     var easeIO = U.easeIO;
     var clock = { playing: false, speed: 1, frac: 0, last: performance.now(), dt: 0.016 };
     var PHASES = [], SHOTS = {}, IMPACTS = [], PRESETS = {};
+    var PORTRAIT = { cap: 2.1 };
     var camState = { mode: 'phase', preset: null };
     var orbit = { az: 0, pol: 0.42, r: 66, target: new THREE.Vector3(0, 0, 0) };
     var curCam = { p: new THREE.Vector3(0, 40, 58), l: new THREE.Vector3(0, 0.8, 0) };
@@ -1509,7 +2000,6 @@
       camera.lookAt(curCam.l);
     }
     function applyCamera(i, t, snap) {
-      if (camState.mode === 'orbit') return;
       if (camState.mode === 'preset') {
         lerpCam(camState.preset, snap ? 1 : (reduce ? 0.22 : 0.09));
         return;
@@ -1538,16 +2028,38 @@
         ]
       };
       var sh = shotShake(i, t);
-      tgt.p[0] += sh.x; tgt.p[1] += sh.y;
       /* portrait phones see a narrow horizontal slice: back the camera off and
-         lift it so the field stays in frame (the pushed build's rule) */
-      if (camera.aspect < 1) {
-        var k2 = Math.min(2.1, Math.pow(1 / camera.aspect, 0.9));
+         lift it so the field stays in frame (the pushed build's rule). A shot
+         may carry its own portrait framing, and a scene may cap the pull where
+         the generic rule would leave the valley. */
+      var pr = camera.aspect < 1 ? shot.portrait : null;
+      if (pr) {
+        tgt.p = [
+          pr.p0[0] + (pr.p1[0] - pr.p0[0]) * u,
+          pr.p0[1] + (pr.p1[1] - pr.p0[1]) * u,
+          pr.p0[2] + (pr.p1[2] - pr.p0[2]) * u
+        ];
+        tgt.l = [
+          pr.l0[0] + (pr.l1[0] - pr.l0[0]) * u,
+          pr.l0[1] + (pr.l1[1] - pr.l0[1]) * u,
+          pr.l0[2] + (pr.l1[2] - pr.l0[2]) * u
+        ];
+      }
+      tgt.p[0] += sh.x; tgt.p[1] += sh.y;
+      if (camera.aspect < 1 && !pr) {
+        var k2 = Math.min(PORTRAIT.cap, Math.pow(1 / camera.aspect, 0.9));
         tgt.p = [
           tgt.l[0] + (tgt.p[0] - tgt.l[0]) * k2,
           tgt.l[1] + (tgt.p[1] - tgt.l[1]) * k2 * 1.12,
           tgt.l[2] + (tgt.p[2] - tgt.l[2]) * k2
         ];
+      }
+      /* paused and handed to the turntable: a scrub must still carry the view
+         to the new shot, so gliding the orbit onto it is the shot's job here */
+      if (camState.mode === 'orbit') {
+        if (!dragging && !clock.playing) shotGoal = { p: tgt.p.slice(), l: tgt.l.slice() };
+        lastShotKey = key;
+        return;
       }
       if (cut || snap) {
         /* a cut is a cut: land on the shot's opening frame with no smear */
@@ -1562,6 +2074,7 @@
 
     /* orbit: available whenever the reel is paused; idle drifts slowly */
     var dragging = false, lx = 0, ly = 0;
+    var shotGoal = null;
     var lastInteract = performance.now();
     var dragBaseAz = 0, dragBasePol = 0, dragDownX = 0, dragDownY = 0;
     var dragLastX = 0, dragLastT = 0, flingV = 0;
@@ -1709,24 +2222,26 @@
       total: phaseTotal,
       setup: function (opts) {
         PHASES = opts.phases; SHOTS = opts.shots; IMPACTS = opts.impacts || []; PRESETS = opts.presets || {};
+        PORTRAIT.cap = (opts.portrait && opts.portrait.cap) || 2.1;
       },
       applyCamera: applyCamera,
       lerpCam: lerpCam,
       orbitFromCam: orbitFromCam,
       mode: function () { return camState.mode; },
-      setMode: function (m) { camState.mode = m; },
+      setMode: function (m) { camState.mode = m; if (m !== 'orbit') shotGoal = null; },
       preset: function (name) {
         camState.mode = 'preset';
         camState.preset = PRESETS[name] || PRESETS.ground;
+        shotGoal = null;
         return camState.preset;
       },
       curPreset: function () { return camState.preset; },
-      setPresetRaw: function (p) { camState.mode = 'preset'; camState.preset = p; },
+      setPresetRaw: function (p) { camState.mode = 'preset'; camState.preset = p; shotGoal = null; },
       orbit: orbit,
       curCam: curCam,
       camSm: camSm,
       camInfo: function () {
-        return { fov: camera.fov, aspect: +camera.aspect.toFixed(3), p: camera.position.toArray().map(function (n) { return +n.toFixed(1); }), l: curCam.l.toArray().map(function (n) { return +n.toFixed(1); }), mode: camState.mode };
+        return { fov: camera.fov, aspect: +camera.aspect.toFixed(3), p: camera.position.toArray().map(function (n) { return +n.toFixed(1); }), l: curCam.l.toArray().map(function (n) { return +n.toFixed(1); }), mode: camState.mode, tgt: orbit.target.toArray().map(function (n) { return +n.toFixed(1); }), r: +orbit.r.toFixed(1), az: +orbit.az.toFixed(2), pol: +orbit.pol.toFixed(2), goal: shotGoal ? shotGoal.p.map(function (n) { return +n.toFixed(1); }) : null, playing: clock.playing };
       },
       isExplore: function () { return camState.mode === 'orbit'; },
       perfTick: perfTick,
@@ -1739,6 +2254,8 @@
       /* orbit camera: smoothed, with fling inertia and a focus pivot */
       orbitStep: function (dt, playing) {
         if (camState.mode !== 'orbit') return;
+        if (playing) shotGoal = null;
+        if (shotGoal && dragging) shotGoal = null;
         if (pendingFocus && !dragging) {
           var pf = new THREE.Vector3(pendingFocus.x, 0, pendingFocus.z);
           orbit.target.lerp(pf, 0.04);
@@ -1748,7 +2265,26 @@
           orbit.az += flingV * dt * 60;
           flingV *= Math.pow(0.06, dt);
         }
-        if (!dragging && !playing && !reduce) orbit.az += dt * 0.09;
+        if (!dragging && !playing && !reduce && !shotGoal) orbit.az += dt * 0.09;
+        /* a paused scrub: glide the turntable onto the shot, then drift again */
+        if (shotGoal) {
+          var g = shotGoal;
+          orbit.target.x += (g.l[0] - orbit.target.x) * 0.12;
+          orbit.target.y += (g.l[1] - orbit.target.y) * 0.12;
+          orbit.target.z += (g.l[2] - orbit.target.z) * 0.12;
+          var gx = g.p[0] - orbit.target.x, gy = g.p[1] - orbit.target.y, gz = g.p[2] - orbit.target.z;
+          var gr = Math.max(12, Math.sqrt(gx * gx + gy * gy + gz * gz));
+          var gPol = Math.acos(Math.max(-1, Math.min(1, gy / gr)));
+          var gAz = Math.atan2(gz, gx);
+          var dAz = Math.atan2(Math.sin(gAz - orbit.az), Math.cos(gAz - orbit.az));
+          orbit.az += dAz * 0.12;
+          orbit.pol += (gPol - orbit.pol) * 0.12;
+          orbit.r += (gr - orbit.r) * 0.12;
+          if (Math.abs(dAz) < 0.012 && Math.abs(gPol - orbit.pol) < 0.012 && Math.abs(gr - orbit.r) < 0.5 &&
+            Math.abs(g.l[0] - orbit.target.x) < 0.5 && Math.abs(g.l[1] - orbit.target.y) < 0.5 && Math.abs(g.l[2] - orbit.target.z) < 0.5) {
+            shotGoal = null;
+          }
+        }
         if (orbit.pol > 1.45) orbit.pol = 1.45; /* the Y-floor below keeps us above the sand */
         var sp = new THREE.Vector3(
           orbit.target.x + orbit.r * Math.sin(orbit.pol) * Math.cos(orbit.az),
@@ -1764,8 +2300,190 @@
     };
   };
 
+  /* ------------------------------ the battle runner.
+     One lifecycle for every battle: the clock, RAF, seek/play, the label pass,
+     the paused turntable, the throttled-RAF fallback, the visibility pause and
+     the debug API. A battle module supplies phases, shots, applyFrac and the
+     per-frame extras; it never owns a render loop of its own. */
+  ENGINE.runner = function (ctx, o) {
+    o = o || {};
+    var renderer = ctx.renderer, scene = ctx.scene, camera = ctx.camera, canvas = ctx.canvas;
+    var MOBILE = ctx.MOBILE, reduce = ctx.reduce;
+    var director = o.director || ENGINE.director(ctx);
+    director.setup({ phases: o.phases, shots: o.shots, impacts: o.impacts || [], presets: o.presets || {}, portrait: o.portrait });
+    var clock = director.clock;
+    var TOTAL = o.total || director.total();
+    var tickCb = null;
+    var placedRects = [];
+    var curPhaseIdx = 0, curPhaseT = 0;
+
+    function apply(frac) {
+      var info = director.phaseInfo(frac);
+      curPhaseIdx = info.i;
+      curPhaseT = info.t;
+      o.applyFrac(frac, info);
+    }
+    function placeLabels() {
+      if (!o.labels) return;
+      var w = window.innerWidth, h = window.innerHeight;
+      placedRects.length = 0;
+      var res = ENGINE.labels.reserved;
+      for (var ri = 0; ri < res.length; ri++) placedRects.push(res[ri]);
+      var env = { camera: camera, phaseIdx: curPhaseIdx, phaseT: curPhaseT, w: w, h: h, MOBILE: MOBILE, reduce: reduce };
+      var units = o.labels.units ? o.labels.units.slice().sort(function (a, b) {
+        return (b.u.priority || 0) - (a.u.priority || 0);
+      }) : [];
+      ENGINE.labels.place(units, true, env, placedRects);
+      if (o.labels.landmarks) ENGINE.labels.place(o.labels.landmarks, false, env, placedRects);
+    }
+    function extras(now) {
+      if (o.frame) o.frame({ dt: clock.dt || 0.016, now: now, playing: clock.playing });
+    }
+    function advance(dt) {
+      clock.frac += dt * clock.speed / TOTAL;
+      if (clock.frac >= 1) { clock.frac = 1; clock.playing = false; }
+      apply(clock.frac);
+      if (o.updateMass) o.updateMass();
+      if (tickCb) {
+        try { tickCb(clock.frac, director.phaseInfo(clock.frac)); }
+        catch (err) { console.error('[battle] tick', err); }
+      }
+    }
+    var lastRaf = 0;
+    function frame(now) {
+      requestAnimationFrame(frame);
+      /* follow wall-clock time even on slow devices: a capped dt made playback
+         crawl at phone frame rates */
+      var dt = Math.min(0.5, (now - clock.last) / 1000);
+      clock.last = now;
+      clock.dt = dt || 0.016;
+      lastRaf = now;
+      director.perfTick(now, clock.playing, renderer);
+      if (clock.playing) advance(dt);
+      /* paused: turntable drift happens inside the orbit step */
+      if (!clock.playing) director.autoOrbit();
+      director.orbitStep(dt, clock.playing);
+      placeLabels();
+      extras(now);
+      renderer.render(scene, camera);
+    }
+    requestAnimationFrame(frame);
+    apply(clock.frac);
+    director.applyCamera(curPhaseIdx, curPhaseT, true);
+    placeLabels();
+
+    /* fallback ticker: if the device throttles RAF, keep the clock and render alive */
+    setInterval(function () {
+      if (!clock.playing) return;
+      if (performance.now() - lastRaf < 120) return; /* RAF healthy */
+      var now = performance.now();
+      var dt = Math.min(0.5, (now - clock.last) / 1000);
+      clock.last = now;
+      clock.dt = dt;
+      advance(dt);
+      placeLabels();
+      extras(now);
+      renderer.render(scene, camera);
+    }, 33);
+
+    /* pause when the tab is hidden, and never fast-forward on return */
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) {
+        if (clock.playing) {
+          clock.playing = false;
+          if (tickCb) tickCb(clock.frac, director.phaseInfo(clock.frac));
+        }
+      } else {
+        clock.last = performance.now();
+      }
+    });
+
+    function sceneStats() {
+      var meshes = 0, inst = 0, points = 0, mats = {}, geos = {};
+      scene.traverse(function (obj) {
+        if (obj.isMesh) {
+          if (obj.isInstancedMesh) { inst++; return; }
+          meshes++;
+          var mm = obj.material;
+          var key = mm ? (mm.type + ' · #' + (mm.color ? mm.color.getHexString() : '----') + (mm.map ? ' · map' : '')) : 'none';
+          mats[key] = (mats[key] || 0) + 1;
+          var gk = obj.geometry ? obj.geometry.type : 'none';
+          geos[gk] = (geos[gk] || 0) + 1;
+        } else if (obj.isPoints) points++;
+      });
+      return {
+        meshes: meshes, instanced: inst, points: points,
+        topMats: Object.keys(mats).map(function (k) { return [k, mats[k]]; }).sort(function (a, b) { return b[1] - a[1]; }).slice(0, 12),
+        topGeos: Object.keys(geos).map(function (k) { return [k, geos[k]]; }).sort(function (a, b) { return b[1] - a[1]; }).slice(0, 10)
+      };
+    }
+
+    var api = {
+      total: TOTAL,
+      phases: o.phases,
+      phaseInfo: director.phaseInfo,
+      frac: function () { return clock.frac; },
+      seek: function (f) {
+        clock.frac = U.clamp01(f);
+        apply(clock.frac);
+        if (o.updateMass) o.updateMass();
+        if (tickCb) tickCb(clock.frac, director.phaseInfo(clock.frac));
+      },
+      play: function () {
+        clock.playing = true;
+        clock.last = performance.now();
+        director.setMode('phase');
+        canvas.classList.remove('is-dragging');
+        apply(clock.frac);
+        if (o.updateMass) o.updateMass();
+      },
+      pause: function () { clock.playing = false; },
+      isPlaying: function () { return clock.playing; },
+      setSpeed: function (x) { clock.speed = x; },
+      onTick: function (fn) { tickCb = fn; },
+      cam: function (name) {
+        if (!name || name === 'ground') { director.setMode('phase'); return; }
+        director.preset(name);
+      },
+      explore: function (on) {
+        if (on) { director.setMode('orbit'); director.orbitFromCam(); }
+        else { director.setMode('phase'); }
+      },
+      setLang: o.setLang || function () {},
+      info: function () { return { calls: renderer.info.render.calls, tris: renderer.info.render.triangles, geoms: renderer.info.memory.geometries }; },
+      sceneStats: sceneStats,
+      benchMass: o.crowdEnv ? function (n) { return ENGINE.crowd.bench(o.crowdEnv(), n); } : function () { return 0; },
+      isExplore: function () { return director.isExplore(); },
+      setCam: function (p, l) {
+        director.setPresetRaw({ p: p, l: l });
+        director.applyCamera(curPhaseIdx, curPhaseT, true);
+      },
+      snapCam: function (name) {
+        if (name) { director.preset(name); }
+        else { director.setMode('phase'); }
+        var ph = director.phaseInfo(clock.frac);
+        director.applyCamera(ph.i, ph.t, true);
+      },
+      camInfo: function () { return director.camInfo(); },
+      ray: function (nx, ny) {
+        var ray = new THREE.Raycaster();
+        ray.setFromCamera(new THREE.Vector2(nx, ny), camera);
+        var hits = ray.intersectObjects(scene.children, true);
+        return hits.slice(0, 5).map(function (h) {
+          return { d: +h.distance.toFixed(2), geo: h.object.geometry && h.object.geometry.type, col: h.object.material && h.object.material.color ? h.object.material.color.getHexString() : null, p: h.point.toArray().map(function (v) { return +v.toFixed(1); }) };
+        });
+      },
+      director: director
+    };
+    if (o.api) Object.keys(o.api).forEach(function (k) { api[k] = o.api[k]; });
+    window.BATTLE = api;
+    try { document.dispatchEvent(new CustomEvent('battle:ready', { detail: api })); } catch (e) { /* old browser */ }
+    return api;
+  };
+
   /* ------------------------------ particles */
-  ENGINE.particles = function (ctx, heightAt) {
+  ENGINE.particles = function (ctx, heightAt, opts) {
+    opts = opts || {};
     var scene = ctx.scene, MOBILE = ctx.MOBILE;
     function softDot() {
       var c = document.createElement('canvas');
@@ -1792,13 +2510,14 @@
       dustB[i * 3 + 1] = dustP[i * 3 + 1];
       dustB[i * 3 + 2] = dustP[i * 3 + 2];
     }
-    var dustBounds = { x0: -6, xs: 18, z0: -9, zs: 12 };
+    var dustBounds = opts.dustBounds || { x0: -6, xs: 18, z0: -9, zs: 12 };
     for (var di = 0; di < DN; di++) { dustS[di] = Math.random(); resetDust(di, dustBounds); }
     dustGeo.setAttribute('position', new THREE.BufferAttribute(dustP, 3));
-    var dust = new THREE.Points(dustGeo, new THREE.PointsMaterial({ color: 0xd0bd99, size: 2.6, map: dot, transparent: true, opacity: 0, depthWrite: false }));
+    var dust = new THREE.Points(dustGeo, new THREE.PointsMaterial({ color: opts.dustColor || 0xd0bd99, size: opts.dustSize || 2.6, map: dot, transparent: true, opacity: 0, depthWrite: false }));
     scene.add(dust);
+    var dustGain = opts.dustGain === undefined ? 0.3 : opts.dustGain;
     function updateDust(amount) {
-      dust.material.opacity = amount * 0.3;
+      dust.material.opacity = amount * dustGain;
       if (amount > 0.02 && !ctx.reduce) {
         var dp = dust.geometry.attributes.position;
         var nowMs = performance.now();

@@ -17,71 +17,17 @@
   var canvas = ctx.canvas, labelBox = ctx.labelBox, reduce = ctx.reduce, MOBILE = ctx.MOBILE;
   var renderer = ctx.renderer, scene = ctx.scene, camera = ctx.camera;
 
-  /* ------------------------------ night-to-dawn sky and lights (build q) */
-  var skyGeo = new THREE.SphereGeometry(620, 32, 20);
-  var skyPos = skyGeo.attributes.position;
-  var skyCols = new Float32Array(skyPos.count * 3);
-  var zen = new THREE.Color(0x24304a), hor = new THREE.Color(0x9a7850), skyTmp = new THREE.Color();
-  for (var si = 0; si < skyPos.count; si++) {
-    var yy = Math.max(0, Math.min(1, skyPos.getY(si) / 620));
-    skyTmp.copy(hor).lerp(zen, Math.pow(yy, 0.55));
-    skyCols[si * 3] = skyTmp.r; skyCols[si * 3 + 1] = skyTmp.g; skyCols[si * 3 + 2] = skyTmp.b;
-  }
-  skyGeo.setAttribute('color', new THREE.BufferAttribute(skyCols, 3));
-  var skyDome = new THREE.Mesh(skyGeo, new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.BackSide, fog: false }));
-  skyDome.castShadow = false; skyDome.receiveShadow = false;
-  scene.add(skyDome);
-
-  var starGeo = new THREE.BufferGeometry();
-  var starPos = new Float32Array(520 * 3);
-  for (var st2 = 0; st2 < 520; st2++) {
-    var r1 = Math.random() * Math.PI * 2;
-    var r2 = Math.random() * Math.PI * 0.42 + 0.16;
-    starPos[st2 * 3] = Math.cos(r1) * Math.sin(r2) * 560;
-    starPos[st2 * 3 + 1] = Math.cos(r2) * 520 + 40;
-    starPos[st2 * 3 + 2] = Math.sin(r1) * Math.sin(r2) * 560;
-  }
-  starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
-  var stars = new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xdfe4ee, size: 2.0, sizeAttenuation: false, transparent: true, opacity: 0.22, fog: false }));
-  scene.add(stars);
-
-  function softDisc(inner, outer, tint) {
-    var c = document.createElement('canvas');
-    c.width = c.height = 64;
-    var g = c.getContext('2d');
-    var gr = g.createRadialGradient(32, 32, 1, 32, 32, 31);
-    gr.addColorStop(0, inner);
-    gr.addColorStop(0.45, outer);
-    gr.addColorStop(1, 'rgba(0,0,0,0)');
-    g.fillStyle = gr; g.fillRect(0, 0, 64, 64);
-    var tex = new THREE.CanvasTexture(c);
-    return new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false, fog: false, blending: THREE.AdditiveBlending, color: tint || 0xffffff });
-  }
-  var moonGlow = new THREE.Mesh(new THREE.PlaneGeometry(70, 70), softDisc('rgba(226,232,244,0.25)', 'rgba(160,176,200,0.08)', 0xcfd8e6));
-  moonGlow.position.set(-160, 62, -240); moonGlow.lookAt(0, 0, 0);
-  scene.add(moonGlow);
-  var moonDisk = new THREE.Mesh(new THREE.CircleGeometry(5.4, 26), new THREE.MeshBasicMaterial({ color: 0xe9edf5, transparent: true, opacity: 0.3, fog: false }));
-  moonDisk.position.set(-160, 62, -240);
-  moonDisk.lookAt(0, 0, 0);
-  scene.add(moonDisk);
-
-  var hemi = new THREE.HemisphereLight(0x8fa0b8, 0x3a2f22, 0.44);
-  scene.add(hemi);
-  var sun = new THREE.DirectionalLight(0xffc27d, 0.9);
-  sun.position.set(64, 34, -46);
-  sun.castShadow = true;
-  sun.shadow.mapSize.set(MOBILE ? 1024 : 2048, MOBILE ? 1024 : 2048);
-  sun.shadow.camera.left = -72; sun.shadow.camera.right = 72;
-  sun.shadow.camera.top = 72; sun.shadow.camera.bottom = -72;
-  sun.shadow.camera.near = 5; sun.shadow.camera.far = 240;
-  sun.shadow.bias = -0.0006;
-  scene.add(sun); scene.add(sun.target);
-  var fill = new THREE.DirectionalLight(0x7d8ea8, 0.2);
-  fill.position.set(-40, 30, 40);
-  scene.add(fill);
-  var rim = new THREE.DirectionalLight(0xffd9b0, 0.3);
-  rim.position.set(10, 14, 60);
-  scene.add(rim);
+  /* ------------------------------ night-to-dawn sky and lights (build q)
+     The palette is Badr's; the dome, moon, stars and rig are the engine's. */
+  ENGINE.sky(ctx, {
+    zenith: 0x24304a, horizon: 0x9a7850,
+    stars: 520, starOpacity: 0.22,
+    moonPos: [-160, 62, -240], moonOpacity: 0.3,
+    hemiSky: 0x8fa0b8, hemiGround: 0x3a2f22, hemi: 0.44,
+    sunColor: 0xffc27d, sun: 0.9, sunPos: [64, 34, -46], shadowBounds: 72, shadowFar: 240,
+    fillColor: 0x7d8ea8, fill: 0.2, fillPos: [-40, 30, 40],
+    rimColor: 0xffd9b0, rim: 0.3, rimPos: [10, 14, 60]
+  });
   /* the lamp at the ʻarish and a glow at the wells */
   var brassLight = new THREE.PointLight(0xffb54d, 0.5, 14, 2);
   brassLight.position.set(-7.5, 2.6, 20.5);
@@ -112,41 +58,10 @@
     h += (fbm(x * 0.35, z * 0.35, 2) - 0.5) * 0.05 * (1 - out);
     return Math.max(-5, h);
   }
-  /* build q's sand: a painted canvas texture with bump, vertex-coloured bright */
-  function sandTexture() {
-    var c = document.createElement('canvas'); c.width = c.height = 1024;
-    var g = c.getContext('2d');
-    g.fillStyle = '#eee6d4'; g.fillRect(0, 0, 1024, 1024);
-    var img = g.getImageData(0, 0, 1024, 1024), d = img.data;
-    for (var i = 0; i < d.length; i += 4) {
-      var n = (Math.random() - 0.5) * 22;
-      d[i] += n; d[i + 1] += n; d[i + 2] += n;
-    }
-    g.putImageData(img, 0, 0);
-    g.globalAlpha = 0.07;
-    for (var k = 0; k < 160; k++) {
-      g.strokeStyle = k % 2 ? '#fff8e8' : '#6b5f4a';
-      g.lineWidth = 1 + Math.random() * 2.4;
-      g.beginPath();
-      var yy = Math.random() * 1024;
-      g.moveTo(0, yy);
-      for (var x = 0; x <= 1024; x += 32) {
-        g.lineTo(x, yy + Math.sin(x * 0.018 + k) * 7 + Math.sin(x * 0.004 + k * 2.3) * 18);
-      }
-      g.stroke();
-    }
-    var tex = new THREE.CanvasTexture(c);
-    tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-    tex.repeat.set(26, 26);
-    return tex;
-  }
-  var sandTex = sandTexture();
-  sandTex.anisotropy = renderer.capabilities.getMaxAnisotropy();
-  var groundMat = new THREE.MeshPhongMaterial({ vertexColors: true, map: sandTex, bumpMap: sandTex, bumpScale: 0.12, shininess: 0 });
-  ENGINE.heightfield(ctx, heightAt, {
-    material: groundMat,
-    sand: new THREE.Color(0xd3bf9b), crest: new THREE.Color(0xe0cda8),
-    trough: new THREE.Color(0xb3a284), grit: new THREE.Color(0xc4b393)
+  /* build q's sand: the engine paints the texture and seats the heightfield */
+  ENGINE.ground(ctx, heightAt, {
+    base: '#eee6d4', repeat: 26, bumpScale: 0.12,
+    sand: 0xd3bf9b, crest: 0xe0cda8, trough: 0xb3a284, grit: 0xc4b393
   });
 
   /* distant ridges: the valley closes against the horizon */
@@ -289,153 +204,11 @@
 
   /* ------------------------------ armies: standards, not plates.
      A band is a stand of spears and one banner; a champion carries a taller standard. */
-  var WAVERS = [];
-  var poleM = new THREE.MeshLambertMaterial({ color: 0x6b5f4a });
-  var poleQ = new THREE.MeshLambertMaterial({ color: 0x2c271f });
-  var ironM = new THREE.MeshLambertMaterial({ color: 0x9a9382 });
-  var ironQ = new THREE.MeshLambertMaterial({ color: 0x565043 });
-  var brassM = new THREE.MeshLambertMaterial({ color: 0xc39a33, emissive: 0x241804 });
-  var clothM = new THREE.MeshLambertMaterial({ color: 0xf2ead8, side: THREE.DoubleSide, emissive: 0x3d3529 });
-  var clothQ = new THREE.MeshLambertMaterial({ color: 0x342c22, side: THREE.DoubleSide, emissive: 0x0d0a07 });
-  var shieldM = new THREE.MeshLambertMaterial({ color: 0xb5a583, side: THREE.DoubleSide });
-  var shieldQ = new THREE.MeshLambertMaterial({ color: 0x4a4132, side: THREE.DoubleSide });
-
-  function seedRand(seed) {
-    var t = seed + 0x6D2B79F5;
-    return function () {
-      t = Math.imul(t ^ (t >>> 15), t | 1);
-      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-    };
-  }
-
-  function banner(side, g, champion, rnd) {
-    var ph = side ? poleQ : poleM;
-    var iron = side ? ironQ : ironM;
-    var clothMat = side ? clothQ : clothM;
-    var poleH = champion ? 4.15 : 3.45;
-    var pole = new THREE.Mesh(new THREE.CylinderGeometry(champion ? 0.13 : 0.08, champion ? 0.18 : 0.11, poleH, 7), ph);
-    pole.position.y = poleH / 2;
-    g.add(pole);
-    /* a brass shoe anchors the standard: at distance the cloth reads, the pole must too */
-    var shoe = new THREE.Mesh(new THREE.CylinderGeometry(champion ? 0.18 : 0.12, champion ? 0.24 : 0.15, champion ? 0.18 : 0.1, 7), brassM);
-    shoe.position.y = champion ? 0.09 : 0.05;
-    g.add(shoe);
-    /* finial */
-    var fin = new THREE.Mesh(new THREE.SphereGeometry(champion ? 0.14 : 0.075, 8, 6), brassM);
-    fin.position.y = poleH + 0.05;
-    g.add(fin);
-    var tip = new THREE.Mesh(new THREE.ConeGeometry(0.045, 0.22, 6), brassM);
-    tip.position.y = poleH + 0.2;
-    g.add(tip);
-    /* short crossbar with cloth loops; the cloth drapes from it */
-    var cw = champion ? 2.05 : 1.65, chh = champion ? 1.2 : 0.95;
-    var barLen = cw * 0.62;
-    var bar = new THREE.Mesh(new THREE.CylinderGeometry(champion ? 0.052 : 0.04, champion ? 0.052 : 0.04, barLen, 5), ph);
-    bar.rotation.z = Math.PI / 2;
-    bar.position.set(0.18 + barLen / 2, poleH - 0.1, 0);
-    g.add(bar);
-    var geo = new THREE.PlaneGeometry(cw, chh, 12, 8);
-    var pa = geo.attributes.position;
-    for (var vi = 0; vi < pa.count; vi++) {
-      var vx = pa.getX(vi), vy = pa.getY(vi);
-      var u = (vx + cw / 2) / cw;
-      if (vy > 0) pa.setY(vi, vy - u * u * 0.1); /* the free edge sags */
-    }
-    geo.computeVertexNormals();
-    var cloth = new THREE.Mesh(geo, clothMat);
-    cloth.position.set(0.16 + cw / 2, poleH - 0.2 - chh / 2, 0);
-    cloth.castShadow = true;
-    cloth.receiveShadow = false; /* waving geometry collects dark artifacts */
-    g.add(cloth);
-    for (var lp = 0; lp < 3; lp++) {
-      var loop = new THREE.Mesh(new THREE.TorusGeometry(0.04, 0.011, 5, 8), brassM);
-      loop.position.set(0.3 + lp * (barLen - 0.2) / 2, poleH - 0.14, 0);
-      g.add(loop);
-    }
-    /* brass tassels at the bar ends */
-    [0.18, 0.18 + barLen].forEach(function (tx) {
-      var tas = new THREE.Mesh(new THREE.ConeGeometry(0.028, 0.2, 5), brassM);
-      tas.position.set(tx, poleH - 0.28, 0);
-      tas.rotation.x = Math.PI;
-      g.add(tas);
-    });
-    /* rosette on the pole: the standard's ornament */
-    var rose = new THREE.Mesh(new THREE.CylinderGeometry(0.075, 0.075, 0.02, 10), brassM);
-    rose.rotation.x = Math.PI / 2;
-    rose.position.set(0, poleH - 0.62, 0.06);
-    g.add(rose);
-    WAVERS.push({ mesh: cloth, base: geo.attributes.position.array.slice(0), w: cw, phase: rnd() * 6.28 });
-    /* a champion's standard carries only the pole and cloth — the rigged figure
-       at its foot carries the weapons. Band standards keep the unit's arms. */
-    if (champion) return;
-    /* spear stand: grouped shafts, one banner-man's spear taller */
-    var nSp = side ? 7 : 3;
-    for (var k = 0; k < nSp; k++) {
-      var h = 1.9 + rnd() * 0.4;
-      var sp = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.045, h, 5), iron);
-      var a = rnd() * Math.PI * 2, rr = 0.15 + rnd() * 0.5;
-      sp.position.set(Math.cos(a) * rr, h / 2, Math.sin(a) * rr);
-      sp.rotation.set((rnd() - 0.5) * 0.08, 0, (rnd() - 0.5) * 0.08);
-      sp.castShadow = true;
-      g.add(sp);
-      /* iron tips: forged blades on every shaft */
-      var tipH = 0.2;
-      var tip = new THREE.Mesh(new THREE.BoxGeometry(0.06, tipH, 0.022), iron);
-      tip.position.set(sp.position.x, h + tipH / 2, sp.position.z);
-      g.add(tip);
-      var collar = new THREE.Mesh(new THREE.CylinderGeometry(0.026, 0.03, 0.05, 5), brassM);
-      collar.position.set(sp.position.x, h - 0.03, sp.position.z);
-      g.add(collar);
-    }
-    /* shields standing at the front, faces toward the enemy */
-    var nSh = side ? 2 : 1;
-    for (var sh = 0; sh < nSh; sh++) {
-      var shm = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 0.05, 14), side ? shieldQ : shieldM);
-      shm.position.set(-0.55 + sh * 0.85, 0.5, 0.55 - sh * 0.18);
-      shm.rotation.x = Math.PI / 2 - 0.08;
-      shm.rotation.z = 0.04;
-      g.add(shm);
-      var boss = new THREE.Mesh(new THREE.SphereGeometry(0.07, 8, 6), brassM);
-      boss.position.set(-0.55 + sh * 0.85, 0.5, 0.66 - sh * 0.18);
-      g.add(boss);
-    }
-    if (side) {
-      /* iron helms piled by the standards: the mailed men of Quraysh */
-      for (var hl = 0; hl < 2; hl++) {
-        var helm = new THREE.Mesh(new THREE.SphereGeometry(0.13, 8, 6), ironM);
-        helm.position.set(0.3 + hl * 0.3, 0.13, -0.5 - hl * 0.25);
-        g.add(helm);
-      }
-    } else {
-      /* a helm rest by the standard: the believers' kit */
-      var rest = new THREE.Mesh(new THREE.SphereGeometry(0.14, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2), ironM);
-      rest.position.set(0.75, 0.14, -0.45);
-      rest.rotation.y = 0.8;
-      g.add(rest);
-      /* one water-skin: the light kit of the believers */
-      var jar = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.2, 0.34, 8), new THREE.MeshLambertMaterial({ color: 0x8a7a5a }));
-      jar.position.set(0.45, 0.17, 0.55);
-      g.add(jar);
-    }
-  }
-
-  function band(side, x, z, label, entry) {
-    var g = new THREE.Group();
-    banner(side, g, false, seedRand(Math.round((x + 100) * 733 + (z + 100) * 191)));
-    g.position.set(x, 0, z);
-    g.traverse(function (o) { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
-    scene.add(g);
-    return { side: side, group: g, flag: g.children[4], phase: Math.random() * 6.28, home: [x, z], label: label || null, entry: entry || null, isChampion: false };
-  }
-  function championUnit(side, x, z, label, entry) {
-    var g = new THREE.Group();
-    banner(side, g, true, seedRand(Math.round((x + 200) * 311 + (z + 200) * 97)));
-    g.position.set(x, 0, z);
-    g.traverse(function (o) { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
-    scene.add(g);
-    return { side: side, group: g, flag: g.children[4], phase: Math.random() * 6.28, home: [x, z], label: label || null, entry: entry || null, isChampion: true };
-  }
+  var cast = ENGINE.cast(ctx);
+  var WAVERS = cast.wavers;
+  var brassM = cast.mats.brassM;
+  var band = cast.band, championUnit = cast.championUnit, eventStandard = cast.eventStandard;
+  function seedRand(s) { return cast.seedRand(s); }
 
   /* Formation tables: x across the front, +z toward the Muslims.
      About 313 Muslims against about 1,000: a thin line against five deep ranks.
@@ -451,7 +224,7 @@
     for (var r = 0; r < 2; r++) qBands.push(band(1, x, zBase - r * 4.2));
   });
   var musab = mBands[1], jabal = qBands[10];
-  musab.label = 'Musʻab’s white standard (RA)'; musab.entry = 'BADR-013'; musab.home = [-0.2, 18.2];
+  musab.label = 'Musʻab’s white standard'; musab.entry = 'BADR-013'; musab.home = [-0.2, 18.2];
   musab.group.position.set(musab.home[0], 0, musab.home[1]);
   jabal.label = 'Abū Jahl’s standard'; jabal.entry = 'BADR-037';
 
@@ -626,11 +399,8 @@
      centre and left divisions: ʿAbdur-Rahman points the two Ansari youths to Abu Jahl,
      Ikrimah cuts Muʿadh's arm, Muʿadh steps on it and fights on one-armed,
      Muʿawwidh is martyred, and Abu Jahl is struck down. */
-  var skinM = new THREE.MeshLambertMaterial({ color: 0x9a7a5c });
-  var leatherM = new THREE.MeshLambertMaterial({ color: 0x4a3a28 });
-  var steelM = new THREE.MeshLambertMaterial({ color: 0xb9b4a6 });
-  var woundM = new THREE.MeshLambertMaterial({ color: 0x5e2b22 });
-  var sandalM = new THREE.MeshLambertMaterial({ color: 0xd8c7a4 });
+  var skinM = cast.mats.skinM, leatherM = cast.mats.leatherM, steelM = cast.mats.steelM;
+  var woundM = cast.mats.woundM, sandalM = cast.mats.sandalM;
 
   /* the plinth: a shallow, trampled sand stage, wide enough for the five figures */
   var STAGE = { x: -9.0, z: -0.3, y: 0.07, r: 3.5 };
@@ -663,106 +433,9 @@
   dropHelm.position.set(STAGE.x + 2.2, STAGE.y + 0.04, STAGE.z + 1.4);
   dropHelm.castShadow = true; stageGroup.add(dropHelm);
 
-  function vPart(parent, geo, mat, x, y, z, rx, ry, rz) {
-    var m = new THREE.Mesh(geo, mat);
-    m.position.set(x, y, z);
-    m.rotation.set(rx || 0, ry || 0, rz || 0);
-    m.castShadow = true; m.receiveShadow = true;
-    parent.add(m);
-    return m;
-  }
-  function vSpear(parent) {
-    var w = new THREE.Group();
-    var shaft = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.024, 2.0, 5), woodM);
-    shaft.position.y = 0.72; w.add(shaft);
-    var tip = new THREE.Mesh(new THREE.ConeGeometry(0.04, 0.18, 4), brassM);
-    tip.position.y = 1.78; w.add(tip);
-    var butt = new THREE.Mesh(new THREE.ConeGeometry(0.03, 0.1, 4), brassM);
-    butt.position.y = -0.32; butt.rotation.x = Math.PI; w.add(butt);
-    w.traverse(function (o) { if (o.isMesh) { o.castShadow = true; } });
-    parent.add(w); return w;
-  }
-  function vSword(parent) {
-    var w = new THREE.Group();
-    var blade = new THREE.Mesh(new THREE.BoxGeometry(0.045, 0.72, 0.012), steelM);
-    blade.position.y = 0.4; w.add(blade);
-    var guard = new THREE.Mesh(new THREE.BoxGeometry(0.17, 0.03, 0.045), brassM);
-    guard.position.y = 0.05; w.add(guard);
-    var hilt = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.03, 0.16, 5), leatherM);
-    hilt.position.y = -0.05; w.add(hilt);
-    w.traverse(function (o) { if (o.isMesh) { o.castShadow = true; } });
-    parent.add(w); return w;
-  }
-  function vShield(parent) {
-    var s = new THREE.Group();
-    var disc = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.035, 12), new THREE.MeshLambertMaterial({ color: 0x5a4f3c }));
-    disc.rotation.x = Math.PI / 2; s.add(disc);
-    var rimT = new THREE.Mesh(new THREE.TorusGeometry(0.3, 0.015, 5, 14), leatherM);
-    s.add(rimT);
-    var boss = new THREE.Mesh(new THREE.SphereGeometry(0.05, 6, 5), brassM);
-    boss.position.z = 0.03; s.add(boss);
-    s.position.set(-0.1, -0.34, 0.06);
-    s.traverse(function (o) { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
-    parent.add(s); return s;
-  }
-  function makeFighter(o) {
-    var g = new THREE.Group();
-    var robe = new THREE.MeshLambertMaterial({ color: o.robe });
-    var robeDark = new THREE.MeshLambertMaterial({ color: o.robeDark });
-    vPart(g, new THREE.CylinderGeometry(0.16, 0.2, 0.55, 7), robe, 0, 0.95, 0);
-    vPart(g, new THREE.CylinderGeometry(0.2, 0.27, 0.38, 7), robeDark, 0, 0.6, 0);
-    vPart(g, new THREE.CylinderGeometry(0.21, 0.21, 0.06, 7), leatherM, 0, 0.79, 0);
-    vPart(g, new THREE.CylinderGeometry(0.05, 0.06, 0.1, 6), skinM, 0, 1.26, 0);
-    vPart(g, new THREE.SphereGeometry(0.12, 8, 6), skinM, 0, 1.36, 0);
-    if (o.helmet) {
-      vPart(g, new THREE.SphereGeometry(0.135, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2), steelM, 0, 1.4, 0);
-      vPart(g, new THREE.ConeGeometry(0.022, 0.1, 4), steelM, 0, 1.56, 0);
-      vPart(g, new THREE.BoxGeometry(0.025, 0.12, 0.02), steelM, 0, 1.35, 0.125);
-    } else {
-      vPart(g, new THREE.CylinderGeometry(0.14, 0.14, 0.09, 8), robeDark, 0, 1.44, 0);
-      vPart(g, new THREE.SphereGeometry(0.135, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2), robeDark, 0, 1.39, 0);
-    }
-    vPart(g, new THREE.SphereGeometry(0.07, 6, 5), robe, 0.18, 1.16, 0);
-    vPart(g, new THREE.SphereGeometry(0.07, 6, 5), robe, -0.18, 1.16, 0);
-    vPart(g, new THREE.CylinderGeometry(0.06, 0.07, 0.55, 5), robeDark, 0.09, 0.28, 0);
-    vPart(g, new THREE.CylinderGeometry(0.06, 0.07, 0.55, 5), robeDark, -0.09, 0.28, 0);
-    vPart(g, new THREE.BoxGeometry(0.11, 0.06, 0.2), leatherM, 0.09, 0.03, 0.04);
-    vPart(g, new THREE.BoxGeometry(0.11, 0.06, 0.2), leatherM, -0.09, 0.03, 0.04);
-    function arm(sx) {
-      var a = new THREE.Group();
-      a.position.set(sx * 0.18, 1.16, 0);
-      g.add(a);
-      vPart(a, new THREE.CylinderGeometry(0.05, 0.055, 0.3, 5), robe, 0, -0.15, 0);
-      vPart(a, new THREE.CylinderGeometry(0.045, 0.05, 0.28, 5), skinM, 0, -0.42, 0);
-      vPart(a, new THREE.SphereGeometry(0.055, 6, 5), skinM, 0, -0.58, 0.02);
-      return a;
-    }
-    var armR = arm(1), armL = arm(-1);
-    vPart(armR, new THREE.CylinderGeometry(0.06, 0.06, 0.05, 6), woundM, 0, -0.02, 0);
-    var stump = vPart(g, new THREE.CylinderGeometry(0.06, 0.07, 0.09, 6), woundM, 0.18, 1.11, 0);
-    stump.visible = false;
-    /* the stepping leg: a shin and foot that swings forward onto the severed arm */
-    var stepLeg = new THREE.Group();
-    stepLeg.position.set(0.18, 0.62, 0.0);
-    g.add(stepLeg);
-    vPart(stepLeg, new THREE.CylinderGeometry(0.075, 0.085, 0.3, 5), robeDark, 0, -0.12, 0.08, 0.45, 0, 0);
-    vPart(stepLeg, new THREE.CylinderGeometry(0.06, 0.07, 0.32, 5), robeDark, 0, -0.36, 0.22, -0.2, 0, 0);
-    vPart(stepLeg, new THREE.BoxGeometry(0.14, 0.07, 0.24), sandalM, 0, -0.55, 0.30);
-    vPart(stepLeg, new THREE.BoxGeometry(0.16, 0.025, 0.27), sandalM, 0, -0.59, 0.31);
-    stepLeg.visible = false;
-    var weaponR = null, weaponL = null;
-    if (o.weapon === 'spear') { weaponR = vSpear(armR); weaponR.position.set(0, -0.58, 0.06); }
-    if (o.weapon === 'sword') { weaponR = vSword(armR); weaponR.position.set(0, -0.58, 0.06); }
-    if (o.leftWeapon === 'spear') { weaponL = vSpear(armL); weaponL.position.set(0, -0.58, 0.06); }
-    if (o.leftWeapon === 'sword') { weaponL = vSword(armL); weaponL.position.set(0, -0.58, 0.06); }
-    if (o.shield) vShield(armL);
-    var sc = o.scale || 1;
-    g.scale.setScalar(sc);
-    g.position.set(o.x, o.y || 0, o.z);
-    g.rotation.y = o.ry || 0;
-    scene.add(g);
-    return { group: g, armR: armR, armL: armL, weaponR: weaponR, weaponL: weaponL, stump: stump, stepLeg: stepLeg, scale: sc, baseY: o.y || 0 };
-  }
+  /* the faceless maquette fighter and its weapon/spear/shield parts are the engine's */
+  var vPart = cast.vPart, vSpear = cast.vSpear, vSword = cast.vSword, vShield = cast.vShield;
+  var makeFighter = cast.makeFighter;
 
   var SC = 1.15;
   var abdur = makeFighter({ x: -10.8, y: STAGE.y, z: 1.8, ry: Math.PI, robe: 0xcfc6b2, robeDark: 0x8a7a60, weapon: 'none', scale: SC });
@@ -960,7 +633,7 @@
     en: {
       hamzah: 'Ḥamzah (RA)', ali: 'ʻAlī (RA)', ubaydah: 'ʻUbaydah (RA)',
       shaybah: 'Shaybah', walid: 'al-Walīd', utbah: 'ʻUtbah',
-      musab: 'Musʻab’s white standard (RA)', command: 'Abū Jahl’s standard',
+      musab: 'Musʻab’s white standard', command: 'Abū Jahl’s standard',
       near: 'al-ʻUdwat ad-Dunya · the near bank', far: 'al-Quswa · the far bank',
       basin: 'the basin', wells: 'wells of Badr', arish: 'the ʻarish · the Prophet’s station (PBUH)',
       well24: 'al-Qalib · the 24 leaders thrown into the well', katheeb: 'Katheeb al-Hannan (a modern name)',
@@ -1116,7 +789,6 @@
     command: { p: [-20, 5.6, 3.5], l: [-9.0, 1.1, -0.6] }
   };
   var director = ENGINE.director(ctx);
-  director.setup({ phases: PHASES, shots: SHOTS, impacts: IMPACTS, presets: PRESETS });
   var clock = director.clock;
 
   /* ------------------------------ applying a global frame */
@@ -1252,14 +924,16 @@
       marching: marching,
       gaitHz: ph === 5 ? 1.35 : ph === 2 ? 0.55 : 1.0,
       gaitAmp: marching ? (ph === 5 ? 0.62 : 0.5) : (fight > 0 ? 0 : 0.045),
-      leanRun: ph === 5 ? 0.22 : 0
+      leanRun: ph === 5 ? 0.22 : 0,
+      lod: MOBILE
     };
   }
   function updateMass() { ENGINE.crowd.update(crowdEnv()); }
   updateMass();
 
-  /* ------------------------------ main loop */
-  var tickCb = null;
+  /* ------------------------------ shared loop + public API.
+     The clock, RAF, seek/play, label pass and debug API belong to the engine;
+     this module only says what a Badr frame looks like. */
   function updateCloth(time) {
     for (var w = 0; w < WAVERS.length; w++) {
       var it = WAVERS[w];
@@ -1273,170 +947,43 @@
       attr.needsUpdate = true;
     }
   }
-  function frame(now) {
-    requestAnimationFrame(frame);
-    /* follow wall-clock time even on slow devices: a 50 ms cap made playback
-       crawl to a near-stop at phone frame rates */
-    var dt = Math.min(0.5, (now - clock.last) / 1000);
-    clock.last = now;
-    clock.dt = dt || 0.016;
-    director.perfTick(now, clock.playing, renderer);
-    if (clock.playing) {
-      clock.frac += dt * clock.speed / TOTAL;
-      if (clock.frac >= 1) { clock.frac = 1; clock.playing = false; }
-      if (tickCb) { try { tickCb(clock.frac, director.phaseInfo(clock.frac)); } catch (err) { console.error('[badr] tick', err); } }
-      applyFrac(clock.frac);
-      updateMass();
-    }
-    /* paused: turntable drift happens inside the orbit step; only mode-switch here */
-    if (!clock.playing) director.autoOrbit();
-    director.orbitStep(dt, clock.playing);
-    /* labels project; nearer labels win their pixels */
-    var w = window.innerWidth, h = window.innerHeight;
-    placedRects.length = 0;
-    var ordered = ULABS.slice().sort(function (a, b) { return (b.u.priority || 0) - (a.u.priority || 0); });
-    var env = { camera: camera, phaseIdx: curPhaseIdx, phaseT: curPhaseT, w: w, h: h, MOBILE: MOBILE, reduce: reduce };
-    ENGINE.labels.place(ordered, true, env, placedRects);
-    ENGINE.labels.place(LANDL, false, env, placedRects);
-    if (!reduce && !MOBILE) {
-      updateCloth(now / 1000);
-      for (var pw = 0; pw < props.palms.length; pw++) {
-        var pp = props.palms[pw];
-        pp.crown.rotation.z = Math.sin(now / 1600 + pp.phase) * 0.035;
-        pp.crown.rotation.x = Math.cos(now / 2100 + pp.phase) * 0.022;
-      }
-      particles.smoke.update(clock.dt || 0, now);
-    } else if (MOBILE && (Math.floor(now / 140) % 2 === 0)) {
-      /* a light breath of cloth on mobile: update the largest banners only */
-      updateCloth(now / 2500);
-    }
-    renderer.render(scene, camera);
-  }
-  requestAnimationFrame(frame);
-  applyFrac(0);
-  director.applyCamera(0, 0, true);
 
-  /* fallback ticker: if the device throttles RAF, keep the clock and render alive */
-  var lastRaf = 0;
-  setInterval(function () {
-    if (!clock.playing) return;
-    if (performance.now() - lastRaf < 120) return; /* RAF healthy */
-    var now = performance.now();
-    var dt = Math.min(0.5, (now - clock.last) / 1000);
-    clock.last = now;
-    clock.dt = dt;
-    clock.frac += dt * clock.speed / TOTAL;
-    if (clock.frac >= 1) { clock.frac = 1; clock.playing = false; }
-    applyFrac(clock.frac);
-    updateMass();
-    if (tickCb) { try { tickCb(clock.frac, director.phaseInfo(clock.frac)); } catch (err) { console.error('[badr] tick', err); } }
-    renderer.render(scene, camera);
-  }, 33);
-
-  /* pause when the tab is hidden, and never fast-forward on return */
-  document.addEventListener('visibilitychange', function () {
-    if (document.hidden) {
-      if (clock.playing) {
-        clock.playing = false;
-        if (tickCb) tickCb(clock.frac, director.phaseInfo(clock.frac));
+  var BATTLE = ENGINE.runner(ctx, {
+    phases: PHASES, shots: SHOTS, impacts: IMPACTS, presets: PRESETS,
+    director: director,
+    labels: { units: ULABS, landmarks: LANDL },
+    applyFrac: applyFrac,
+    updateMass: updateMass,
+    crowdEnv: crowdEnv,
+    setLang: setLang,
+    frame: function (f) {
+      var now = f.now;
+      if (!reduce && !MOBILE) {
+        updateCloth(now / 1000);
+        for (var pw = 0; pw < props.palms.length; pw++) {
+          var pp = props.palms[pw];
+          pp.crown.rotation.z = Math.sin(now / 1600 + pp.phase) * 0.035;
+          pp.crown.rotation.x = Math.cos(now / 2100 + pp.phase) * 0.022;
+        }
+        particles.smoke.update(f.dt, now);
+      } else if (MOBILE && (Math.floor(now / 140) % 2 === 0)) {
+        /* a light breath of cloth on mobile: update the banners at a low rate */
+        updateCloth(now / 2500);
       }
-    } else {
-      clock.last = performance.now();
+    },
+    api: {
+      debugChamp: function () {
+        return champs.map(function (u) {
+          var n = 0, types = [];
+          u.group.traverse(function (o) { if (o.isMesh) { n++; if (types.length < 6) types.push(o.geometry.type); } });
+          var fig = null;
+          if (u.figure) fig = { meshes: u.figure.group.children.length };
+          return { label: u.label, pos: u.group.position.toArray().map(function (v) { return +v.toFixed(2); }), meshes: n, types: types, figure: fig };
+        });
+      },
+      dbgParticles: function () {
+        return { angelOp: +particles.angels.material.opacity.toFixed(3), dustOp: +particles.dust.material.opacity.toFixed(3) };
+      }
     }
   });
-
-  /* ------------------------------ public clock/camera API */
-  window.BATTLE = {
-    total: TOTAL,
-    phases: PHASES,
-    phaseInfo: director.phaseInfo,
-    frac: function () { return clock.frac; },
-    seek: function (f) {
-      clock.frac = clamp01(f);
-      applyFrac(clock.frac);
-      updateMass();
-      if (tickCb) tickCb(clock.frac, director.phaseInfo(clock.frac));
-    },
-    play: function () {
-      clock.playing = true;
-      clock.last = performance.now();
-      director.setMode('phase');
-      canvas.classList.remove('is-dragging');
-      applyFrac(clock.frac);
-      updateMass();
-    },
-    pause: function () { clock.playing = false; },
-    isPlaying: function () { return clock.playing; },
-    setSpeed: function (x) { clock.speed = x; },
-    onTick: function (fn) { tickCb = fn; },
-    cam: function (name) {
-      if (!name || name === 'ground') {
-        director.setMode('phase');
-        return;
-      }
-      director.preset(name);
-    },
-    explore: function (on) {
-      if (on) {
-        director.setMode('orbit');
-        director.orbitFromCam();
-      } else {
-        director.setMode('phase');
-      }
-    },
-    setLang: setLang,
-    info: function () { return { calls: renderer.info.render.calls, tris: renderer.info.render.triangles, geoms: renderer.info.memory.geometries }; },
-    sceneStats: function () {
-      var meshes = 0, inst = 0, points = 0, mats = {}, geos = {};
-      scene.traverse(function (o) {
-        if (o.isMesh) {
-          if (o.isInstancedMesh) { inst++; return; }
-          meshes++;
-          var mm = o.material;
-          var key = mm ? (mm.type + ' · #' + (mm.color ? mm.color.getHexString() : '----') + (mm.map ? ' · map' : '')) : 'none';
-          mats[key] = (mats[key] || 0) + 1;
-          var gk = o.geometry ? o.geometry.type : 'none';
-          geos[gk] = (geos[gk] || 0) + 1;
-        } else if (o.isPoints) points++;
-      });
-      return {
-        meshes: meshes, instanced: inst, points: points,
-        topMats: Object.keys(mats).map(function (k) { return [k, mats[k]]; }).sort(function (a, b) { return b[1] - a[1]; }).slice(0, 12),
-        topGeos: Object.keys(geos).map(function (k) { return [k, geos[k]]; }).sort(function (a, b) { return b[1] - a[1]; }).slice(0, 10)
-      };
-    },
-    benchMass: function (n) { return ENGINE.crowd.bench(crowdEnv(), n); },
-    isExplore: function () { return director.isExplore(); },
-    setCam: function (p, l) {
-      director.setPresetRaw({ p: p, l: l });
-      director.applyCamera(curPhaseIdx, curPhaseT, true);
-    },
-    snapCam: function (name) {
-      if (name) { director.preset(name); }
-      else { director.setMode('phase'); }
-      var ph = director.phaseInfo(clock.frac);
-      director.applyCamera(ph.i, ph.t, true);
-    },
-    debugChamp: function () {
-      return champs.map(function (u) {
-        var n = 0, types = [];
-        u.group.traverse(function (o) { if (o.isMesh) { n++; if (types.length < 6) types.push(o.geometry.type); } });
-        var fig = null;
-        if (u.figure) fig = { meshes: u.figure.group.children.length };
-        return { label: u.label, pos: u.group.position.toArray().map(function (v) { return +v.toFixed(2); }), meshes: n, types: types, figure: fig };
-      });
-    },
-    camInfo: function () { return director.camInfo(); },
-    ray: function (nx, ny) {
-      var ray = new THREE.Raycaster();
-      ray.setFromCamera(new THREE.Vector2(nx, ny), camera);
-      var hits = ray.intersectObjects(scene.children, true);
-      return hits.slice(0, 5).map(function (h) {
-        return { d: +h.distance.toFixed(2), geo: h.object.geometry && h.object.geometry.type, col: h.object.material && h.object.material.color ? h.object.material.color.getHexString() : null, p: h.point.toArray().map(function (v) { return +v.toFixed(1); }) };
-      });
-    },
-    dbgParticles: function () {
-      return { angelOp: +particles.angels.material.opacity.toFixed(3), dustOp: +particles.dust.material.opacity.toFixed(3) };
-    }
-  };
 })();

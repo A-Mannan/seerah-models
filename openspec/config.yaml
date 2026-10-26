@@ -1,11 +1,11 @@
 schema: spec-driven
 
 context: |
-  Pure-visual 3D seerah models (Badr live; Uhud and Khandaq blocked pending owner approval).
+  Pure-visual 3D seerah models (Badr, Uhud and Khandaq live on the shared engine).
   No article, narration, captions, info cards, references, or scholar's mode.
   The Prophet ﷺ is never depicted. No facial features on any figure; named Companions appear
   as faceless stylized figures only where the owner explicitly approved it.
-  Every historical claim must trace to the graded ledger in data/ledger/badr.json.
+  Every historical claim must trace to the graded ledger of the battle it appears in.
   English + Urdu (Nastaliq, RTL, Urdu numerals) are required.
   Do not push to GitHub without explicit owner approval; commit locally.
   No public build/version string. Mobile performance is a first-class gate.

@@ -1,32 +1,37 @@
 # seerah-models
 
-**Badr — the battle in 3D.** An interactive, graded 3D reconstruction of the Battle of Badr
-(17 Ramadan 2 AH): the ground, the 3-versus-3 champions' duel, the full-scale battle, the rout,
-and the reckoning.
-
-Part of a planned series of seerah battle models (Badr → Uhud → Khandaq).
+**The Seerah Atlas.** Three interactive, graded 3D battle models — Badr (17 Ramadan 2 AH),
+Uhud (3 AH) and Khandaq (5 AH). Enter a field, orbit the ground, and follow the day.
 
 ## Run it
 
-No build step. Open `app/index.html` in any modern browser, or serve the folder:
+No build step. Serve the repo and open the gate:
 
 ```bash
 python3 -m http.server 8000
-# → http://localhost:8000/app/index.html
+# → http://localhost:8000/
+# direct: /badr/, /uhud/, /khandaq/
 ```
+
+Opening `index.html` from disk also works: the doors link to explicit `index.html` files.
+The source pages remain at `app/index.html`, `app/uhud.html` and `app/khandaq.html`.
 
 ## What's inside
 
+- `index.html`, `assets/landing/` — the Atlas gate: one field, three doors.
 - `app/` — the 3D experience (vanilla JS + Three.js r128, no build step)
-  - `js/battle.js` — the engine: dawn-lit valley, wells, ʻarish, camps, palms, animals,
-    ~313 vs ~1,000 men as instanced squads with shields, spears and swords under platoon
-    and division banners; seven-phase choreography; cameras; orbit/zoom-to-cursor.
-  - `js/main.js` — clock, timeline, speeds, camera presets, language switching (English/اردو RTL).
+  - `js/engine.js` — the shared engine: renderer, dawn sky, heightfield, wells, camps, palms,
+    animals, instanced crowd, rigged heroes, labels, camera director and orbit.
+  - `js/badr.js`, `js/uhud.js`, `js/khandaq.js` — per-battle scenes, formations, choreography
+    and the `BATTLE` API.
+  - `js/shell.js`, `js/*-page.js` — page boot and UI shell: clock, timeline, speeds, language
+    switching (English/اردو RTL).
   - `js/audio.js` — procedural sound: wind, field murmur, clash rumble, sword clangs,
     arrow twangs, the gravel cast.
-- `data/ledger/badr.json` — the source of truth: 74 graded entries (CERTAIN / REPORTED /
-  DISPUTED / UNKNOWN), 29 live-fetched Qur'an anchors, hadith verification log.
-- `PROGRESS.md` — phase log.
+- `data/ledger/` — the source of truth for each battle: graded entries (CERTAIN / REPORTED /
+  DISPUTED / UNKNOWN), Qur'an anchors, hadith verification log.
+- `models.json` — the index of live models and their routes.
+- `PROGRESS.md` — build log.
 
 ## Principles
 
@@ -38,5 +43,8 @@ python3 -m http.server 8000
 
 ## Status
 
-- Badr: playable model, under active polish — see `openspec/changes/badr-phase-2-finish/`.
-- Uhud / Khandaq: ledgers not yet written (awaiting approval).
+- Badr: live model on the shared engine.
+- Uhud: live model; its ledger is `awaiting_owner_review`.
+- Khandaq: live model (build v) on the shared engine — the trench, the crossing, the seven phases
+  from the digging to the withdrawal; its ledger is `awaiting_owner_review`.
+- The Atlas gate and all three routes are local only; nothing is pushed without owner approval.

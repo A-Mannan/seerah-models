@@ -1,0 +1,46 @@
+{
+  "name": "The Seerah Atlas",
+  "updated": "2026-10-27",
+  "order": ["badr", "uhud", "khandaq"],
+  "models": [
+    {
+      "slug": "badr",
+      "title": "Badr",
+      "title_ar": "بدر",
+      "hook": "The wells were held. What did the ground decide?",
+      "hook_ref": "BADR-019",
+      "status": "live",
+      "route": "badr/",
+      "ledger": "data/ledger/badr.json",
+      "ledger_refs": ["BADR-019", "BADR-028", "BADR-041"],
+      "plate": "assets/landing/img/hero-badr-1500.webp",
+      "plate_alt": "Badr in 3D: two opposed formations with banners and spears on a dawn plain, the wells and the camp behind them."
+    },
+    {
+      "slug": "uhud",
+      "title": "Uhud",
+      "title_ar": "أُحد",
+      "hook": "Forty archers left the hill. What followed?",
+      "hook_ref": "UHUD-022",
+      "status": "live",
+      "route": "uhud/",
+      "ledger": "data/ledger/uhud.json",
+      "ledger_refs": ["UHUD-011", "UHUD-022", "UHUD-002"],
+      "plate": "assets/landing/img/card-uhud-1200.webp",
+      "plate_alt": "Uhud in 3D: a line of faceless archers on a rocky hill above the plain."
+    },
+    {
+      "slug": "khandaq",
+      "title": "Khandaq",
+      "title_ar": "الخندق",
+      "hook": "The trench held. What broke the Confederates?",
+      "hook_ref": "KHANDAQ-023",
+      "status": "live",
+      "route": "khandaq/",
+      "ledger": "data/ledger/khandaq.json",
+      "ledger_refs": ["KHANDAQ-003", "KHANDAQ-023", "KHANDAQ-025"],
+      "plate": "assets/landing/img/khandaq-field-1400.webp",
+      "plate_alt": "Khandaq in 3D: the trench cutting across the plain between two armies, the fort of Banu Qurayza and the marsh beyond, with Sila' at the Muslim rear."
+    }
+  ]
+}

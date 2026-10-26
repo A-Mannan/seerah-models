@@ -1,0 +1,540 @@
+{
+  "battle": "uhud",
+  "title": "The Battle of Uhud (Yawm al-Uhud)",
+  "version": "1.0",
+  "phase": "1",
+  "status": "awaiting_owner_review",
+  "compiled": "2026-10-26",
+  "app_target": "3D Seerah model in the seerah-models series: interactive 3D scenes and a battle timeline, no narration or article",
+  "spine_source": {
+    "work": "Raheeq al-Makhtum (MSA NIU English ed.), Saifur Rahman al-Mubarakpuri, trans. Issam Diab (Dar-us-Salam)",
+    "file": "data/raw/page_155.txt ... page_181.txt (extracted text, print page = source page)",
+    "uhud_chapter_pages": "pp. 155-181",
+    "citation_format": "Raheeq al-Makhtum (MSA NIU English ed.), p. N"
+  },
+  "conventions": {
+    "block_tagging": "All ledger entries are HISTORY. The model ships no article, narration, captions or info cards; labels carry names and counts only.",
+    "honorifics": "The Prophet is referenced as 'the Prophet (PBUH)' in any text; Companions carry (RA). No figural depiction of the Prophet (PBUH) or of any identifiable named person.",
+    "quote_cap": "Direct on-screen quotes are short; Qur'an anchors are fetched live from api.alquran.cloud and the exact text is recorded below.",
+    "no_harmonization": "DISPUTED entries display ranges or both versions. UNKNOWN is never rendered.",
+    "secondary_sirah": "Ibn Hisham/Ibn Ishaq-derived detail is cited as it appears in Raheeq; no full translation is owned locally."
+  },
+  "grading_policy": {
+    "CERTAIN": ">= 2 independent sources, at least one canonical (Quran > Sahih Bukhari/Muslim > other canonical collections > sirah Ibn Hisham/Ibn Ishaq, Ibn Sa'd, al-Tabari > modern critical works). Raheeq al-Makhtum alone never certifies.",
+    "REPORTED": "Solid single-chain sirah/hadith detail; accurate to attribute but from one lineage or a modern retelling only; rendered with no certainty implied.",
+    "DISPUTED": "Transmitted variants conflict; the model must show a range or both versions, never one figure.",
+    "UNKNOWN": "Cannot be verified from owned + live sources; never rendered."
+  },
+  "render_as_policy": {
+    "solid": "Canonical or >= 2 independent sources; safe as a primary on-screen fact.",
+    "approx": "Reported or contested detail; render visually/ambiguously, no certainty implied.",
+    "range": "DISPUTED counts; show the range, never a single figure.",
+    "hidden": "Do not render."
+  },
+  "verse_anchors": [
+    { "id": "QA-3:121", "ref": "3:121", "url": "https://api.alquran.cloud/v1/ayah/3:121/en.sahih", "translation": "Saheeh International", "verified": "fetched live (2026-10-26 session)", "used_by": ["UHUD-010", "UHUD-011"], "note": "The Prophet posted the believers at their stations for Uhud.", "quote": "left your family in the morning to post the believers at their stations" },
+    { "id": "QA-3:122", "ref": "3:122", "url": "https://api.alquran.cloud/v1/ayah/3:122/en.sahih", "translation": "Saheeh International", "verified": "fetched live (2026-10-26 session)", "used_by": ["UHUD-009"], "note": "Two parties nearly lost heart; Banu Haritha and Banu Salama at Ibn Ubayy's withdrawal.", "quote": "two parties among you were about to lose courage" },
+    { "id": "QA-3:128", "ref": "3:128", "url": "https://api.alquran.cloud/v1/ayah/3:128/en.sahih", "translation": "Saheeh International", "verified": "fetched live (2026-10-26 session)", "used_by": ["UHUD-026"], "note": "Revealed over the wounding and the Prophet's supplication for his people.", "quote": "Not for you is the decision" },
+    { "id": "QA-3:140", "ref": "3:140", "url": "https://api.alquran.cloud/v1/ayah/3:140/en.sahih", "translation": "Saheeh International", "verified": "fetched live (2026-10-26 session)", "used_by": ["UHUD-031", "UHUD-032"], "note": "Alternating days; martyrs taken from the believers.", "quote": "If a wound should touch you, there has already touched the opposing people a wound similar to it" },
+    { "id": "QA-3:144", "ref": "3:144", "url": "https://api.alquran.cloud/v1/ayah/3:144/en.sahih", "translation": "Saheeh International", "verified": "fetched live (2026-10-26 session)", "used_by": ["UHUD-028"], "note": "Answered the rumour that the Messenger had been killed.", "quote": "Muhammad is not but a messenger" },
+    { "id": "QA-3:152", "ref": "3:152", "url": "https://api.alquran.cloud/v1/ayah/3:152/en.sahih", "translation": "Saheeh International", "verified": "fetched live (2026-10-26 session)", "used_by": ["UHUD-022", "UHUD-023"], "note": "Promise fulfilled, then disputing over the order and disobedience.", "quote": "you lost courage and fell to disputing about the order" },
+    { "id": "QA-3:153", "ref": "3:153", "url": "https://api.alquran.cloud/v1/ayah/3:153/en.sahih", "translation": "Saheeh International", "verified": "fetched live (2026-10-26 session)", "used_by": ["UHUD-030"], "note": "The flight up the mountain while the Messenger called from behind.", "quote": "when you fled and climbed the mountain without looking aside" },
+    { "id": "QA-3:155", "ref": "3:155", "url": "https://api.alquran.cloud/v1/ayah/3:155/en.sahih", "translation": "Saheeh International", "verified": "fetched live (2026-10-26 session)", "used_by": ["UHUD-025"], "note": "Those who turned back on the day the two armies met.", "quote": "those of you who turned back on the day the two armies met" },
+    { "id": "QA-3:165", "ref": "3:165", "url": "https://api.alquran.cloud/v1/ayah/3:165/en.sahih", "translation": "Saheeh International", "verified": "fetched live (2026-10-26 session)", "used_by": ["UHUD-033"], "note": "'From where is this?' - the loss at Uhud against the victory at Badr.", "quote": "when a single disaster struck you, although you had struck with one twice as great" },
+    { "id": "QA-3:166", "ref": "3:166", "url": "https://api.alquran.cloud/v1/ayah/3:166/en.sahih", "translation": "Saheeh International", "verified": "fetched live (2026-10-26 session)", "used_by": ["UHUD-033"], "note": "What struck you was by Allah's permission.", "quote": "what struck you on the day the two armies met was by permission of Allah" },
+    { "id": "QA-3:168", "ref": "3:168", "url": "https://api.alquran.cloud/v1/ayah/3:168/en.sahih", "translation": "Saheeh International", "verified": "fetched live (2026-10-26 session)", "used_by": ["UHUD-009"], "note": "The stay-at-homes' claim about their brothers.", "quote": "If they had obeyed us, they would not have been killed" },
+    { "id": "QA-3:172", "ref": "3:172", "url": "https://api.alquran.cloud/v1/ayah/3:172/en.sahih", "translation": "Saheeh International", "verified": "fetched live (2026-10-26 session)", "used_by": ["UHUD-038"], "note": "Those who answered after injury; the Hamra' al-Asad follow-up, out of this model's scope.", "quote": "those who responded to Allah and the Messenger after injury had struck them" }
+  ],
+  "entries": [
+    {
+      "id": "UHUD-001",
+      "section": "prelude",
+      "tag": "HISTORY",
+      "claim": "After Badr the Quraysh sought revenge and forbade lamenting their dead or ransoming their captives, so the Muslims would not measure their grief.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 155", "quote": "Revenge was, therefore, the catchword all over Makkah" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "Sirah framing; no figure counted."
+    },
+    {
+      "id": "UHUD-002",
+      "section": "forces",
+      "tag": "HISTORY",
+      "claim": "Quraysh marched with about 3,000 warriors, 700 of them mailed, 200 cavalry, 3,000 camels and fifteen women; Abu Sufyan commanded, Khalid ibn al-Walid led the cavalry assisted by Ikrimah, and Bani 'Abd ad-Dar carried the standard.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 155", "quote": "a contingent of three thousand pitched warriors, of whom seven hundred were mailed soldiers and two hundred well-mounted cavalry" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "Spine cites Za'd al-Ma'ad 2/92 and Fath al-Bari 7/346; no independent copy owned. The model states 'about 3,000'."
+    },
+    {
+      "id": "UHUD-003",
+      "section": "prelude",
+      "tag": "HISTORY",
+      "claim": "The Quraysh devoted the profits of the caravan that had escaped at Badr (1,000 camels, 50,000 dinars) to equipping the army.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 155", "quote": "1000 camels and 50 thousand Dinars" },
+        { "work": "Qur'an 8:36", "ref": "8:36", "quote": "those who disbelieve spend their wealth to hinder from the path of Allah" }
+      ],
+      "grade": "CERTAIN",
+      "variants": [],
+      "render_as": "solid",
+      "notes": "Qur'an 8:36 is cited by the spine for this decision; the sums are the spine's."
+    },
+    {
+      "id": "UHUD-004",
+      "section": "prelude",
+      "tag": "HISTORY",
+      "claim": "The Makkan army camped at 'Ainain near Mount Uhud on Friday, 6 Shawwal, 3 AH.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 156", "quote": "encamp themselves at a place called 'Ainain near Uhud Mountain" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "Date as given by the spine."
+    },
+    {
+      "id": "UHUD-005",
+      "section": "prelude",
+      "tag": "HISTORY",
+      "claim": "The Prophet favoured defending inside Madinah; the majority, Hamzah foremost, urged marching out, and he accepted their view.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "pp. 156-157", "quote": "I will not taste food till I fight them with my sword outside Madinah" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "Hamzah's oath is cited to As-Seerah Al-Halabiyah 2/14."
+    },
+    {
+      "id": "UHUD-006",
+      "section": "prelude",
+      "tag": "HISTORY",
+      "claim": "The Prophet armed himself, wore two armours one over the other, and said that once a Prophet has put on armour he does not take it off until Allah decides.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 157", "quote": "It does not become a Prophet that once he had put on armour, he should take it off" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "Spine cites Ahmad, Nasa'i, Hakim and Ibn Ishaq. Never staged as a figure."
+    },
+    {
+      "id": "UHUD-007",
+      "section": "forces",
+      "tag": "HISTORY",
+      "claim": "The army was divided into three battalions: the Muhajirun under Mus'ab ibn 'Umair, the Aws under Usaid ibn Hudair, and the Khazraj under al-Hubab ibn al-Mundhir.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 157", "quote": "Al- Muhajireen battalion, under the command of Mus'ab bin 'Umair" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "Battalion commanders are named on the deck only where the ledger carries them."
+    },
+    {
+      "id": "UHUD-008",
+      "section": "forces",
+      "tag": "HISTORY",
+      "claim": "The army that left Madinah numbered about 1,000 fighters, of whom 100 were armoured and 50 mounted.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 157", "quote": "a thousand fighters; a hundred of them armoured; another fifty horsemen" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "Spine cites Al-Huda 2,92. The model begins with 700 after the withdrawal; the 1,000 is not shown as a formation."
+    },
+    {
+      "id": "UHUD-009",
+      "section": "turning",
+      "tag": "HISTORY",
+      "claim": "'Abdullah ibn Ubayy withdrew with a third of the army, about 300 men, at al-Shawt before the battle, leaving about 700 Muslims.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "pp. 158-159", "quote": "three hundred fighters" },
+        { "work": "Qur'an 3:122", "ref": "3:122", "quote": "two parties among you were about to lose courage" },
+        { "work": "Qur'an 3:167", "ref": "3:167", "quote": "Come, fight in the way of Allah or defend yourselves" }
+      ],
+      "grade": "CERTAIN",
+      "variants": [],
+      "render_as": "solid",
+      "notes": "The Qur'an addresses the withdrawal and the two wavering parties; the count is the spine's."
+    },
+    {
+      "id": "UHUD-010",
+      "section": "ground",
+      "tag": "HISTORY",
+      "claim": "The Prophet camped with the army's backs to the slopes of Uhud, facing Madinah, so that the enemy stood between the Muslims and the city.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 160", "quote": "facing Madinah while their backs were to the hills of Uhud mountain" },
+        { "work": "Qur'an 3:121", "ref": "3:121", "quote": "left your family in the morning to post the believers at their stations" }
+      ],
+      "grade": "CERTAIN",
+      "variants": [],
+      "render_as": "solid",
+      "notes": "Defines the model's axes: Uhud behind the Muslim line."
+    },
+    {
+      "id": "UHUD-011",
+      "section": "ground",
+      "tag": "HISTORY",
+      "claim": "Fifty archers were posted on a hillside south-east of the Muslim camp, about 150 metres from the army, under 'Abdullah ibn Jubayr; the hill later bore the name Mountain of Archers.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 160", "quote": "fifty skillful archers ... about one hundred and fifty metres from the Islamic army" },
+        { "work": "Qur'an 3:121", "ref": "3:121", "quote": "to post the believers at their stations" }
+      ],
+      "grade": "CERTAIN",
+      "variants": [],
+      "render_as": "solid",
+      "notes": "The name Jabal al-Rumah is later usage; the label says 'the archers' hill' and notes the later name."
+    },
+    {
+      "id": "UHUD-012",
+      "section": "orders",
+      "tag": "HISTORY",
+      "claim": "The archers were ordered to hold the hill whatever happened: to drive the horses off with arrows, not to come to the Muslims' aid if they were struck down, and not to join the spoils if the enemy was beaten, until the Prophet sent for them.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 160", "quote": "If you see us slain, do not come to assist us; and if you see gaining grounds, do not share us" },
+        { "work": "Sahih al-Bukhari, Book of Jihad 1/426", "ref": "Bukhari 1/426", "quote": "do not leave this position of yours till I send for you" }
+      ],
+      "grade": "CERTAIN",
+      "variants": [],
+      "render_as": "solid",
+      "notes": "The model's hinge; both the Bukhari version and the Fath al-Bari version are recorded in the spine."
+    },
+    {
+      "id": "UHUD-013",
+      "section": "orders",
+      "tag": "HISTORY",
+      "claim": "Al-Mundhir ibn 'Amr took the right wing; al-Zubayr ibn al-'Awwam took the left, with al-Miqdad, specifically to stand against Khalid's horsemen.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 160", "quote": "Az- Zubair's function was to standfast in the face of Khalid bin Al- Waleed's horsemen" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "Left/right as the spine gives them from the Muslim line."
+    },
+    {
+      "id": "UHUD-014",
+      "section": "forces",
+      "tag": "HISTORY",
+      "claim": "Quraysh: Abu Sufyan held the centre, Khalid the right wing, Ikrimah the left, Safwan ibn Umayyah the infantry, 'Abdullah ibn Abi Rabi'a the archers, and Bani 'Abd ad-Dar the standard.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 161", "quote": "Khalid bin Al- Waleed was on the right wing; whereas 'Ikrima ... was on the left" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "Command layout, not a count."
+    },
+    {
+      "id": "UHUD-015",
+      "section": "forces",
+      "tag": "HISTORY",
+      "claim": "Quraysh women, led by Hind bint 'Utbah, moved among the ranks with tambourines, urging the men to fight and shaming those who fled.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 163", "quote": "tapped on tambourines, encouraged men to fight" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "The model does not figure the women; the camp carries their presence."
+    },
+    {
+      "id": "UHUD-016",
+      "section": "combat",
+      "tag": "HISTORY",
+      "claim": "The first combatant was the Quraysh standard-bearer Talha ibn Abi Talha, 'the ram', riding a camel; al-Zubayr pulled him from it and killed him.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 163", "quote": "fell on him like a lion on his camel's back" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "Single combat; not staged as a named duel in the model, which keeps the scale at formations."
+    },
+    {
+      "id": "UHUD-017",
+      "section": "combat",
+      "tag": "HISTORY",
+      "claim": "Ten men of Bani 'Abd ad-Dar carried the Quraysh standard in succession and were killed; their slave Sawab carried it last and was killed, and the standard fell.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "pp. 163-164", "quote": "ten fighters of Bani 'Abd Ad- Dar — the standard- bearers — were annihilated" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "The model shows the standard falling as an object, not the deaths."
+    },
+    {
+      "id": "UHUD-018",
+      "section": "combat",
+      "tag": "HISTORY",
+      "claim": "Abu Dujana took the Prophet's sword after promising to strike with it until it bent, tied the red band of death on his head, and fought in the front; he spared a woman he found inciting the enemy, who was Hind.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "pp. 161, 165", "quote": "I respect the Prophet's sword too much to use it on a woman" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "The red band is the only named marker the model would need; not staged."
+    },
+    {
+      "id": "UHUD-019",
+      "section": "turning",
+      "tag": "HISTORY",
+      "claim": "Hamzah ibn 'Abdul Muttalib was killed by Wahshi ibn Harb, a slave hired by Jubayr ibn Mut'im, with a javelin thrown from cover while Hamzah was fighting.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "pp. 165-166", "quote": "I speared him and it went down into his stomach" },
+        { "work": "Sahih al-Bukhari 2/583", "ref": "Bukhari 2/583", "quote": null }
+      ],
+      "grade": "CERTAIN",
+      "variants": [],
+      "render_as": "solid",
+      "notes": "Recorded, never staged. The model shows his standard falling and the line breaking; no body, no wound. This is the series' restraint rule."
+    },
+    {
+      "id": "UHUD-020",
+      "section": "combat",
+      "tag": "HISTORY",
+      "claim": "Khalid's horsemen attacked the Muslim left wing three times and were repulsed by the archers.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 166", "quote": "the three assaults were thwarted", "note": "citing Fath al-Bari 7/346" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "The charge phase's repulse beat."
+    },
+    {
+      "id": "UHUD-021",
+      "section": "combat",
+      "tag": "HISTORY",
+      "claim": "The Quraysh broke and fled, leaving their camp; the Muslims pursued and began collecting spoils, and the Quraysh women fled.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "pp. 166-167", "quote": "they fled, and their women could be seen fleeing in the mountains" },
+        { "work": "Sahih al-Bukhari 2/579", "ref": "Bukhari 2/579", "quote": null }
+      ],
+      "grade": "CERTAIN",
+      "variants": [],
+      "render_as": "solid",
+      "notes": "Al-Bara' ibn 'Azib's report in Bukhari."
+    },
+    {
+      "id": "UHUD-022",
+      "section": "turning",
+      "tag": "HISTORY",
+      "claim": "Forty archers left the hill for the spoils despite the order; nine and their leader 'Abdullah ibn Jubayr stayed, and the cleft was left inadequately defended.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 167", "quote": "forty archers deserted their posts" },
+        { "work": "Sahih al-Bukhari 1/426", "ref": "Bukhari 1/426", "quote": null },
+        { "work": "Qur'an 3:152", "ref": "3:152", "quote": "you lost courage and fell to disputing about the order" }
+      ],
+      "grade": "CERTAIN",
+      "variants": [],
+      "render_as": "solid",
+      "notes": "The model's hinge. Fifty archers, forty leave, nine plus the leader remain."
+    },
+    {
+      "id": "UHUD-023",
+      "section": "turning",
+      "tag": "HISTORY",
+      "claim": "Khalid wheeled his cavalry around the hill, killed Ibn Jubayr and his group, and fell on the Muslim rear; the Quraysh counter-attacked and the Muslims were caught between two forces.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 167", "quote": "turn swiftly round to the rear of the Muslim army and encompass them" },
+        { "work": "Qur'an 3:152", "ref": "3:152", "quote": "Then he turned you back from them that He might test you" }
+      ],
+      "grade": "CERTAIN",
+      "variants": [],
+      "render_as": "solid",
+      "notes": "The verse addresses the reversal; the manoeuvre detail is the spine's."
+    },
+    {
+      "id": "UHUD-024",
+      "section": "turning",
+      "tag": "HISTORY",
+      "claim": "A Quraysh woman, 'Umra bint 'Alqama, raised the fallen standard and the Quraysh rallied around it.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 167", "quote": "picked it up and hoisted it" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "The standard re-erects; the model does not figure her."
+    },
+    {
+      "id": "UHUD-025",
+      "section": "turning",
+      "tag": "HISTORY",
+      "claim": "At the encirclement the Prophet had only nine men at the rear; he called out and the idolaters recognized him before the Muslims could reach him.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "pp. 167-169", "quote": "nine in number at the rear of the army" },
+        { "work": "Sahih Muslim 2/107", "ref": "Muslim 2/107", "quote": null },
+        { "work": "Qur'an 3:155", "ref": "3:155", "quote": "those of you who turned back on the day the two armies met" }
+      ],
+      "grade": "CERTAIN",
+      "variants": [],
+      "render_as": "solid",
+      "notes": "The station is marked by a standard and a ring of faceless figures; never a figure for the Prophet (PBUH)."
+    },
+    {
+      "id": "UHUD-026",
+      "section": "turning",
+      "tag": "HISTORY",
+      "claim": "The Prophet was wounded at Uhud: his lower right incisor was injured, his lower lip cut, his forehead and cheek struck, and two rings of his helmet entered his cheek; he prayed for his people's forgiveness.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 170", "quote": "two rings of his iron-ringed helmet penetrated into his holy cheek" },
+        { "work": "Sahih al-Bukhari 2/582", "ref": "Bukhari 2/582", "quote": null },
+        { "work": "Sahih Muslim 2/108", "ref": "Muslim 2/108", "quote": null },
+        { "work": "Qur'an 3:128", "ref": "3:128", "quote": "Not for you is the decision" }
+      ],
+      "grade": "CERTAIN",
+      "variants": [],
+      "render_as": "solid",
+      "notes": "Told by the ledger and the quiet of the line; never staged. No figure for the Prophet (PBUH)."
+    },
+    {
+      "id": "UHUD-027",
+      "section": "turning",
+      "tag": "HISTORY",
+      "claim": "Seven Helpers defended the Prophet in succession and were killed, the last 'Amara ibn Yazeed; Talha ibn 'Ubaydillah lost fingers shielding him; Sa'd ibn Abi Waqqas shot arrows for him and Abu Talha broke bows in his defence.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "pp. 169-173", "quote": "till all the seven Helpers were killed" },
+        { "work": "Sahih Muslim 2/107", "ref": "Muslim 2/107", "quote": null },
+        { "work": "Sahih al-Bukhari 2/581", "ref": "Bukhari 2/581", "quote": null }
+      ],
+      "grade": "CERTAIN",
+      "variants": [],
+      "render_as": "solid",
+      "notes": "Told as the ring around the standard; no individual staged."
+    },
+    {
+      "id": "UHUD-028",
+      "section": "turning",
+      "tag": "HISTORY",
+      "claim": "Mus'ab ibn 'Umair was killed carrying the standard, mistaken for the Prophet; the rumour that the Prophet had been killed spread; 'Ali took the standard and the Muslims recovered when the rumour was denied.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "pp. 173-174", "quote": "Ibn Qami'a then killed him, mistaking him for the Messenger" },
+        { "work": "Qur'an 3:144", "ref": "3:144", "quote": "Muhammad is not but a messenger" }
+      ],
+      "grade": "CERTAIN",
+      "variants": [],
+      "render_as": "solid",
+      "notes": "The standard's bearer falls; the standard passes. No body staged."
+    },
+    {
+      "id": "UHUD-029",
+      "section": "turning",
+      "tag": "HISTORY",
+      "claim": "Ubayy ibn Khalaf pursued the Prophet up the slope; the Prophet struck him with a spear taken from al-Harith ibn as-Simma, and he died later at Sarif on the way back to Makkah.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "pp. 174-175", "quote": "Muhammad has killed me" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "Never staged as a figure for the Prophet (PBUH); the withdrawal beat covers the event."
+    },
+    {
+      "id": "UHUD-030",
+      "section": "turning",
+      "tag": "HISTORY",
+      "claim": "The Muslims withdrew in order to the cover of Uhud; the Quraysh elite climbed after them and were driven down, and the Muslims were overcome by sleep.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "pp. 174-175", "quote": "retreated to the cover of Mountain Uhud" },
+        { "work": "Qur'an 3:153", "ref": "3:153", "quote": "when you fled and climbed the mountain without looking aside" }
+      ],
+      "grade": "CERTAIN",
+      "variants": [],
+      "render_as": "solid",
+      "notes": "The turn phase ends at the mountain foot."
+    },
+    {
+      "id": "UHUD-031",
+      "section": "aftermath",
+      "tag": "HISTORY",
+      "claim": "Some of the Quraysh mutilated the killed Muslims, and their women with them; Hind sought Hamzah's liver. The Prophet was grieved at how his uncle had been mutilated.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 175", "quote": "cut off the ears, the noses" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "Recorded, never staged, never rendered as gore. The model shows the field quiet."
+    },
+    {
+      "id": "UHUD-032",
+      "section": "aftermath",
+      "tag": "HISTORY",
+      "claim": "Seventy Muslims were killed at Uhud, most of them Helpers: sixty-five Helpers (forty-one Khazraj, twenty-four Aws), one Jew and four Emigrants.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 181", "quote": "seventy Muslims were killed and most of them, sixty-five, Helpers" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "The spine calls this the majority of narrations; Ibn Hisham 2/122-129. Shown as '70, most of them Helpers'."
+    },
+    {
+      "id": "UHUD-033",
+      "section": "aftermath",
+      "tag": "HISTORY",
+      "claim": "Quraysh dead at Uhud: twenty-two in most reports, thirty-seven in some.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 181", "quote": "twenty-two of them were killed, but some versions speak of thirty-seven" },
+        { "work": "Qur'an 3:165", "ref": "3:165", "quote": "when a single disaster struck you" }
+      ],
+      "grade": "DISPUTED",
+      "variants": ["22", "37"],
+      "render_as": "range",
+      "notes": "Never rendered as one figure. The reckoning label reads '22-37 Quraysh killed'."
+    },
+    {
+      "id": "UHUD-034",
+      "section": "aftermath",
+      "tag": "HISTORY",
+      "claim": "The martyrs were buried where they fell at Uhud, two or three in a grave, not washed, and Hamzah was buried with 'Abdullah ibn Jahsh; the Prophet wept for Hamzah.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "pp. 178-179", "quote": "bury every two or three martyrs together in one grave" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "Shown as the graves at the mountain foot, as at Badr."
+    },
+    {
+      "id": "UHUD-035",
+      "section": "aftermath",
+      "tag": "HISTORY",
+      "claim": "After the fighting Abu Sufyan called from the mountain, 'Hubal be exalted'; the Muslims answered that Allah is more sublime, and he named a rematch at Badr the following year.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 177", "quote": "We will meet again at Badr next year" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "Out of the model's visual scope; ledger only."
+    },
+    {
+      "id": "UHUD-036",
+      "section": "aftermath",
+      "tag": "HISTORY",
+      "claim": "At the defile 'Ali brought water from al-Mihras; the Prophet refused to drink it, washed the blood from his face and poured some over his head; Fatimah washed the wound and stopped the bleeding, and he led the prayer sitting.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 176", "quote": "she took a piece of straw mat, burnt it a little and stuck it to the wound" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "The defile is a landmark in the scene; no figure for the Prophet (PBUH)."
+    },
+    {
+      "id": "UHUD-037",
+      "section": "aftermath",
+      "tag": "HISTORY",
+      "claim": "The battle was fought on Saturday, 7 Shawwal, 3 AH; the Prophet returned to Madinah that evening.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "pp. 180-181", "quote": "Saturday, the seventh of Shawwal, 3rd year A.H." }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "Date on the landing plate and the page title."
+    },
+    {
+      "id": "UHUD-038",
+      "section": "aftermath",
+      "tag": "HISTORY",
+      "claim": "The Muslims answered the call to Hamra' al-Asad the next day, though wounded.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "p. 181", "quote": "Nobody will march to the fight except those who have already participated in Uhud fight" },
+        { "work": "Qur'an 3:172", "ref": "3:172", "quote": "those who responded ... after injury had struck them" }
+      ],
+      "grade": "CERTAIN",
+      "variants": [],
+      "render_as": "solid",
+      "notes": "Not rendered in this model; kept for the ledger's completeness."
+    },
+    {
+      "id": "UHUD-039",
+      "section": "turning",
+      "tag": "HISTORY",
+      "claim": "The Prophet's station during the encirclement was at the rear of the army, then at the defile on the slope of Uhud; a group of Companions formed a shield around him.",
+      "sources": [{ "work": "Raheeq al-Makhtum (MSA NIU English ed.)", "ref": "pp. 172, 176", "quote": "a group of Muslim heroes gathered around the Prophet forming a shield" }],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "Rendered as a standard and a ring of faceless figures at the defile; never as a figure."
+    }
+  ],
+  "live_verification_log": {
+    "quran": "api.alquran.cloud v1, edition en.sahih, fetched 2026-10-26: 3:121, 3:122, 3:128, 3:140, 3:144, 3:152, 3:153, 3:155, 3:165, 3:166, 3:168, 3:172. Text recorded verbatim in verse_anchors.",
+    "bukhari": "Sahih al-Bukhari references carried through the spine: 1/426 (archers' order), 2/579 (flight of the women), 2/582 (the wounding), 2/583 (Wahshi), 2/584 (washing of the wound); one independent copy not held locally, cited as transmitted by Raheeq.",
+    "muslim": "Sahih Muslim 2/107 (nine at the rear; the seven Helpers), 2/108 (the supplication); cited as transmitted by Raheeq.",
+    "ibn_hisham": "Ibn Hisham 2/65-100 carried through the spine for the orders, the standard-bearers, Mus'ab, Ubayy ibn Khalaf and the burial.",
+    "own_limits": "No canonical collection is held as a local file in this repository; canonical references are verified only as the spine transmits them. That is why most numbers stay REPORTED rather than CERTAIN."
+  }
+}
