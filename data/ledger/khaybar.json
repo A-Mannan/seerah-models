@@ -3,7 +3,8 @@
   "title": "The Campaign of Khaybar (Muḥarram 7 AH)",
   "version": "1.0-graded",
   "phase": "4",
-  "status": "graded_pending_owner_gate",
+  "status": "awaiting_owner_review",
+  "owner_gate": "approved 2026-10-27 for build w; ledger remains awaiting owner review alongside Uhud and Khandaq",
   "compiled": "2026-10-26",
   "app_target": "3D Seerah learning app for ages 12-25 (interactive 3D scenes; battle timeline; verse overlays)",
   "spine_source": {

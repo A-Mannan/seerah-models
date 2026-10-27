@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>The Seerah Atlas · Badr, Uhud and Khandaq in 3D</title>
-<meta name="description" content="Badr, Uhud and Khandaq as interactive 3D models. Enter the field, orbit the ground, and follow each battle's day.">
+<title>The Seerah Atlas · Badr, Uhud, Khandaq and Khaybar in 3D</title>
+<meta name="description" content="Badr, Uhud, Khandaq and Khaybar as interactive 3D models. Enter the field, orbit the ground, and follow each battle's day.">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#0b100e">
 <link rel="icon" href="assets/landing/favicon.svg" type="image/svg+xml">
@@ -14,6 +14,7 @@
 <link rel="preload" as="image" href="assets/landing/img/badr-day-2-1400.webp" imagesrcset="assets/landing/img/badr-day-2-800.webp 800w, assets/landing/img/badr-day-2-1400.webp 1400w" imagesizes="100vw" fetchpriority="high">
 <link rel="preload" as="image" href="assets/landing/img/uhud-flank-1400.webp" imagesrcset="assets/landing/img/uhud-flank-800.webp 800w, assets/landing/img/uhud-flank-1400.webp 1400w" imagesizes="100vw">
 <link rel="preload" as="image" href="assets/landing/img/khandaq-field-1400.webp" imagesrcset="assets/landing/img/khandaq-field-800.webp 800w, assets/landing/img/khandaq-field-1400.webp 1400w" imagesizes="100vw">
+<link rel="preload" as="image" href="assets/landing/img/khaybar-fort-1400.webp" imagesrcset="assets/landing/img/khaybar-fort-800.webp 800w, assets/landing/img/khaybar-fort-1400.webp 1400w" imagesizes="100vw">
 <link rel="stylesheet" href="assets/landing/fonts/fonts.css">
 <link rel="stylesheet" href="assets/landing/css/landing.css">
 <script>document.documentElement.classList.add('js');</script>
@@ -29,7 +30,7 @@
   <span class="masthead-ar" lang="ar" dir="rtl">أطلس السيرة</span>
 </header>
 
-<h1 class="sr-only">The Seerah Atlas: the battles of Badr, Uhud and Khandaq in 3D</h1>
+<h1 class="sr-only">The Seerah Atlas: the battles of Badr, Uhud, Khandaq and Khaybar in 3D</h1>
 
 <main class="gate" id="gate" data-battle="badr">
 
@@ -49,6 +50,10 @@
 
     <div class="stage-layer stage-layer--khandaq">
       <img src="assets/landing/img/khandaq-field-1400.webp" srcset="assets/landing/img/khandaq-field-800.webp 800w, assets/landing/img/khandaq-field-1400.webp 1400w" sizes="100vw" width="1400" height="875" alt="" loading="lazy" decoding="async">
+    </div>
+
+    <div class="stage-layer stage-layer--khaybar">
+      <img src="assets/landing/img/khaybar-fort-1400.webp" srcset="assets/landing/img/khaybar-fort-800.webp 800w, assets/landing/img/khaybar-fort-1400.webp 1400w" sizes="100vw" width="1400" height="875" alt="" loading="lazy" decoding="async">
     </div>
   </div>
 
@@ -96,6 +101,22 @@
         </span>
         <span class="door-cta">
           <span class="door-label">Enter Khandaq</span>
+          <span class="door-arrow" aria-hidden="true">
+            <svg width="30" height="16" viewBox="0 0 30 16" focusable="false"><path d="M0 8h27M20 1l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+          </span>
+        </span>
+      </a>
+
+      <a class="door door--khaybar" href="khaybar/index.html" data-door="khaybar">
+        <span class="door-top">
+          <span class="door-meta">The fourth battle · 7 AH</span>
+          <span class="door-name">
+            <span class="door-en">Khaybar</span>
+            <span class="door-ar" lang="ar" dir="rtl">خيبر</span>
+          </span>
+        </span>
+        <span class="door-cta">
+          <span class="door-label">Enter Khaybar</span>
           <span class="door-arrow" aria-hidden="true">
             <svg width="30" height="16" viewBox="0 0 30 16" focusable="false"><path d="M0 8h27M20 1l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
           </span>

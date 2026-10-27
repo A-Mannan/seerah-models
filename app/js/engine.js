@@ -362,6 +362,69 @@
     return { tex: tex, material: mat, ground: field.ground, lid: field.lid };
   };
 
+  /* ------------------------------ volcanic ground (Khaybar's harrat).
+     Same path as ENGINE.ground — canvas texture riding the heightfield's
+     opts.material hook — but dark basalt: angular contraction cracks, pale
+     felsic flecks and a near-flat ramp so the black rock stays matte under
+     the one dawn key. Fully optional; Badr's plain ground is untouched. */
+  ENGINE.groundBasalt = function (ctx, heightAt, opts) {
+    opts = opts || {};
+    var size = opts.texSize || 1024;
+    var c = document.createElement('canvas'); c.width = c.height = size;
+    var g = c.getContext('2d');
+    g.fillStyle = opts.base || '#37332f'; g.fillRect(0, 0, size, size);
+    var img = g.getImageData(0, 0, size, size), d = img.data;
+    var grain = opts.grain === undefined ? 30 : opts.grain;
+    for (var i = 0; i < d.length; i += 4) {
+      var n = (Math.random() - 0.5) * grain;
+      d[i] += n; d[i + 1] += n; d[i + 2] += n;
+    }
+    g.putImageData(img, 0, 0);
+    /* felsic flecks: light mineral specks scattered over the dark flow */
+    g.fillStyle = opts.fleck || 'rgba(168,160,148,0.16)';
+    for (var f = 0; f < 1400; f++) {
+      var fx = Math.random() * size, fy = Math.random() * size, fr = 0.6 + Math.random() * 2.2;
+      g.fillRect(fx, fy, fr, fr * 0.6);
+    }
+    /* contraction cracks: jagged angular polylines, darker than the base */
+    g.strokeStyle = opts.crack || 'rgba(16,14,12,0.55)';
+    g.lineCap = 'round';
+    for (var k = 0; k < 90; k++) {
+      g.lineWidth = 1 + Math.random() * 2.0;
+      g.beginPath();
+      var cx = Math.random() * size, cy = Math.random() * size;
+      var a = Math.random() * Math.PI * 2;
+      g.moveTo(cx, cy);
+      var legs = 3 + Math.floor(Math.random() * 5);
+      for (var l = 0; l < legs; l++) {
+        a += (Math.random() - 0.5) * 1.5;
+        var len = 18 + Math.random() * 52;
+        cx += Math.cos(a) * len; cy += Math.sin(a) * len;
+        g.lineTo(cx, cy);
+      }
+      g.stroke();
+    }
+    var tex = new THREE.CanvasTexture(c);
+    tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+    tex.repeat.set(opts.repeat || 22, opts.repeat || 22);
+    tex.anisotropy = ctx.renderer.capabilities.getMaxAnisotropy();
+    var mat = opts.material || new THREE.MeshPhongMaterial({
+      vertexColors: true, map: tex, bumpMap: tex,
+      bumpScale: opts.bumpScale === undefined ? 0.18 : opts.bumpScale, shininess: 0
+    });
+    var field = ENGINE.heightfield(ctx, heightAt, {
+      material: mat,
+      size: opts.size, seg: opts.seg,
+      sand: opts.sand === undefined ? 0x4b453e : opts.sand,
+      crest: opts.crest === undefined ? 0x5d564e : opts.crest,
+      trough: opts.trough === undefined ? 0x2c2823 : opts.trough,
+      grit: opts.grit === undefined ? 0x413b34 : opts.grit,
+      colorAt: opts.colorAt,
+      lidColor: opts.lidColor === undefined ? 0x1a1713 : opts.lidColor, lidY: opts.lidY
+    });
+    return { tex: tex, material: mat, ground: field.ground, lid: field.lid };
+  };
+
   /* ------------------------------ static merge */
   function isMergeable(o) {
     var mm = o.material;
@@ -1281,11 +1344,180 @@
       return ridgeM;
     }
 
+    /* a carved stone fort tower (Khaybar's chain): battered square lifts,
+       string-course ledges, crenellated rim, dark door and arrow slits.
+       Scale via opts.h / opts.w; opts.tone passes { stone, dark, trim } for
+       the basalt country; opts.ruin breaks the rim and drops rubble;
+       opts.annex adds a lower attached block. Every part is Lambert so the
+       static merge folds the whole fort into one draw call. */
+    function fort(x, z, opts) {
+      opts = opts || {};
+      var h = opts.h || 6.5, w = opts.w || 5.2;
+      var seed = opts.seed === undefined ? 0 : opts.seed;
+      var ruin = opts.ruin === undefined ? 0 : opts.ruin;
+      var tone = opts.tone || {};
+      var sM = new THREE.MeshLambertMaterial({ color: tone.stone === undefined ? 0x8d8371 : tone.stone });
+      var sdM = new THREE.MeshLambertMaterial({ color: tone.dark === undefined ? 0x6b6354 : tone.dark });
+      var trimM = new THREE.MeshLambertMaterial({ color: tone.trim === undefined ? 0x9a917e : tone.trim });
+      var holeM = new THREE.MeshLambertMaterial({ color: 0x14100c });
+      var g = new THREE.Group();
+      var i, k;
+      /* two battered lifts with a string course between them */
+      var liftA = new THREE.Mesh(new THREE.CylinderGeometry(w * 0.40, w * 0.48, h * 0.58, 4, 1), sM);
+      liftA.rotation.y = Math.PI / 4;
+      liftA.position.y = h * 0.29;
+      var liftB = new THREE.Mesh(new THREE.CylinderGeometry(w * 0.33, w * 0.385, h * 0.42, 4, 1), sM);
+      liftB.rotation.y = Math.PI / 4;
+      liftB.position.y = h * 0.58 + h * 0.21;
+      var ledge = new THREE.Mesh(new THREE.CylinderGeometry(w * 0.43, w * 0.43, h * 0.045, 4, 1), trimM);
+      ledge.rotation.y = Math.PI / 4;
+      ledge.position.y = h * 0.58;
+      [liftA, liftB, ledge].forEach(function (m) { m.castShadow = true; m.receiveShadow = true; g.add(m); });
+      /* corner quoins: slim proud blocks running up the four arrises */
+      for (k = 0; k < 4; k++) {
+        var qa = Math.PI / 4 + k * Math.PI / 2;
+        var q = new THREE.Mesh(new THREE.BoxGeometry(w * 0.07, h * 0.56, w * 0.07), sdM);
+        q.position.set(Math.cos(qa) * w * 0.365, h * 0.30, Math.sin(qa) * w * 0.365);
+        q.rotation.y = -qa;
+        q.castShadow = true; g.add(q);
+      }
+      /* crenellated rim: merlons on the top walk, broken where ruin asks */
+      var merlons = opts.merlons === undefined ? 8 : opts.merlons;
+      var rimR = w * 0.30;
+      for (k = 0; k < merlons; k++) {
+        if (U.hash2(k + seed * 7, 3) < ruin) continue;
+        var ma = k / merlons * Math.PI * 2;
+        var mh = h * 0.075 * (0.8 + U.hash2(k + seed, 5) * 0.5);
+        var mer = new THREE.Mesh(new THREE.BoxGeometry(w * 0.14, mh, w * 0.10), sdM);
+        mer.position.set(Math.cos(ma) * rimR, h + mh / 2 - 0.02, Math.sin(ma) * rimR);
+        mer.rotation.y = -ma;
+        mer.castShadow = true; g.add(mer);
+      }
+      var walk = new THREE.Mesh(new THREE.CylinderGeometry(w * 0.335, w * 0.335, h * 0.03, 4, 1), trimM);
+      walk.rotation.y = Math.PI / 4;
+      walk.position.y = h - h * 0.015;
+      walk.receiveShadow = true; g.add(walk);
+      /* door + arrow slits: dark insets read as openings at maquette distance */
+      var door = new THREE.Mesh(new THREE.BoxGeometry(w * 0.16, h * 0.16, w * 0.05), holeM);
+      door.position.set(0, h * 0.085, w * 0.40);
+      door.castShadow = false; g.add(door);
+      var lintel = new THREE.Mesh(new THREE.BoxGeometry(w * 0.20, h * 0.035, w * 0.07), trimM);
+      lintel.position.set(0, h * 0.175, w * 0.40);
+      g.add(lintel);
+      for (i = 0; i < 3; i++) {
+        var sl = new THREE.Mesh(new THREE.BoxGeometry(w * 0.035, h * 0.07, w * 0.04), holeM);
+        var sa2 = U.hash2(i + seed * 3, 9) * Math.PI * 2;
+        sl.position.set(Math.cos(sa2) * w * 0.325, h * (0.46 + i * 0.11), Math.sin(sa2) * w * 0.325);
+        sl.rotation.y = -sa2;
+        g.add(sl);
+      }
+      /* optional lower annex block with its own rim */
+      if (opts.annex) {
+        var aw = w * 0.62, ah = h * 0.40;
+        var ann = new THREE.Mesh(new THREE.CylinderGeometry(aw * 0.44, aw * 0.5, ah, 4, 1), sM);
+        ann.rotation.y = Math.PI / 4;
+        ann.position.set(w * 0.62, ah / 2, w * 0.30);
+        ann.castShadow = true; ann.receiveShadow = true; g.add(ann);
+        for (k = 0; k < 4; k++) {
+          var aa = k / 4 * Math.PI * 2 + 0.4;
+          if (U.hash2(k + seed, 11) < ruin * 0.7) continue;
+          var am = new THREE.Mesh(new THREE.BoxGeometry(aw * 0.15, ah * 0.09, aw * 0.11), sdM);
+          am.position.set(w * 0.62 + Math.cos(aa) * aw * 0.32, ah + ah * 0.045, w * 0.30 + Math.sin(aa) * aw * 0.32);
+          am.rotation.y = -aa;
+          am.castShadow = true; g.add(am);
+        }
+      }
+      /* ruin rubble: fallen blocks ringing the base */
+      var rubble = Math.round(ruin * 7);
+      for (i = 0; i < rubble; i++) {
+        var ra = U.hash2(i + seed * 5, 13) * Math.PI * 2;
+        var rr = w * 0.52 + U.hash2(i, 17) * w * 0.3;
+        var rb = new THREE.Mesh(new THREE.IcosahedronGeometry(w * 0.06 + U.hash2(i, 19) * w * 0.05, 0), sdM);
+        rb.position.set(Math.cos(ra) * rr, w * 0.04, Math.sin(ra) * rr);
+        rb.rotation.set(U.hash2(i, 21) * 3, U.hash2(i, 23) * 3, 0);
+        rb.castShadow = true; rb.receiveShadow = true;
+        g.add(rb);
+      }
+      g.position.set(x, heightAt(x, z) - 0.08, z);
+      g.rotation.y = U.hash2(seed, 31) * Math.PI;
+      scene.add(g);
+      return g;
+    }
+
+    /* an instanced palm grove for the oasis floor: one vertex-coloured palm
+       template baked with mergeParts, stamped n times with per-tree lean,
+       scale and turn. opts.rows lays a jittered cultivation grid instead of
+       scatter; opts.wall adds low stone field walls on the rectangle edges.
+       One draw call for the trees; the walls join the static merge. */
+    function palmGrove(x0, z0, w, d, n, opts) {
+      opts = opts || {};
+      var H2 = H;
+      var trunkH = 3.3;
+      var trunkC = new THREE.Color(0x6a5940), ringC = new THREE.Color(0x574732);
+      var frondC = new THREE.Color(0x6b7d49), frondD = new THREE.Color(0x5d6f41);
+      var deadC = new THREE.Color(0x6b5836), dateC = new THREE.Color(0x9a6f2e);
+      var parts = [{ geo: new THREE.CylinderGeometry(0.085, 0.15, trunkH, 5), p: [0, trunkH / 2, 0], c: trunkC }];
+      var nb = 9, bi;
+      for (bi = 0; bi < nb; bi++) {
+        var ba = bi / nb * Math.PI * 2;
+        var bmat = bi % 2 ? frondD : frondC;
+        var lift = 0.45 + H2(bi, 2) * 0.35;
+        var bl = 1.05 + H2(bi, 4) * 0.35;
+        parts.push({ geo: new THREE.BoxGeometry(0.10, 0.024, bl), p: [Math.cos(ba) * bl * 0.42, trunkH + 0.05 - (bl * 0.42) * 0.28, Math.sin(ba) * bl * 0.42], r: [0, -ba, -lift * 0.55], c: bmat });
+      }
+      for (bi = 0; bi < 3; bi++) {
+        var da = bi / 3 * Math.PI * 2 + 0.5;
+        parts.push({ geo: new THREE.BoxGeometry(0.07, 0.02, 0.7), p: [Math.cos(da) * 0.30, trunkH - 0.16, Math.sin(da) * 0.30], r: [0, -da, -0.95], c: deadC });
+        parts.push({ geo: new THREE.TorusGeometry(0.13 - bi * 0.012, 0.02, 4, 8), p: [0, trunkH * (0.3 + bi * 0.22), 0], r: [Math.PI / 2, 0, 0], c: ringC });
+      }
+      parts.push({ geo: new THREE.SphereGeometry(0.14, 7, 5), p: [0.09, trunkH - 0.10, 0.06], c: dateC });
+      var palmGeo = mergeParts(parts);
+      var grove = new THREE.InstancedMesh(palmGeo, new THREE.MeshLambertMaterial({ vertexColors: true }), n);
+      var dmy = new THREE.Object3D();
+      var cols = opts.rows ? Math.ceil(Math.sqrt(n * w / Math.max(1, d))) : 0;
+      var rowN = opts.rows ? Math.ceil(n / cols) : 0;
+      for (var i2 = 0; i2 < n; i2++) {
+        var px, pz;
+        if (opts.rows) {
+          var ci = i2 % cols, ri = Math.floor(i2 / cols);
+          px = x0 + (ci + 0.5) / cols * w + (H2(i2, 41) - 0.5) * (w / cols) * 0.5;
+          pz = z0 + (ri + 0.5) / rowN * d + (H2(i2, 43) - 0.5) * (d / rowN) * 0.5;
+        } else {
+          px = x0 + H2(i2, 41) * w;
+          pz = z0 + H2(i2, 43) * d;
+        }
+        var s = 0.72 + H2(i2, 45) * 0.5;
+        dmy.position.set(px, heightAt(px, pz) - 0.04, pz);
+        dmy.rotation.set(0, H2(i2, 47) * Math.PI * 2, 0);
+        dmy.scale.set(s, s * (0.85 + H2(i2, 49) * 0.45), s);
+        dmy.updateMatrix();
+        grove.setMatrixAt(i2, dmy.matrix);
+      }
+      grove.castShadow = true; grove.receiveShadow = true;
+      scene.add(grove);
+      var walls = null;
+      if (opts.wall) {
+        walls = new THREE.Group();
+        var wallM = new THREE.MeshLambertMaterial({ color: 0x6b6354 });
+        var pad = 0.9;
+        [[w / 2 + pad, 0, 0, d + pad * 2], [-w / 2 - pad, 0, 0, d + pad * 2], [0, d / 2 + pad, w + pad * 2, 0], [0, -d / 2 - pad, w + pad * 2, 0]].forEach(function (e, ei) {
+          var wx = x0 + w / 2 + e[0], wz = z0 + d / 2 + e[1];
+          var seg = new THREE.Mesh(new THREE.BoxGeometry(Math.max(0.3, e[2]), 0.34 + H2(ei, 51) * 0.14, Math.max(0.3, e[3])), wallM);
+          seg.position.set(wx, heightAt(wx, wz) + 0.12, wz);
+          seg.castShadow = true; seg.receiveShadow = true;
+          walls.add(seg);
+        });
+        scene.add(walls);
+      }
+      return { grove: grove, walls: walls };
+    }
+
     return {
       mats: { stoneM: stoneM, stoneDark: stoneDark, waterM: waterM, woodM: woodM, ropeM: ropeM },
       well: well, ridgeTent: ridgeTent, rock: rock, scrubField: scrubField, pebbleField: pebbleField,
       palm: palm, palms: PALMS, reeds: reeds, campClutter: campClutter,
-      horse: horse, camel: camel, makeArrow: makeArrow, ridge: ridge
+      horse: horse, camel: camel, makeArrow: makeArrow, ridge: ridge,
+      fort: fort, palmGrove: palmGrove
     };
   };
 

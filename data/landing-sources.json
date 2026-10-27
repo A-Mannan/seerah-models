@@ -10,7 +10,18 @@
       "id": "quran",
       "title": "The Qur'an",
       "detail": "Sahih International, as cited in the ledger.",
-      "refs": ["3:121", "3:152", "8:9", "8:42", "8:43", "8:67", "47:4"],
+      "refs": [
+        "3:121",
+        "3:152",
+        "8:9",
+        "8:42",
+        "8:43",
+        "8:67",
+        "47:4",
+        "48:15",
+        "48:20",
+        "48:21"
+      ],
       "url": "https://quran.com/3/121",
       "link_label": "quran.com",
       "status": "live"
@@ -19,7 +30,21 @@
       "id": "bukhari",
       "title": "Sahih al-Bukhari",
       "detail": "The ledger records live checks for the entries it cites.",
-      "refs": ["3956", "3959", "3965", "3976", "3995"],
+      "refs": [
+        "3956",
+        "3959",
+        "3965",
+        "3976",
+        "3995",
+        "4196",
+        "4197",
+        "4198",
+        "4200",
+        "4209",
+        "4210",
+        "4211",
+        "4228"
+      ],
       "url": "https://sunnah.com/bukhari:3956",
       "link_label": "sunnah.com",
       "status": "live"
@@ -28,7 +53,12 @@
       "id": "muslim",
       "title": "Sahih Muslim",
       "detail": "The ledger records a live check for the entry it cites.",
-      "refs": ["1763"],
+      "refs": [
+        "1763",
+        "1365g",
+        "1762a",
+        "1802a"
+      ],
       "url": "https://sunnah.com/muslim:1763",
       "link_label": "sunnah.com",
       "status": "live"
@@ -37,7 +67,9 @@
       "id": "abudawud",
       "title": "Sunan Abi Dawud",
       "detail": "The ledger records a live check and the grading it carries.",
-      "refs": ["2686"],
+      "refs": [
+        "2686"
+      ],
       "url": "https://sunnah.com/abudawud:2686",
       "link_label": "sunnah.com",
       "status": "live"
@@ -46,7 +78,10 @@
       "id": "tirmidhi",
       "title": "Jami at-Tirmidhi",
       "detail": "The ledger records a live check and the grading it carries.",
-      "refs": ["3085"],
+      "refs": [
+        "3085",
+        "1554"
+      ],
       "url": "https://sunnah.com/tirmidhi:3085",
       "link_label": "sunnah.com",
       "status": "live"
@@ -55,7 +90,10 @@
       "id": "ibnmajah",
       "title": "Sunan Ibn Majah",
       "detail": "The ledger records a live check and the grading it carries.",
-      "refs": ["2808"],
+      "refs": [
+        "2808",
+        "2854"
+      ],
       "url": "https://sunnah.com/ibnmajah:2808",
       "link_label": "sunnah.com",
       "status": "live"
@@ -64,7 +102,9 @@
       "id": "ahmad",
       "title": "Musnad Ahmad",
       "detail": "The ledger records a prior-session trace.",
-      "refs": ["556"],
+      "refs": [
+        "556"
+      ],
       "url": null,
       "link_label": null,
       "status": "prior check"
@@ -73,7 +113,16 @@
       "id": "raheeq",
       "title": "Raheeq al-Makhtum",
       "detail": "MSA NIU English edition, used as the spine. It never certifies an entry on its own.",
-      "refs": ["p. 132", "p. 135", "p. 136", "p. 145", "p. 155", "p. 160", "p. 195–203"],
+      "refs": [
+        "p. 132",
+        "p. 135",
+        "p. 136",
+        "p. 145",
+        "p. 155",
+        "p. 160",
+        "p. 195–203",
+        "p. 233–239"
+      ],
       "url": null,
       "link_label": null,
       "status": "owned"
@@ -82,7 +131,9 @@
       "id": "ibnhisham",
       "title": "Ibn Hisham, Sirat Rasul Allah",
       "detail": "Guillaume translation. Cited through the spine; no owned copy has been checked.",
-      "refs": ["spine citation"],
+      "refs": [
+        "spine citation"
+      ],
       "url": null,
       "link_label": null,
       "status": "not owned"
@@ -91,7 +142,9 @@
       "id": "tabari",
       "title": "al-Tabari, History",
       "detail": "Cited through the spine; no owned copy has been checked.",
-      "refs": ["spine citation"],
+      "refs": [
+        "spine citation"
+      ],
       "url": null,
       "link_label": null,
       "status": "not owned"
@@ -100,7 +153,9 @@
       "id": "ibnsad",
       "title": "Ibn Sa'd, Kitab al-Tabaqat al-Kabir",
       "detail": "Cited through the spine; no owned copy has been checked.",
-      "refs": ["spine citation"],
+      "refs": [
+        "spine citation"
+      ],
       "url": null,
       "link_label": null,
       "status": "not owned"
@@ -118,6 +173,10 @@
     {
       "label": "The Khandaq ledger",
       "url": "https://github.com/A-Mannan/seerah-models/blob/main/data/ledger/khandaq.json"
+    },
+    {
+      "label": "The Khaybar ledger",
+      "url": "https://github.com/A-Mannan/seerah-models/blob/main/data/ledger/khaybar.json"
     }
   ],
   "credits": [

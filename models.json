@@ -1,7 +1,7 @@
 {
   "name": "The Seerah Atlas",
   "updated": "2026-10-27",
-  "order": ["badr", "uhud", "khandaq"],
+  "order": ["badr", "uhud", "khandaq", "khaybar"],
   "models": [
     {
       "slug": "badr",
@@ -41,6 +41,19 @@
       "ledger_refs": ["KHANDAQ-003", "KHANDAQ-023", "KHANDAQ-025"],
       "plate": "assets/landing/img/khandaq-field-1400.webp",
       "plate_alt": "Khandaq in 3D: the trench cutting across the plain between two armies, the fort of Banu Qurayza and the marsh beyond, with Sila' at the Muslim rear."
+    },
+    {
+      "slug": "khaybar",
+      "title": "Khaybar",
+      "title_ar": "خيبر",
+      "hook": "The forts fell in turn. Who carried the banner?",
+      "hook_ref": "KHY-009",
+      "status": "live",
+      "route": "khaybar/",
+      "ledger": "data/ledger/khaybar.json",
+      "ledger_refs": ["KHY-008", "KHY-009", "KHY-015"],
+      "plate": "assets/landing/img/khaybar-fort-1400.webp",
+      "plate_alt": "Khaybar in 3D: a chain of stone forts on the dark shelf above palm groves, the Muslim camp below and the chief fort al-Qamūṣ to the east."
     }
   ]
 }

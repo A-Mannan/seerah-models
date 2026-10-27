@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Khaybar · The Seerah Atlas</title>
+<meta name="description" content="The campaign of Khaybar as an interactive 3D terrain model: the volcanic oasis north of Madinah, the night march, the fort chain from Naʿīm to al-Qamūṣ, the siege and the ram, the standard and the reported duel, and the reckoning. Faceless figures; the Prophet ﷺ is never depicted.">
+<link rel="icon" href="../assets/landing/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/landing/fonts/cormorant.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/landing/fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/landing/fonts/fonts.css?v=20261027a">
+<link rel="stylesheet" href="../app/css/style.css?v=20261027a">
+<script>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+
+<div id="errBanner" class="err-banner" hidden></div>
+<script>
+  window.addEventListener('error', function (e) {
+    var b = document.getElementById('errBanner');
+    if (!b) return;
+    b.hidden = false;
+    b.textContent = 'Script error: ' + (e.message || 'unknown') + (e.filename ? ' \u2014 ' + e.filename.split('/').pop() + ':' + e.lineno : '');
+  });
+</script>
+
+<canvas id="gl" aria-label="Interactive 3D model of the Khaybar campaign: the volcanic oasis north of Madinah, the Muslim camp, the chain of forts from Naʿīm to al-Qamūṣ, the siege lines and ram, the reported duel of ʿAlī and Marḥab marked by standards, and faceless stylized figures. The Prophet ﷺ is never depicted."></canvas>
+
+<div class="grade grade-warm"></div>
+<div class="grade grade-grain"></div>
+<div class="grade grade-vignette"></div>
+
+<header class="bar">
+  <h1 class="brand">
+    <svg class="mark" viewBox="0 0 20 22" aria-hidden="true"><rect x="8.6" y="1" width="1.8" height="20" fill="currentColor"/><rect x="10.4" y="3" width="8.6" height="6" fill="currentColor"/></svg>
+    <span class="brand-name" data-i18n="brand">khaybar <em>· the battle</em></span>
+  </h1>
+  <nav class="bar-tools" aria-label="Experience tools">
+    <a class="tool home-link" href="../index.html" aria-label="Back to The Seerah Atlas">
+      <svg class="back-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M14 8H2m5-5L2 8l5 5" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+      <span data-i18n="home">atlas</span>
+    </a>
+    <button id="langBtn" class="tool" aria-pressed="false">اردو</button>
+    <button id="soundBtn" class="tool" aria-pressed="false">sound off</button>
+  </nav>
+</header>
+
+<div class="labels" id="labels"></div>
+
+<div class="legend">
+  <p class="legend-row legend-m"><span class="swatch"></span><span data-i18n="legendM"><b>Muslims</b> · about 1,400</span></p>
+  <p class="legend-row legend-q"><span class="swatch"></span><span data-i18n="legendQ"><b>the forts</b> · the oasis</span></p>
+</div>
+
+<footer class="deck" id="deck">
+  <div class="deck-row">
+    <button id="playBtn" class="deck-btn" aria-pressed="false"><span class="glyph">▶</span><span class="txt">play</span></button>
+    <div class="timeline" id="timeline" aria-label="Battle timeline: drag to scrub">
+      <div class="segs" id="segs"></div>
+      <div class="scrub-head" id="scrubHead"></div>
+    </div>
+    <button id="speedBtn" class="deck-btn slim" aria-pressed="false" title="Playback speed">1×</button>
+    <span class="deck-count" id="deckCount" dir="ltr" aria-hidden="true">01 / 06</span>
+    <button id="resetBtn" class="deck-btn slim" title="Back to the start">⟲</button>
+  </div>
+  <p class="deck-phase" id="deckPhase" aria-live="polite"></p>
+</footer>
+
+<div class="hint" id="hint"><span class="dot"></span><span data-i18n="hint">drag to look around · scroll to zoom</span></div>
+
+<noscript>
+  <p class="noscript-note">The 3D battle needs JavaScript and WebGL. The model replays the campaign in six phases: the
+  ground at dawn; the night march from Madinah; the first forts from Naʿīm to an-Nizār; the siege of al-Qamūṣ; the
+  standard, the reported duel and the fall of the chief fort; the reckoning. Figures are faceless; the Prophet ﷺ is
+  never depicted. Every claim traces to data/ledger/khaybar.json.</p>
+</noscript>
+
+<script src="../app/assets/three.min.js?v=20261027a"></script>
+<script src="../app/assets/data.js?v=20261027a"></script>
+<script src="../app/js/audio.js?v=20261027a" defer></script>
+<script src="../app/js/engine.js?v=20261027a" defer></script>
+<script src="../app/js/khaybar.js?v=20261027a" defer></script>
+<script src="../app/js/khaybar-page.js?v=20261027a" defer></script>
+<script src="../app/js/shell.js?v=20261027a" defer></script>
+</body>
+</html>

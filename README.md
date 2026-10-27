@@ -1,7 +1,8 @@
 # seerah-models
 
-**The Seerah Atlas.** Three interactive, graded 3D battle models — Badr (17 Ramadan 2 AH),
-Uhud (3 AH) and Khandaq (5 AH). Enter a field, orbit the ground, and follow the day.
+**The Seerah Atlas.** Four interactive, graded 3D battle models — Badr (17 Ramadan 2 AH),
+Uhud (3 AH), Khandaq (5 AH) and Khaybar (7 AH). Enter a field, orbit the ground, and follow the
+day.
 
 ## Run it
 
@@ -10,20 +11,21 @@ No build step. Serve the repo and open the gate:
 ```bash
 python3 -m http.server 8000
 # → http://localhost:8000/
-# direct: /badr/, /uhud/, /khandaq/
+# direct: /badr/, /uhud/, /khandaq/, /khaybar/
 ```
 
 Opening `index.html` from disk also works: the doors link to explicit `index.html` files.
-The source pages remain at `app/index.html`, `app/uhud.html` and `app/khandaq.html`.
+The source pages remain at `app/index.html`, `app/uhud.html`, `app/khandaq.html` and
+`app/khaybar.html`.
 
 ## What's inside
 
-- `index.html`, `assets/landing/` — the Atlas gate: one field, three doors.
+- `index.html`, `assets/landing/` — the Atlas gate: one field, four doors.
 - `app/` — the 3D experience (vanilla JS + Three.js r128, no build step)
   - `js/engine.js` — the shared engine: renderer, dawn sky, heightfield, wells, camps, palms,
     animals, instanced crowd, rigged heroes, labels, camera director and orbit.
-  - `js/badr.js`, `js/uhud.js`, `js/khandaq.js` — per-battle scenes, formations, choreography
-    and the `BATTLE` API.
+  - `js/badr.js`, `js/uhud.js`, `js/khandaq.js`, `js/khaybar.js` — per-battle scenes, formations,
+    choreography and the `BATTLE` API.
   - `js/shell.js`, `js/*-page.js` — page boot and UI shell: clock, timeline, speeds, language
     switching (English/اردو RTL).
   - `js/audio.js` — procedural sound: wind, field murmur, clash rumble, sword clangs,
@@ -45,6 +47,8 @@ The source pages remain at `app/index.html`, `app/uhud.html` and `app/khandaq.ht
 
 - Badr: live model on the shared engine.
 - Uhud: live model; its ledger is `awaiting_owner_review`.
-- Khandaq: live model (build v) on the shared engine — the trench, the crossing, the seven phases
-  from the digging to the withdrawal; its ledger is `awaiting_owner_review`.
-- The Atlas gate and all three routes are local only; nothing is pushed without owner approval.
+- Khandaq: live model on the shared engine — the trench, the crossing, the seven phases from the
+  digging to the withdrawal; its ledger is `awaiting_owner_review`.
+- Khaybar: live model (build w) on the shared engine — the volcanic plain, the fort chain, the
+  six phases from the muster to the reckoning; its ledger is `awaiting_owner_review`.
+- The Atlas gate and all four routes are local only; nothing is pushed without owner approval.

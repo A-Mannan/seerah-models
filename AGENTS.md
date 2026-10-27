@@ -1,15 +1,15 @@
 # AGENTS.md — seerah-models
 
 ## What this is
-A pure-visual, interactive 3D seerah series. **Badr, Uhud and Khandaq** are live model pages on the shared engine; the Uhud and Khandaq ledgers still await owner review. No article, narration, captions, info cards, references, or scholar's mode. The model speaks for itself.
+A pure-visual, interactive 3D seerah series. **Badr, Uhud, Khandaq and Khaybar** are live model pages on the shared engine; the Uhud, Khandaq and Khaybar ledgers still await owner review. No article, narration, captions, info cards, references, or scholar's mode. The model speaks for itself.
 
 ## Stack / run
 - Static site, no build step: `python3 -m http.server 8000` → `/app/index.html`.
 - Vanilla JS + Three.js r128; no npm, no bundler, no React in the shipped app.
 - `app/js/engine.js` — the shared engine: renderer, sky, heightfield, props, merge, crowd, labels, camera director, runner.
-- `app/js/badr.js`, `app/js/uhud.js`, `app/js/khandaq.js` — battle scenes on that engine.
+- `app/js/badr.js`, `app/js/uhud.js`, `app/js/khandaq.js`, `app/js/khaybar.js` — battle scenes on that engine.
 - `app/js/shell.js`, `app/js/*-page.js` — the shared UI shell and per-page descriptors. `app/js/audio.js` — procedural sound.
-- Pages `app/index.html`, `app/uhud.html`, `app/khandaq.html`; generated routes `badr/`, `uhud/`, `khandaq/`; ledgers in `data/ledger/*.json`, bundled to `app/assets/data.js`.
+- Pages `app/index.html`, `app/uhud.html`, `app/khandaq.html`, `app/khaybar.html`; generated routes `badr/`, `uhud/`, `khandaq/`, `khaybar/`; ledgers in `data/ledger/*.json`, bundled to `app/assets/data.js`.
 
 ## Before changing anything
 - Read `PROGRESS.md` and the active change under `openspec/changes/`.
@@ -31,7 +31,7 @@ A pure-visual, interactive 3D seerah series. **Badr, Uhud and Khandaq** are live
 
 ## Quality gates
 - `node --check` on every touched script under `app/js/` (engine, shell, scene modules included).
-- `node .agents/skills/design-taste-frontend/scripts/lint.mjs --app app/index.html app/css/style.css app/js/engine.js app/js/shell.js app/js/audio.js app/js/badr.js app/js/uhud.js app/js/khandaq.js`
+- `node .agents/skills/design-taste-frontend/scripts/lint.mjs --app app/index.html app/css/style.css app/js/engine.js app/js/shell.js app/js/audio.js app/js/badr.js app/js/uhud.js app/js/khandaq.js app/js/khaybar.js app/js/khaybar-page.js`
 - `node .agents/skills/design-taste-frontend/scripts/inspect.mjs --app --allow font-not-dealt,gradient,mixed-font-headline,palette-cream app/khandaq.html` (gradient = the approved dawn post grade; mixed face + cream = the intentional brand). Run it for the page you touched.
 - Visual probes live in `.taste-skill/`; review `.taste-skill/inspect/`. Check every phase at 390×844 as well as desktop.
 - Perf: keep draw calls low via instancing; check `BATTLE.info()` and `BATTLE.benchMass()`. Headless RAF at 2–3 fps is not a perf signal.
@@ -51,13 +51,13 @@ A pure-visual, interactive 3D seerah series. **Badr, Uhud and Khandaq** are live
 
 ## Git / release
 - Commit locally. **Never push to GitHub without explicit owner approval.**
-- Cutting a build: bump the build letter in every `app/js/*-page.js` descriptor, bump every `?v=` query in all three model pages, run `node scripts/build-routes.mjs`, and add one entry to the `PROGRESS.md` build log.
+- Cutting a build: bump the build letter in every `app/js/*-page.js` descriptor, bump every `?v=` query in all four model pages, run `node scripts/build-routes.mjs`, and add one entry to the `PROGRESS.md` build log.
 - Do not add a public version string.
 
 ## Architecture / next battles
-- Split done (build r): `app/js/engine.js` is the shared engine (renderer boot, dawn sky, heightfield, props, merge, crowd, labels, camera director with clock/orbit/shots, particles, runner); `badr.js`, `uhud.js` and `khandaq.js` are scene modules supplying layout, plans, choreography, shots and copy. A new battle is a data/scene module on the same engine. React/R3F is optional for the UI shell only — not the instanced 3D engine.
-- Badr, Uhud and Khandaq are live on the shared engine; the Uhud and Khandaq ledgers remain `awaiting_owner_review`.
+- Split done (build r): `app/js/engine.js` is the shared engine (renderer boot, dawn sky, heightfield, props, merge, crowd, labels, camera director with clock/orbit/shots, particles, runner); `badr.js`, `uhud.js`, `khandaq.js` and `khaybar.js` are scene modules supplying layout, plans, choreography, shots and copy. A new battle is a data/scene module on the same engine. React/R3F is optional for the UI shell only — not the instanced 3D engine.
+- Badr, Uhud, Khandaq and Khaybar are live on the shared engine; the Uhud, Khandaq and Khaybar ledgers remain `awaiting_owner_review`.
 - OpenSpec: planning artifacts live in `openspec/changes/<change>/`; implement through the apply workflow; archive when accepted.
 
 ## Current focus
-`openspec/changes/khandaq-battle/` records the completed Khandaq pass. `build-khaybar` is planned and remains behind its owner ledger gate.
+`openspec/changes/build-khaybar/` records the completed Khaybar pass (build w). All four battles are live on the shared engine.

@@ -1,5 +1,5 @@
 /* The Seerah Atlas · the gate.
-   One field, three doors. Ink, bone, one verdigris light.
+   One field, four doors. Ink, bone, one verdigris light.
    The whole lower index is the call to action. */
 
 :root {
@@ -163,7 +163,8 @@ h1, p { margin: 0; }
 
 .gate[data-battle="badr"] .stage-layer--badr,
 .gate[data-battle="uhud"] .stage-layer--uhud,
-.gate[data-battle="khandaq"] .stage-layer--khandaq {
+.gate[data-battle="khandaq"] .stage-layer--khandaq,
+.gate[data-battle="khaybar"] .stage-layer--khaybar {
   opacity: 1;
   transform: scale(1.025);
 }
@@ -178,6 +179,8 @@ h1, p { margin: 0; }
 .stage-layer--uhud img { object-position: 50% 46%; }
 
 .stage-layer--khandaq img { object-position: 50% 45%; }
+
+.stage-layer--khaybar img { object-position: 50% 46%; }
 
 .day-frame {
   position: absolute;
@@ -198,7 +201,7 @@ h1, p { margin: 0; }
 
 .doors {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .door {
@@ -229,7 +232,8 @@ h1, p { margin: 0; }
 
 .door--badr:hover::before,
 .door--uhud:hover::before,
-.door--khandaq:hover::before {
+.door--khandaq:hover::before,
+.door--khaybar:hover::before {
   transform: scaleX(1);
 }
 
@@ -250,13 +254,15 @@ h1, p { margin: 0; }
 
 .gate[data-battle="badr"] .door--badr::after,
 .gate[data-battle="uhud"] .door--uhud::after,
-.gate[data-battle="khandaq"] .door--khandaq::after {
+.gate[data-battle="khandaq"] .door--khandaq::after,
+.gate[data-battle="khaybar"] .door--khaybar::after {
   transform: scaleX(1);
 }
 
 .door--badr:hover::after,
 .door--uhud:hover::after,
-.door--khandaq:hover::after {
+.door--khandaq:hover::after,
+.door--khaybar:hover::after {
   background: var(--accent);
 }
 
@@ -283,7 +289,8 @@ h1, p { margin: 0; }
 
 .gate[data-battle="badr"] .door--badr .door-meta,
 .gate[data-battle="uhud"] .door--uhud .door-meta,
-.gate[data-battle="khandaq"] .door--khandaq .door-meta {
+.gate[data-battle="khandaq"] .door--khandaq .door-meta,
+.gate[data-battle="khaybar"] .door--khaybar .door-meta {
   color: var(--ink);
 }
 
@@ -296,7 +303,7 @@ h1, p { margin: 0; }
 
 .door-en {
   font-family: var(--serif);
-  font-size: clamp(54px, 6.1vw, 90px);
+  font-size: clamp(38px, 4.1vw, 64px);
   font-weight: 400;
   line-height: 0.8;
   letter-spacing: -0.045em;
@@ -308,7 +315,7 @@ h1, p { margin: 0; }
   display: inline-block;
   margin-bottom: clamp(2px, 0.3vw, 5px);
   font-family: var(--arabic);
-  font-size: clamp(22px, 2.1vw, 32px);
+  font-size: clamp(20px, 1.7vw, 27px);
   font-weight: 400;
   line-height: 1.2;
   color: var(--ink);
@@ -350,14 +357,18 @@ h1, p { margin: 0; }
 .door--uhud:hover .door-label,
 .door--khandaq:hover .door-en,
 .door--khandaq:hover .door-ar,
-.door--khandaq:hover .door-label {
+.door--khandaq:hover .door-label,
+.door--khaybar:hover .door-en,
+.door--khaybar:hover .door-ar,
+.door--khaybar:hover .door-label {
   color: var(--bone);
   transition-delay: 0.06s;
 }
 
 .door--badr:hover .door-meta,
 .door--uhud:hover .door-meta,
-.door--khandaq:hover .door-meta {
+.door--khandaq:hover .door-meta,
+.door--khaybar:hover .door-meta {
   color: var(--bone-dim);
   transition-delay: 0.06s;
 }
@@ -365,50 +376,58 @@ h1, p { margin: 0; }
 /* the active door is ink-on-bone at rest; on hover its meta must flip with the flood */
 .gate[data-battle="badr"] .door--badr:hover .door-meta,
 .gate[data-battle="uhud"] .door--uhud:hover .door-meta,
-.gate[data-battle="khandaq"] .door--khandaq:hover .door-meta {
+.gate[data-battle="khandaq"] .door--khandaq:hover .door-meta,
+.gate[data-battle="khaybar"] .door--khaybar:hover .door-meta {
   color: var(--bone-dim);
 }
 
 .door--badr:hover .door-label,
 .door--uhud:hover .door-label,
-.door--khandaq:hover .door-label {
+.door--khandaq:hover .door-label,
+.door--khaybar:hover .door-label {
   transition-delay: 0s, 0.06s;
 }
 
 .door--badr:hover .door-arrow,
 .door--uhud:hover .door-arrow,
-.door--khandaq:hover .door-arrow {
+.door--khandaq:hover .door-arrow,
+.door--khaybar:hover .door-arrow {
   color: var(--accent);
   transition-delay: 0s, 0.32s;
 }
 
 .door--badr:is(:hover, :focus-visible) .door-label,
 .door--uhud:is(:hover, :focus-visible) .door-label,
-.door--khandaq:is(:hover, :focus-visible) .door-label {
+.door--khandaq:is(:hover, :focus-visible) .door-label,
+.door--khaybar:is(:hover, :focus-visible) .door-label {
   transform: translateX(2px);
 }
 
 .door--badr:is(:hover, :focus-visible) .door-arrow,
 .door--uhud:is(:hover, :focus-visible) .door-arrow,
-.door--khandaq:is(:hover, :focus-visible) .door-arrow {
+.door--khandaq:is(:hover, :focus-visible) .door-arrow,
+.door--khaybar:is(:hover, :focus-visible) .door-arrow {
   transform: translateX(6px);
 }
 
 .door--badr:active .door-label,
 .door--uhud:active .door-label,
-.door--khandaq:active .door-label {
+.door--khandaq:active .door-label,
+.door--khaybar:active .door-label {
   transform: translateX(3px);
 }
 
 .door--badr:active .door-arrow,
 .door--uhud:active .door-arrow,
-.door--khandaq:active .door-arrow {
+.door--khandaq:active .door-arrow,
+.door--khaybar:active .door-arrow {
   transform: translateX(9px);
 }
 
 .door--badr:focus-visible,
 .door--uhud:focus-visible,
-.door--khandaq:focus-visible {
+.door--khandaq:focus-visible,
+.door--khaybar:focus-visible {
   outline: 2px solid var(--ink);
   outline-offset: -4px;
   box-shadow: inset 0 0 0 2px var(--bone); /* taste-skill-ignore: dual tone focus ring */
@@ -427,6 +446,8 @@ h1, p { margin: 0; }
   .js .door--uhud .door-cta { animation-delay: 0.26s; }
   .js .door--khandaq .door-top { animation-delay: 0.24s; }
   .js .door--khandaq .door-cta { animation-delay: 0.32s; }
+  .js .door--khaybar .door-top { animation-delay: 0.3s; }
+  .js .door--khaybar .door-cta { animation-delay: 0.38s; }
 }
 
 @keyframes settle {

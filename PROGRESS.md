@@ -1,5 +1,54 @@
 # Progress
 
+## Build w — Khaybar on the shared engine (local, not pushed)
+Khaybar · the battle. Cache-bust `?v=20261027a` on all four model pages; routes regenerated.
+
+### Shipped
+- **Khaybar is live.** A graded ledger of 21 entries (11 CERTAIN, 8 REPORTED, 2 DISPUTED) from
+  Raheeq al-Makhtum pp. 233–239, with Qur'an anchors 48:15 / 48:20 / 48:21; a scene module on the
+  shared engine; a page, a route and a live fourth door on the Atlas gate.
+- **The field.** The volcanic plain north-west of Madinah — the ḥarrah floor, the oasis groves,
+  the fort chain on the shelf (Nāʿim, al-Qamūṣ, the lesser forts), the Muslim camp and the
+  besiegers' tents, mantlets and the ram. Muslims ~1,600 against the Khaybar Jews of the forts
+  and their Ghatafān auxiliaries, instanced with gait.
+- **Six phases, 86 s.** ground → march → forts → qamus → duel → reckoning: the muster, the night
+  march and the dawn order (reports differ), the fort-by-fort reduction, the siege of al-Qamūṣ,
+  ʿAlī's (RA) march out and the duel with Marḥab, and the reckoning — the pots, the sheep, the
+  remaining stores, Ṣafiyya (RA), Jaʿfar's (RA) return.
+- **Depiction.** The Prophet ﷺ is never shown; no figure has a face; the duel rides the maquette
+  champion/standard language with the Marḥab kill keyed to its graded entries and no invented
+  dialogue. English + Urdu labels with (RA)/(PBUH)/ﷺ.
+- **Sequential siege.** Deterministic: scrubbing back keeps earlier forts taken; `forts()` reports
+  per-fort capture state.
+- **Atlas gate.** Fourth door live with its own field plate (`khaybar-fort-800/1400.webp`, captured
+  from the model), preview and focus states; four-door layout re-tuned and legible down to 320px.
+
+### Verification
+- `node --check` on every touched `app/js` script; JSON parse checks on the ledger.
+- Lint **0 FAIL / 5 WARN** (four sticky-bar glass + the aggregate em-dash over the wider file set);
+  inspect **0 FAIL / 0 WARN** on `app/khaybar.html` and `app/index.html` with the standing
+  allowances.
+- Desktop 1440×900: no console errors; **119 draw calls / 811,640 triangles**; `benchMass`
+  **0.775 ms** at 1× (2.030 ms at 4× CPU). Phone 390×844: no console errors; **116 calls /
+  804,008 triangles**; `benchMass` **0.605 ms**; no horizontal overflow; no clipped labels; Urdu
+  RTL with deck `۶ / ۶`.
+- All six phases re-shot at 390×844; per-beat label coverage verified on every phase (dawn,
+  order, hunger, reward, pots, remain, sheep, Ṣafiyya, Jaʿfar, after).
+- Deep link `?phase=duel&debug=1` lands at the duel with the tag `build w · Khaybar on the shared
+  engine`. Shared-engine regression probe clean: Badr (7 phases / 76 s), Uhud (7 / 74), Khandaq
+  (7 / 78, perf unchanged at 216 calls / 5.27M tris) and Khaybar (6 / 86) all load with zero
+  console errors and Urdu RTL.
+- Landing probe at 1440/1180/1024/820/390/320: four doors fit, no spill, no reachable horizontal
+  scroll.
+
+### Known limits
+- The Khaybar ledger is `awaiting_owner_review`; the model renders ranges and standards, not a
+  harmonised narrative. The REPORTED fort-fall beats carry no certainty marker (house style); the
+  DISPUTED beats (`order`, `qamusFall`) read "reports differ" and the Marḥab/ram beats "· reported".
+- The fort chain is maquette detail, not a survey; fort separation and the duel read through the
+  shot framing, not a plan view.
+- Build w is committed locally only; no push until owner approval.
+
 ## Build v — Khandaq on the shared engine (local, not pushed)
 Khandaq · the battle. Cache-bust `?v=20261026w` on all three model pages; routes regenerated.
 
