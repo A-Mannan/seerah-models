@@ -1,5 +1,45 @@
 # Progress
 
+## Atlas gate + shell — four-door UI polish (on build w, local, not pushed)
+The gate and the shared model bar were re-tuned for four doors and 320px phones. Field plates, scene
+geometry, ledgers and narrative copy are unchanged. Cache-bust `?v=20261027b` on all four model
+pages; routes regenerated from the app pages.
+
+### Shipped
+- **The gate.** The visible masthead is now the h1 — the wordmark plus "The life of the Prophet ﷺ,
+  mapped in 3D." — at 32px desktop / 26px phone. Door metadata is 13px; the four-door band is
+  243px at 1440×900 (27svh); the mobile list tightens to 80px rows at 390. The whole door remains
+  the CTA.
+- **Small phones.** The "Enter …" label hides at ≤380px and the animated arrow becomes the CTA;
+  each row keeps its descriptive `aria-label`. The gate fits exactly at 320×640 and still fits at
+  320×568 without scrolling. At 390 the label stays.
+- **The shell.** 40px tap targets, no wrapping at 320/360/390; "atlas" hides at ≤380px and the
+  "· the battle" suffix at ≤340px; the back arrow keeps its accessible name. Verified in English
+  and Urdu RTL on all four routes.
+- **Semantics.** The visible wordmark + descriptor is the page h1 (the sr-only duplicate is gone);
+  the four doors carry concise accessible names; hover, keyboard focus and Enter verified.
+
+### Verification
+- Landing lint **0 FAIL / 0 WARN**; inspect **0 FAIL / 4 intentional WARN** (bone cream, three
+  intentional faces, still field instead of video, modest motion). Model shell lint **0 FAIL /
+  4 pre-existing sticky-bar glass WARN**; the wider gate run adds the standing aggregate em-dash
+  (and a transient engine shadow from a parallel edit). Model inspect **0 FAIL / 0 WARN** with the
+  standing allowances.
+- Chromium: landing at 1440×900, 1200×900, 1024×900, 960×900, 901×900, 900×900, 768×900,
+  430×900, 390×844, 360×740, 320×640 and 320×568 — no horizontal overflow; one screen at
+  320×640 and 320×568. Four routes at 320/360/390 in English and Urdu — no wrap, no overflow,
+  no console errors; the back link returns to the gate.
+- Keyboard: skip → masthead → four doors in order; focus moves the field preview; Enter opens the
+  focused route. Hover floods the door, flips type and previews its field.
+- `node --check` on every `app/js` script and the landing script; `build-routes.mjs` regenerated
+  the four routes clean.
+
+### Known limits
+- At ≤380px the CTA is arrow-only; the door name and `aria-label` carry the action.
+- The field stays still photography with the Badr day cycle; no video was added.
+- CSS-only polish on build w; no build letter was cut. The Uhud, Khandaq and Khaybar ledgers
+  remain `awaiting_owner_review`.
+
 ## Build w — Khaybar on the shared engine (local, not pushed)
 Khaybar · the battle. Cache-bust `?v=20261027a` on all four model pages; routes regenerated.
 
@@ -99,7 +139,7 @@ Khandaq · the battle. Cache-bust `?v=20261026w` on all three model pages; route
 - 13,000 instanced men cost ~4–7 ms per crowd update; mobile updates half the men per frame.
 - Build v is committed locally only; no push until owner approval.
 
-## Atlas gate — the landing (local, not pushed)
+## Atlas gate — first landing pass (three doors; superseded)
 The root `index.html` is now the front door to three live models. This is a landing pass, not a
 new build of the Badr model.
 
@@ -132,7 +172,8 @@ new build of the Badr model.
 
 ### Known limits
 - The hover preview only runs on hover-capable pointers; touch follows the link directly.
-- The landing h1 is screen-reader-only; the visible masthead is a lockup, not a heading.
+- This first pass kept the h1 screen-reader-only; the four-door polish above made the visible
+  wordmark + descriptor the h1.
 - Three typefaces are intentional (display serif, UI sans, Arabic).
 - Uhud and Khandaq ledgers remain `awaiting_owner_review`.
 

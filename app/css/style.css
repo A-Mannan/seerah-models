@@ -83,7 +83,7 @@ h1, h2, p { margin: 0; }
 .tool { letter-spacing: 0.01em; }
 .tool {
   font-size: 13px; padding: 8px 10px; border-radius: 8px;
-  color: var(--muted); background: transparent;
+  color: var(--muted); background: transparent; white-space: nowrap;
   transition: color 0.2s ease, background 0.2s ease;
 }
 .tool:hover { color: var(--ink); background: rgba(236, 232, 223, 0.06); }
@@ -224,11 +224,13 @@ h1, h2, p { margin: 0; }
 /* ------------------------------ phone */
 @media (max-width: 700px) {
   :root { --deck-h: 44px; --bar-h: 54px; }
-  .bar { padding: 0 14px; }
-  .brand { font-size: 25px; gap: 8px; }
+  .bar { padding: 0 14px; gap: 12px; }
+  .brand { font-size: 25px; gap: 8px; min-width: 0; }
+  .brand-name { white-space: nowrap; }
   .brand em { display: inline; font-size: 11px; letter-spacing: 0; }
-  .tool { font-size: 12px; padding: 7px 8px; }
-  #langBtn { font-size: 13.5px; padding: 4px 10px; }
+  .bar-tools { gap: 2px; }
+  .tool { display: inline-flex; align-items: center; justify-content: center; min-height: 40px; font-size: 12px; padding: 0 8px; }
+  #langBtn { font-size: 13.5px; padding: 0 9px; }
   .legend { top: calc(var(--bar-h) + env(safe-area-inset-top, 0px) + 8px); right: 12px; left: auto; max-width: 200px; padding: 7px 9px; }
   .legend-row { font-size: 11px; line-height: 1.35; gap: 6px; }
   .legend-row .swatch { width: 8px; height: 8px; }
@@ -246,9 +248,16 @@ h1, h2, p { margin: 0; }
   .hud-label.is-far { display: none; }
   .hud-label { font-size: 11px; padding: 3px 6px; }
 }
+@media (max-width: 380px) {
+  .home-link span { display: none; }
+  .home-link { padding: 0 9px; }
+}
 @media (max-width: 360px) {
   .brand { font-size: 22px; }
   .legend { max-width: 196px; }
+}
+@media (max-width: 340px) {
+  .brand em { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {

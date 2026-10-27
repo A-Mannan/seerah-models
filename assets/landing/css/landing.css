@@ -47,18 +47,6 @@ h1, p { margin: 0; }
 ::selection { background: var(--accent); color: var(--ink); }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
 
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
-  border: 0;
-}
-
 .skip {
   position: fixed;
   top: -120px;
@@ -92,6 +80,7 @@ h1, p { margin: 0; }
   justify-content: center;
   gap: 4px;
   min-width: 0;
+  font-size: 32px;
 }
 
 .masthead-mark {
@@ -100,7 +89,7 @@ h1, p { margin: 0; }
   align-items: center;
   min-height: 26px;
   font-family: var(--serif);
-  font-size: 21px;
+  font-size: 32px;
   font-weight: 500;
   line-height: 1;
   letter-spacing: -0.012em;
@@ -108,8 +97,9 @@ h1, p { margin: 0; }
 }
 
 .masthead-sub {
+  display: block;
   font-family: var(--sans);
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 400;
   line-height: 1.25;
   letter-spacing: 0.012em;
@@ -128,7 +118,7 @@ h1, p { margin: 0; }
 .masthead-ar {
   flex: none;
   font-family: var(--arabic);
-  font-size: 18px;
+  font-size: 19px;
   line-height: 1.2;
   color: var(--muted);
 }
@@ -209,7 +199,7 @@ h1, p { margin: 0; }
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: clamp(250px, 29svh, 310px);
+  min-height: clamp(238px, 27svh, 292px);
   padding: clamp(24px, 2.4vw, 34px) clamp(22px, 2.2vw, 32px) clamp(18px, 1.8vw, 24px);
   overflow: hidden;
   color: var(--ink);
@@ -315,7 +305,7 @@ h1, p { margin: 0; }
   display: inline-block;
   margin-bottom: clamp(2px, 0.3vw, 5px);
   font-family: var(--arabic);
-  font-size: clamp(20px, 1.7vw, 27px);
+  font-size: clamp(21px, 1.8vw, 28px);
   font-weight: 400;
   line-height: 1.2;
   color: var(--ink);
@@ -474,18 +464,18 @@ h1, p { margin: 0; }
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
-    gap: 10px 20px;
+    gap: 8px 18px;
     min-height: 0;
-    padding-top: 16px;
-    padding-bottom: 18px;
+    padding-top: 13px;
+    padding-bottom: 15px;
   }
 
-  .door-top { gap: 5px; }
+  .door-top { gap: 4px; }
 
   .door-name { gap: 9px; }
 
   .door-en { font-size: clamp(42px, 6.4vw, 58px); }
-  .door-ar { font-size: clamp(19px, 2.6vw, 25px); }
+  .door-ar { font-size: clamp(20px, 2.6vw, 26px); }
 
   .door-cta {
     justify-content: flex-end;
@@ -502,21 +492,21 @@ h1, p { margin: 0; }
     --edge: 20px;
   }
 
-  .masthead-mark { font-size: 18px; }
-  .masthead-sub { font-size: 11.5px; }
-  .masthead-ar { font-size: 16px; }
+  .masthead-mark { font-size: 26px; }
+  .masthead-sub { font-size: 13px; }
+  .masthead-ar { font-size: 17px; }
 
-  .gate { grid-template-rows: minmax(300px, 1fr) auto; }
+  .gate { grid-template-rows: minmax(290px, 1fr) auto; }
 
   .door {
-    gap: 8px 14px;
-    padding-top: 15px;
-    padding-bottom: 17px;
+    gap: 6px 14px;
+    padding-top: 12px;
+    padding-bottom: 14px;
   }
 
-  .door-meta { font-size: 12px; }
+  .door-meta { font-size: 13px; }
   .door-en { font-size: clamp(40px, 10.6vw, 46px); }
-  .door-ar { font-size: clamp(18px, 5vw, 22px); }
+  .door-ar { font-size: clamp(19px, 5.1vw, 23px); }
   .door-label { font-size: 13.5px; }
   .door-arrow svg { width: 26px; height: 14px; }
 }
@@ -525,10 +515,23 @@ h1, p { margin: 0; }
   :root { --head: 72px; }
 
   .masthead-ar { display: none; }
-  .masthead-sub { font-size: 11px; }
-  .door-meta { font-size: 11.5px; }
+  .masthead-sub { font-size: 12px; }
+  .masthead-mark { font-size: 26px; }
+
+  .gate { grid-template-rows: minmax(190px, 1fr) auto; }
+  .stage { min-height: 190px; }
+
+  .door {
+    gap: 5px 12px;
+    padding-top: 10px;
+    padding-bottom: 12px;
+  }
+
+  .door-meta { font-size: 12px; }
   .door-en { font-size: 38px; }
-  .door-label { font-size: 13px; }
+  .door-label { display: none; }
+  .door-cta { gap: 0; }
+  .door-arrow svg { width: 28px; height: 15px; }
 }
 
 /* ------------------------------ reduced motion */
