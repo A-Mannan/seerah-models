@@ -49,6 +49,6 @@ The source pages remain at `app/index.html`, `app/uhud.html`, `app/khandaq.html`
 - Uhud: live model; its ledger is `awaiting_owner_review`.
 - Khandaq: live model on the shared engine — the trench, the crossing, the seven phases from the
   digging to the withdrawal; its ledger is `awaiting_owner_review`.
-- Khaybar: live model (build w) on the shared engine — the volcanic plain, the fort chain, the
+- Khaybar: live model (build x) on the shared engine — the volcanic plain, the fort chain, the
   six phases from the muster to the reckoning; its ledger is `awaiting_owner_review`.
 - The Atlas gate and all four routes are local only; nothing is pushed without owner approval.

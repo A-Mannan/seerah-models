@@ -2,9 +2,9 @@
    Everything a battle scene needs that is not Badr-specific: renderer boot,
    dawn sky and lights, heightfield terrain, prop builders (wells, ridge tents,
    rocks, scrub, palms, animals, arrows), the static merge, the instanced crowd
-   with its gait, the rigged-hero rig and clip driver, the label pass, the
-   camera director (shot list, orbit, pinch), the phase clock and the particle
-   systems. A battle module (badr.js) supplies layout, choreography and copy.
+   with its gait, the label pass, the camera director (shot list, orbit,
+   pinch), the phase clock and the particle systems. A battle module (badr.js)
+   supplies layout, choreography and copy.
    Standing rules live in AGENTS.md: the Prophet ﷺ is never depicted; no figure
    shows a face; nothing pushes to GitHub without the owner. */
 (function () {
@@ -49,6 +49,7 @@
     }
     if (!window.THREE || !canvas) { fail(); return null; }
     var MOBILE = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) || window.innerWidth < 700;
+    ENGINE.mobile = MOBILE;
     var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: !MOBILE });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, MOBILE ? 1.5 : 2));
     renderer.shadowMap.enabled = true;
@@ -991,8 +992,10 @@
       return g;
     }
 
-    var rockM = new THREE.MeshPhongMaterial({ color: 0x8f7f68, flatShading: true, shininess: 0 });
-    var rockDarkM = new THREE.MeshPhongMaterial({ color: 0x5d5342, flatShading: true, shininess: 0 });
+    /* Lambert, not Phong: the static merge only folds Lambert parts, and with
+       shininess 0 the faceted look is identical. */
+    var rockM = new THREE.MeshLambertMaterial({ color: 0x8f7f68, flatShading: true });
+    var rockDarkM = new THREE.MeshLambertMaterial({ color: 0x5d5342, flatShading: true });
     function rock(px, pz, s) {
       var g = new THREE.Group();
       for (var l = 0; l < 3; l++) {
@@ -1551,6 +1554,11 @@
       var shaftGeo = new THREE.CylinderGeometry(0.02, 0.028, h, 5);
       var tipGeo = new THREE.BoxGeometry(0.035, 0.2, 0.014);
       var buttGeo = new THREE.ConeGeometry(0.03, 0.1, 4);
+      /* The depth pass redraws the whole mass: 4.2M triangles a frame on
+         Khandaq, and the crowd's contact underfoot is the one thing the wide
+         phone framing can lose without a read; desktop keeps the cast. A
+         scene can force either way with opts.castShadow. */
+      var castCrowd = opts.castShadow === undefined ? !ENGINE.mobile : !!opts.castShadow;
       var bodyC = new THREE.Color(side ? 0x5f5544 : 0xcfc6b2);
       var legC = new THREE.Color(side ? 0x4a4135 : 0xa89a80);
       var headC = new THREE.Color(side ? 0x463d32 : 0xbfb49d);
@@ -1572,7 +1580,7 @@
       ];
       var manGeo = mergeParts(manParts.filter(Boolean));
       var men = new THREE.InstancedMesh(manGeo, new THREE.MeshLambertMaterial({ vertexColors: true }), count);
-      men.castShadow = true;
+      men.castShadow = castCrowd;
       /* each leg pivots at the hip (y 0.56): leg + foot in one rigid piece */
       var hipY = 0.56;
       var legLGeo = mergeParts([
@@ -1585,7 +1593,7 @@
       ]);
       var legsL = new THREE.InstancedMesh(legLGeo, new THREE.MeshLambertMaterial({ vertexColors: true }), count);
       var legsR = new THREE.InstancedMesh(legRGeo, new THREE.MeshLambertMaterial({ vertexColors: true }), count);
-      legsL.castShadow = true; legsR.castShadow = true;
+      legsL.castShadow = castCrowd; legsR.castShadow = castCrowd;
       /* the spear is its own instance so the whole hedge can level and thrust */
       var spearGeo = mergeParts([
         { geo: shaftGeo, p: [0, -0.05, 0], c: woodC },
@@ -1593,7 +1601,7 @@
         { geo: buttGeo, p: [0, -0.05 - h / 2 - 0.04, 0], r: [Math.PI, 0, 0], c: ironC }
       ]);
       var spears = new THREE.InstancedMesh(spearGeo, new THREE.MeshLambertMaterial({ vertexColors: true }), count);
-      spears.castShadow = true;
+      spears.castShadow = castCrowd;
       var shieldsPer = side ? 3 : 2;
       var shields = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.34, 0.34, 0.04, 12), new THREE.MeshLambertMaterial({ color: 0xffffff }), squads * shieldsPer);
       if (shields.setColorAt) {
@@ -1609,7 +1617,7 @@
       var swords = new THREE.InstancedMesh(new THREE.BoxGeometry(0.045, 0.72, 0.013), new THREE.MeshLambertMaterial({ color: 0xc9c4b6 }), squads);
       var guards = new THREE.InstancedMesh(new THREE.BoxGeometry(0.2, 0.03, 0.05), new THREE.MeshLambertMaterial({ color: side ? 0x565043 : 0xc39a33 }), squads);
       var helms = new THREE.InstancedMesh(new THREE.SphereGeometry(0.145, 8, 6, 0, Math.PI * 2, 0, Math.PI / 2), new THREE.MeshLambertMaterial({ color: side ? 0x565043 : 0x9a9382 }), squads);
-      shields.castShadow = true; swords.castShadow = true;
+      shields.castShadow = castCrowd; swords.castShadow = castCrowd;
       var sq = [], recs = [], idx = 0;
       for (var s = 0; s < squads; s++) {
         var rk = Math.floor(s / cols), cl = s % cols;
@@ -1769,344 +1777,13 @@
     }
   };
 
-  /* ------------------------------ rigged heroes (CC0 Quaternius Adventurer) */
-  var HEROES = { ready: false, kits: {}, specs: [], ansar: [], count: 0, assets: {}, master: null };
-  var HCLIP = {
-    idle: 'CharacterArmature|Idle_Sword',
-    neutral: 'CharacterArmature|Idle',
-    walk: 'CharacterArmature|Walk',
-    attack: 'CharacterArmature|Sword_Slash',
-    hit: 'CharacterArmature|HitRecieve',
-    death: 'CharacterArmature|Death'
-  };
-  ENGINE.heroes = { state: HEROES, HCLIP: HCLIP };
-  var HERO_MAT = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 0.95, metalness: 0, flatShading: true, skinning: true });
-
-  function boneHolder(bone) {
-    bone.updateMatrixWorld(true);
-    var q0 = bone.getWorldQuaternion(new THREE.Quaternion());
-    var ws = bone.getWorldScale(new THREE.Vector3());
-    var holder = new THREE.Group();
-    holder.quaternion.copy(q0).invert();
-    holder.scale.set(1 / ws.x, 1 / ws.y, 1 / ws.z);
-    bone.add(holder);
-    return holder;
-  }
-  function scaleHolder(bone) {
-    var ws = bone.getWorldScale(new THREE.Vector3());
-    var h = new THREE.Group();
-    h.scale.set(1 / ws.x, 1 / ws.y, 1 / ws.z);
-    bone.add(h);
-    return h;
-  }
-  function applyPalette(root, pal) {
-    root.traverse(function (o) {
-      if (!o.isMesh) return;
-      var nm = o.name || '';
-      if (/Backpack/i.test(nm)) { o.visible = false; return; }
-      var col = pal.body;
-      if (/Legs/i.test(nm)) col = pal.legs;
-      else if (/Feet/i.test(nm)) col = pal.feet;
-      else if (/Head/i.test(nm)) col = pal.head;
-      o.material = new THREE.MeshStandardMaterial({ color: col, roughness: 0.95, metalness: 0, flatShading: true, skinning: true });
-    });
-  }
-  function mergeHeroBody(root) {
-    var parts = [];
-    root.traverse(function (o) { if (o.isSkinnedMesh && !/Backpack/i.test(o.name || '')) parts.push(o); });
-    if (!parts.length) return null;
-    var b0 = parts[0].bindMatrix || new THREE.Matrix4();
-    var inv0 = new THREE.Matrix4().copy(b0).invert();
-    var m = new THREE.Matrix4(), v = new THREE.Vector3(), nv = new THREE.Vector3();
-    var posA = [], norA = [], colA = [], siA = [], swA = [], idx = [], off = 0;
-    var grey = new THREE.Color(0x888888);
-    for (var pi = 0; pi < parts.length; pi++) {
-      var part = parts[pi];
-      var g = part.geometry, p = g.attributes.position;
-      if (!g.attributes.normal) g.computeVertexNormals();
-      m.multiplyMatrices(inv0, part.bindMatrix || b0);
-      var c = (part.material && part.material.color) || grey;
-      var si = g.attributes.skinIndex, sw = g.attributes.skinWeight;
-      for (var i = 0; i < p.count; i++) {
-        v.fromBufferAttribute(p, i).applyMatrix4(m);
-        posA.push(v.x, v.y, v.z);
-        nv.fromBufferAttribute(g.attributes.normal, i).transformDirection(m).normalize();
-        norA.push(nv.x, nv.y, nv.z);
-        colA.push(c.r, c.g, c.b);
-        siA.push(si.getX(i), si.getY(i), si.getZ(i), si.getW(i));
-        swA.push(sw.getX(i), sw.getY(i), sw.getZ(i), sw.getW(i));
-      }
-      if (g.index) { for (var k = 0; k < g.index.count; k++) idx.push(g.index.array[k] + off); }
-      else { for (var k2 = 0; k2 < p.count; k2++) idx.push(k2 + off); }
-      off += p.count;
-    }
-    var geo = new THREE.BufferGeometry();
-    geo.setAttribute('position', new THREE.Float32BufferAttribute(posA, 3));
-    geo.setAttribute('normal', new THREE.Float32BufferAttribute(norA, 3));
-    geo.setAttribute('color', new THREE.Float32BufferAttribute(colA, 3));
-    geo.setAttribute('skinIndex', new THREE.Uint16BufferAttribute(siA, 4));
-    geo.setAttribute('skinWeight', new THREE.Float32BufferAttribute(swA, 4));
-    geo.setIndex(idx);
-    geo.computeBoundingBox();
-    var bindBox = new THREE.Box3().copy(geo.boundingBox).applyMatrix4(b0);
-    return { geo: geo, bind: b0, bindBox: bindBox };
-  }
-  function buildKit(pal) {
-    var c = THREE.SkeletonUtils.clone(HEROES.master);
-    applyPalette(c, pal);
-    return mergeHeroBody(c);
-  }
-  function prepProp(src, opts) {
-    var obj = src.clone(true);
-    obj.traverse(function (o) { if (o.isMesh) { o.castShadow = true; } });
-    var wrap = new THREE.Group();
-    wrap.add(obj);
-    wrap.updateMatrixWorld(true);
-    var box = new THREE.Box3().setFromObject(wrap);
-    var sz = box.getSize(new THREE.Vector3());
-    var arr = [sz.x, sz.y, sz.z];
-    var longest = Math.max(arr[0], arr[1], arr[2]);
-    obj.scale.multiplyScalar(opts.len / longest);
-    wrap.updateMatrixWorld(true);
-    var box2 = new THREE.Box3().setFromObject(wrap);
-    var c = box2.getCenter(new THREE.Vector3());
-    obj.position.sub(c);
-    var axisVec = new THREE.Vector3(
-      arr[0] >= arr[1] && arr[0] >= arr[2] ? 1 : 0,
-      arr[1] > arr[0] && arr[1] >= arr[2] ? 1 : 0,
-      arr[2] > arr[0] && arr[2] > arr[1] ? 1 : 0
-    );
-    if (opts.grip) obj.position.addScaledVector(axisVec, -opts.grip * opts.len);
-    var q = new THREE.Quaternion().setFromUnitVectors(axisVec, opts.dir.clone().normalize());
-    var baked = bakeToMesh(wrap, 0.55);
-    var out = new THREE.Group();
-    out.add(baked);
-    out.quaternion.copy(q);
-    return out;
-  }
-  function heroHead(bone, height, opts) {
-    var s = height / 1.78;
-    var g = boneHolder(bone);
-    var tmp = new THREE.Group();
-    function part(geo, color, x, y, z, rx, sx, sy, sz2) {
-      var mm = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color: color, roughness: 1, metalness: 0, flatShading: true }));
-      mm.position.set(x || 0, y || 0, z || 0);
-      if (rx) mm.rotation.x = rx;
-      if (sx) mm.scale.set(sx, sy, sz2);
-      tmp.add(mm);
-    }
-    part(new THREE.SphereGeometry(0.114 * s, 14, 10), opts.wrap, 0, 0.078 * s, 0, 0, 1.0, 1.10, 1.04);
-    part(new THREE.CylinderGeometry(0.056 * s, 0.070 * s, 0.13 * s, 10), opts.wrap, 0, -0.045 * s);
-    if (opts.helm) {
-      part(new THREE.SphereGeometry(0.130 * s, 12, 9, 0, Math.PI * 2, 0, Math.PI * 0.66), opts.band, 0, 0.078 * s, 0, 0, 1, 1.16, 1.04);
-      part(new THREE.CylinderGeometry(0.145 * s, 0.141 * s, 0.040 * s, 12), opts.dark, 0, 0.055 * s);
-      part(new THREE.BoxGeometry(0.022 * s, 0.10 * s, 0.024 * s), opts.dark, 0, 0.005 * s, 0.138 * s);
-      part(new THREE.ConeGeometry(0.028 * s, 0.10 * s, 6), opts.dark, 0, 0.245 * s);
-      part(new THREE.CylinderGeometry(0.118 * s, 0.100 * s, 0.12 * s, 12, 1, true), opts.dark, 0, -0.025 * s);
-    } else {
-      part(new THREE.TorusGeometry(0.104 * s, 0.052 * s, 6, 18), opts.band, 0, 0.163 * s, Math.PI / 2);
-      part(new THREE.TorusGeometry(0.108 * s, 0.022 * s, 4, 18), opts.dark, 0, 0.118 * s, Math.PI / 2);
-      part(new THREE.SphereGeometry(0.108 * s, 12, 8, 0, Math.PI * 2, 0, Math.PI * 0.5), opts.band, 0, 0.170 * s, 0, 0, 1, 0.46, 1);
-      part(new THREE.SphereGeometry(0.036 * s, 6, 5), opts.dark, 0.085 * s, 0.135 * s, -0.055 * s);
-    }
-    g.add(tmp);
-    var baked = bakeToMesh(tmp, 1);
-    g.add(baked);
-    g.remove(tmp);
-    return g;
-  }
-  function strappedShield(bone, spec) {
-    var s = spec.height / 1.78;
-    var holder = boneHolder(bone);
-    bone.updateMatrixWorld(true);
-    var up = new THREE.Vector3(0, 1, 0);
-    var parent = bone.parent;
-    parent.updateMatrixWorld(true);
-    var d = bone.getWorldPosition(new THREE.Vector3()).sub(parent.getWorldPosition(new THREE.Vector3()));
-    if (d.lengthSq() < 1e-8) d.set(0, -1, 0); else d.normalize();
-    var fwd = new THREE.Vector3(Math.sin(spec.ry), 0, Math.cos(spec.ry));
-    var left = new THREE.Vector3().crossVectors(up, fwd).normalize();
-    var tmp = new THREE.Group();
-    var faceC = spec.qurayshKit ? 0x4a4132 : 0x8a7a5c;
-    var rimC = spec.qurayshKit ? 0x33322e : 0x5f5240;
-    function part(geo, color, pos, quat) {
-      var mm = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ color: color, roughness: 0.9, metalness: 0.05, flatShading: true }));
-      if (pos) mm.position.copy(pos);
-      if (quat) mm.quaternion.copy(quat);
-      mm.castShadow = true;
-      tmp.add(mm);
-    }
-    var qFace = new THREE.Quaternion().setFromUnitVectors(up, d);
-    part(new THREE.CylinderGeometry(0.26 * s, 0.26 * s, 0.035, 14), faceC,
-      d.clone().multiplyScalar(0.07 * s).addScaledVector(left, 0.05 * s), qFace);
-    part(new THREE.SphereGeometry(0.05 * s, 8, 6), rimC,
-      d.clone().multiplyScalar(0.095 * s).addScaledVector(left, 0.05 * s));
-    part(new THREE.TorusGeometry(0.07 * s, 0.019 * s, 5, 12), rimC,
-      left.clone().multiplyScalar(0.02 * s),
-      new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 0, 1), d));
-    holder.add(tmp);
-    var baked = bakeToMesh(tmp, 0.9);
-    holder.add(baked);
-    holder.remove(tmp);
-  }
-  function makeHero(spec) {
-    var root = THREE.SkeletonUtils.clone(HEROES.master);
-    var holder = new THREE.Group();
-    holder.add(root);
-    var kit = HEROES.kits[spec.kit];
-    var native = kit.bindBox.max.y - kit.bindBox.min.y;
-    var s = spec.height / native;
-    root.scale.setScalar(s);
-    root.position.y = -kit.bindBox.min.y * s;
-    /* the merged kit body replaces the part meshes (same skeleton, one draw) */
-    var parts = [];
-    root.traverse(function (o) { if (o.isSkinnedMesh) parts.push(o); });
-    var body = new THREE.SkinnedMesh(kit.geo, HERO_MAT);
-    body.castShadow = true; body.receiveShadow = true; body.frustumCulled = false;
-    body.bind(parts[0].skeleton, parts[0].bindMatrix);
-    body.position.copy(parts[0].position);
-    body.quaternion.copy(parts[0].quaternion);
-    body.scale.copy(parts[0].scale);
-    parts[0].parent.add(body);
-    parts.forEach(function (pm) { pm.visible = false; });
-
-    root.updateMatrixWorld(true);
-    var mixer = new THREE.AnimationMixer(root);
-    var actions = {};
-    HEROES.master.animations.forEach(function (clip) { actions[clip.name] = mixer.clipAction(clip); });
-    var fig = { root: root, holder: holder, mixer: mixer, actions: actions, cur: null, from: null, fadeAt: -1, off: spec.offT || 0, idle: spec.idle || 'idle' };
-    var idleA = actions[HCLIP[fig.idle]];
-    if (idleA) { idleA.enabled = true; idleA.setEffectiveWeight(1); idleA.play(); idleA.time = 0; idleA.paused = true; }
-    mixer.update(0);
-
-    var head = root.getObjectByName('Head');
-    var wristR = root.getObjectByName('WristR');
-    var wristL = root.getObjectByName('WristL');
-    if (head) heroHead(head, spec.height, spec.wrap);
-    if (wristR && spec.weapon) {
-      var wl = spec.weapon === 'sword' ? { len: 0.60, grip: 0.42 } : { len: 2.25, grip: 0.30 };
-      var w = prepProp(HEROES.assets[spec.weapon], { len: wl.len, dir: new THREE.Vector3(0, -1, 0), grip: wl.grip });
-      scaleHolder(wristR).add(w);
-    }
-    if (wristL && spec.shield) strappedShield(wristL, spec);
-    HEROES.count++;
-    return fig;
-  }
-  /* deterministic clip driving: weights fade on the battle clock keyed to the
-     structural state boundary (not the seek time), and clip times are set
-     explicitly so a seek always lands on the same pose */
-  function heroDrive(f, want, tl, deathT, attackT, fadeStart, hitT) {
-    if (!f.actions[HCLIP[want]]) want = f.idle;
-    if (want !== f.cur) {
-      f.from = f.cur;
-      if (fadeStart !== undefined && fadeStart <= tl) f.fadeAt = fadeStart;
-      else { f.from = null; f.fadeAt = tl - 1; } /* seeked to before the change: snap */
-      f.cur = want;
-    }
-    var w = U.clamp01((tl - f.fadeAt) / 0.5);
-    var states = [];
-    function st(name, weight) {
-      if (!weight || !name) return;
-      var a = f.actions[HCLIP[name]];
-      if (!a) return;
-      var dur = a.getClip().duration || 1;
-      var tt;
-      if (name === 'death') tt = Math.min(Math.max(0.01, (deathT || 0) * 1.4), dur - 0.01);
-      else if (name === 'attack') tt = Math.min(attackT || 0, dur - 0.01);
-      else if (name === 'hit') tt = Math.min(hitT || 0, dur - 0.01);
-      else if (name === 'walk') tt = (tl * 0.85 + f.off) % dur;
-      else tt = (tl * 0.55 + f.off) % dur;
-      states.push({ a: a, time: tt, w: weight });
-    }
-    st(want, w);
-    if (w < 1 && f.from && f.from !== want) st(f.from, 1 - w);
-    for (var nm in f.actions) { var a = f.actions[nm]; a.enabled = false; a.setEffectiveWeight(0); }
-    states.forEach(function (ss) {
-      ss.a.enabled = true; ss.a.setEffectiveWeight(ss.w); ss.a.play(); ss.a.time = ss.time; ss.a.paused = true;
-    });
-    f.mixer.update(0);
-  }
-  /* env: { i, t, tl, fallen, deathT, deathStart, phaseDur(i), fracOf(i, t) } */
-  function driveHeroUnit(u, env) {
-    var f = u.hero;
-    if (!f) return;
-    var i = env.i, t = env.t, tl = env.tl;
-    var want, atk = null, fadeStart;
-    if (env.fallen > 0.02 || env.deathT > 0.05) {
-      want = 'death';
-      fadeStart = env.deathStart;
-    } else {
-      var mv = false, mvWin = null;
-      if (u._walkWin) for (var wi = 0; wi < u._walkWin.length; wi++) {
-        var ww = u._walkWin[wi];
-        if (ww.i === i && t >= ww.a && t <= ww.b) { mv = true; mvWin = ww; break; }
-      }
-      if (mv) u._lastWalkEnd = env.fracOf(mvWin.i, mvWin.b) * env.total;
-      if (!mv && u._attackWin) for (var ai = 0; ai < u._attackWin.length; ai++) {
-        var aw = u._attackWin[ai];
-        if (aw.i === i && t >= aw.a && t <= aw.b) { atk = (t - aw.a) * env.phaseDur(i) * 1.4; fadeStart = env.fracOf(aw.i, aw.a) * env.total; break; }
-      }
-      var hitT = null;
-      if (atk === null && u._hitWin) for (var hi = 0; hi < u._hitWin.length; hi++) {
-        var hw = u._hitWin[hi];
-        if (hw.i === i && t >= hw.a && t <= hw.b) { hitT = (t - hw.a) * env.phaseDur(i) * 1.2; fadeStart = env.fracOf(hw.i, hw.a) * env.total; break; }
-      }
-      var wounded = u._wound && (i > u._wound.i || (i === u._wound.i && t >= u._wound.at));
-      if (atk !== null) want = 'attack';
-      else if (hitT !== null) want = 'hit';
-      else if (mv) { want = 'walk'; fadeStart = env.fracOf(mvWin.i, mvWin.a) * env.total; }
-      else if (wounded) { want = 'neutral'; fadeStart = env.fracOf(u._wound.i, u._wound.at) * env.total; }
-      else { want = f.idle; fadeStart = u._lastWalkEnd; }
-    }
-    heroDrive(f, want, tl, env.deathT, atk, fadeStart, hitT);
-  }
-  ENGINE.heroes.load = function (paths, kits, specs, onReady) {
-    var fbxLoader = new THREE.FBXLoader();
-    var gltfLoader = new THREE.GLTFLoader();
-    function loadFBX(url) { return new Promise(function (res, rej) { fbxLoader.load(url, res, undefined, rej); }); }
-    function loadGLB(url) { return new Promise(function (res, rej) { gltfLoader.load(url, res, undefined, rej); }); }
-    return Promise.all([
-      loadFBX(paths.fbx),
-      loadGLB(paths.sword),
-      loadGLB(paths.spear),
-      loadGLB(paths.shield)
-    ]).then(function (r) {
-      HEROES.master = r[0];
-      HEROES.assets.sword = r[1].scene;
-      HEROES.assets.spear = r[2].scene;
-      Object.keys(kits).forEach(function (k) { HEROES.kits[k] = buildKit(kits[k]); });
-      specs.forEach(function (spec) {
-        spec.qurayshKit = spec.kit === 'quraysh';
-        var fig = makeHero(spec);
-        fig._baseRy = spec.ry || 0;
-        var parent = spec.u ? spec.u.group : spec.parent;
-        parent.add(fig.holder);
-        fig.holder.position.set(0, 0, spec.zoff || 0);
-        fig.holder.rotation.y = spec.ry || 0;
-        if (spec.u) {
-          spec.u.hero = fig;
-          spec.u.heroUnit = true;
-          spec.u._walkWin = spec.walkWin || null;
-          spec.u._attackWin = spec.attackWin || null;
-          spec.u._hitWin = spec.hitWin || null;
-          spec.u._faceHome = !!spec.faceHome;
-          spec.u._zoff = spec.zoff || 0;
-        } else {
-          HEROES.ansar.push(fig);
-        }
-      });
-      HEROES.ready = true;
-      if (onReady) onReady();
-    }).catch(function (e) {
-      /* the battle stands without heroes rather than failing: standards still tell it */
-      HEROES.err = String((e && e.message) || e);
-      console.error('[seerah] heroes failed to load', e);
-    });
-  };
-  ENGINE.heroes.driveUnit = driveHeroUnit;
-  ENGINE.heroes.drive = heroDrive;
-
   /* ------------------------------ labels */
+  /* label widths only change with the text, the viewport or a font load, so
+     measure them then, not every frame: a read after a style write forces layout */
+  var LABEL_FONT_V = 0;
+  if (document.fonts && document.fonts.addEventListener) {
+    document.fonts.addEventListener('loadingdone', function () { LABEL_FONT_V++; });
+  }
   ENGINE.labels = {
     /* screen areas the HUD owns (the legend, the deck): labels stay out of them */
     reserved: [],
@@ -2120,6 +1797,7 @@
     /* one placement pass; env: { camera, phaseIdx, phaseT, w, h, MOBILE, reduce } */
     place: function (list, isUnit, env, placedRects) {
       var camera = env.camera, w = env.w, h = env.h;
+      var measV = w + ':' + LABEL_FONT_V;
       for (var q = 0; q < list.length; q++) {
         var it = list[q];
         /* a name that belongs to one beat hides after it; the field keeps the standards */
@@ -2129,6 +1807,12 @@
         if (isUnit && it.u.tRange && (env.phaseT < it.u.tRange[0] || env.phaseT > it.u.tRange[1])) { it.el.style.visibility = 'hidden'; continue; }
         if (!isUnit && it.ph && it.ph.indexOf(env.phaseIdx) < 0) { it.el.style.visibility = 'hidden'; continue; }
         if (!isUnit && it.tRange && (env.phaseT < it.tRange[0] || env.phaseT > it.tRange[1])) { it.el.style.visibility = 'hidden'; continue; }
+        var txt = it.el.textContent;
+        if (it.lw === undefined || it.lwV !== measV || it.lwTxt !== txt) {
+          it.lw = it.el.offsetWidth || 60;
+          it.lh = it.el.offsetHeight || 20;
+          it.lwV = measV; it.lwTxt = txt;
+        }
         var lY = isUnit ? (it.u.labelY !== undefined ? it.u.labelY : (it.u.isChampion ? 3.9 : 4.0)) : 0;
         if (env.MOBILE && isUnit && it.u.mobileDY) lY += it.u.mobileDY;
         /* a rigged champion's label follows the walking figure, not the standard */
@@ -2143,7 +1827,7 @@
         sx = it.sx; sy = it.sy;
         /* landmarks near the edge keep their label on screen */
         if (!isUnit) {
-          var lw0 = it.el.offsetWidth || 60;
+          var lw0 = it.lw;
           sx = Math.max(lw0 / 2 + 26, Math.min(w - lw0 / 2 - 26, sx));
         }
         /* far camera: unit labels fade out, landmarks stay */
@@ -2155,7 +1839,7 @@
         if (op < 0.08) vis = false;
         it.el.style.opacity = op === 1 ? '' : op.toFixed(2);
         if (vis) {
-          var lw = it.el.offsetWidth || 60, lh = it.el.offsetHeight || 20;
+          var lw = it.lw, lh = it.lh;
           var l = sx - lw / 2 - 3, r = sx + lw / 2 + 3, t = sy - lh - 8, b = sy + 2;
           if (l < 20 || r > w - 20) vis = false;
           for (var pj = 0; vis && pj < placedRects.length; pj++) {

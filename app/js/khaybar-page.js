@@ -1,7 +1,7 @@
 /* Khaybar · the page descriptor. Copy, sound cues and the build tag for the shell. */
 window.BATTLE_PAGE = {
   key: 'khaybar',
-  build: 'build w · Khaybar on the shared engine',
+  build: 'build x · Khaybar on the shared engine',
   speeds: [0.5, 1, 1.5, 2],
   copy: {
     en: {

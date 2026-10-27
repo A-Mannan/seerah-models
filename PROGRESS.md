@@ -1,5 +1,46 @@
 # Progress
 
+## Build x — the lean pass: no crowd in the phone depth pass, labels cached (local, not pushed)
+The crowd now draws into the depth pass on desktop only, rocks fold into the static merge, and the
+label pass stops forcing layout. No composition, choreography or copy changed. Cache-bust
+`?v=20261027c` on all four model pages; routes regenerated.
+
+### Shipped
+- **The crowd leaves the phone depth pass.** The instanced mass (men, legs, spears, shields, swords)
+  was the only caster whose cost scales with the whole army: 4.2M triangles a frame on Khandaq and
+  91–98% of the depth pass on Uhud and Khandaq. It casts on desktop and not on mobile, where the
+  wide portrait framing loses the contact underfoot without a read. A scene can force either way
+  with `castShadow` on `ENGINE.crowd.build`. Per-frame geometry (main + depth) at 390×844:
+  Badr 1.21M → 781k, Uhud 2.96M → 1.76M, Khandaq 9.57M → 5.35M, Khaybar 1.38M → 953k.
+- **Rocks join the static merge.** `props.rock` built `MeshPhongMaterial` while `isMergeable`
+  accepts Lambert only, so every rock stayed three unmerged casters. With `shininess: 0` and flat
+  shading the look is identical; Badr's 15 rocks and Khandaq's 23 now fold into the batch. Badr's
+  depth pass drops from 524k to 99k triangles.
+- **Labels are measured once, not every frame.** Width and height are cached per label and
+  re-measured only when the text, the viewport width or a font load changes. The pass used to read
+  `offsetWidth`/`offsetHeight` between style writes, a forced layout per visible label per frame;
+  now 0 reads in steady state (9 on a language switch).
+- **Dead engine surface removed.** The dormant rigged-hero rig and clip driver (337 lines, no
+  caller, needing a loader no page loads) is gone. `ENGINE.dawn`, `ENGINE.groundBasalt` and the
+  per-scene `PRESETS` stay: the fort-trial pages and the phase-shot tooling still call them.
+
+### Verification
+- `node --check` on every `app/js` script; all four pages and the `/badr` route load with no console
+  errors, and `?v=20261027c` reaches the route.
+- 390×844 phase sweep, 27 stills in `.taste-skill/inspect/build-x/`: labels place, the mass reads,
+  no clipped controls. Urdu re-measures and re-fits after the switch.
+- Desktop keeps the crowd casters (4 meshes on Badr, 11 on Khandaq), so the dawn contact shadows
+  there are unchanged.
+- Lint **0 FAIL / 5 WARN** (4 pre-existing sticky-bar glass, the standing em-dash aggregate);
+  inspect **0 FAIL / 0 WARN** on `app/khandaq.html`.
+
+### Known limits
+- Khandaq is still ~5.35M triangles a frame on a phone: the crowd's main pass now dominates, not
+  its depth pass. The next real step there is a crowd LOD, not another depth cut.
+- `BATTLE.info()` reports the main pass only; every per-frame figure above adds the depth pass.
+- The in-flight Uhud archers'-hill relocation in the working tree was left untouched.
+- The Uhud, Khandaq and Khaybar ledgers remain `awaiting_owner_review`.
+
 ## Atlas gate + shell — four-door UI polish (on build w, local, not pushed)
 The gate and the shared model bar were re-tuned for four doors and 320px phones. Field plates, scene
 geometry, ledgers and narrative copy are unchanged. Cache-bust `?v=20261027b` on all four model

@@ -1,8 +1,8 @@
 /* Badr · the battle in 3D — the Badr scene module.
    Layout, formations, choreography, the Abu Jahl vignette, ledger-graded copy
    and the public BATTLE clock API, all built on the shared ENGINE (engine.js):
-   renderer, dawn sky, heightfield, props, merge, crowd, rigged heroes, labels,
-   director (clock + shot list + orbit) and particles.
+   renderer, dawn sky, heightfield, props, merge, crowd, labels, director
+   (clock + shot list + orbit) and particles.
    Vocabulary: ground, valley, wells, basin, the ʻarish, banner-bands, rigged
    faceless champions. The Prophet ﷺ is never depicted; no face is ever shown. */
 (function () {
