@@ -20,7 +20,8 @@ The source pages remain at `app/index.html`, `app/uhud.html`, `app/khandaq.html`
 
 ## What's inside
 
-- `index.html`, `assets/landing/` — the Atlas gate: one field, five doors.
+- `index.html`, `assets/landing/` — the Atlas gate: one field, five doors, each plate carrying a
+  window onto the ground it opens.
 - `app/` — the 3D experience (vanilla JS + Three.js r128, no build step)
   - `js/engine.js` — the shared engine: renderer, dawn sky, heightfield, wells, camps, palms,
     animals, instanced crowd, labels, camera director and orbit.
@@ -45,6 +46,8 @@ The source pages remain at `app/index.html`, `app/uhud.html`, `app/khandaq.html`
 
 ## Status
 
+- The Atlas gate: five doors, each with a window onto its field, so every model is identifiable on
+  touch without hover. One screen at 1440×900, 768×1024, 390×844, 320×800 and landscape phones.
 - Badr: live model on the shared engine.
 - Uhud: live model; its ledger is `awaiting_owner_review`.
 - Khandaq: live model on the shared engine — the trench, the crossing, the seven phases from the

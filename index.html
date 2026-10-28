@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>The Seerah Atlas · Badr, Uhud, Khandaq, Khaybar and Muʿtah in 3D</title>
-<meta name="description" content="Badr, Uhud, Khandaq, Khaybar and Muʿtah as interactive 3D models. Enter the field, orbit the ground, and follow each battle's day.">
+<meta name="description" content="Badr, Uhud, Khandaq, Khaybar and Muʿtah as interactive 3D models. Enter the field, orbit the ground, and follow each battle's day. Ḥunayn, Fatḥ Makkah and the Hijrah are ahead.">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#0b100e">
 <meta property="og:type" content="website">
 <meta property="og:title" content="The Seerah Atlas">
-<meta property="og:description" content="The life of the Prophet ﷺ, mapped in 3D. Five battlefields: Badr, Uhud, Khandaq, Khaybar and Muʿtah.">
+<meta property="og:description" content="The life of the Prophet ﷺ, mapped in 3D. Five fields live: Badr, Uhud, Khandaq, Khaybar and Muʿtah. Ḥunayn, Fatḥ Makkah and the Hijrah are ahead.">
 <meta property="og:image" content="assets/landing/img/badr-day-2-1400.webp">
 <meta property="og:image:alt" content="The field of Badr at dawn, rendered as a 3D terrain model.">
 <meta name="twitter:card" content="summary_large_image">
@@ -23,7 +23,7 @@
 <link rel="preload" as="image" href="assets/landing/img/khaybar-fort-1400.webp" imagesrcset="assets/landing/img/khaybar-fort-800.webp 800w, assets/landing/img/khaybar-fort-1400.webp 1400w" imagesizes="100vw">
 <link rel="preload" as="image" href="assets/landing/img/mutah-field-1400.webp" imagesrcset="assets/landing/img/mutah-field-800.webp 800w, assets/landing/img/mutah-field-1400.webp 1400w" imagesizes="100vw">
 <link rel="stylesheet" href="assets/landing/fonts/fonts.css">
-<link rel="stylesheet" href="assets/landing/css/landing.css?v=20261028z">
+<link rel="stylesheet" href="assets/landing/css/landing.css?v=20261028z5">
 <script>document.documentElement.classList.add('js');</script>
 </head>
 <body>
@@ -39,44 +39,79 @@
   </h1>
   <div class="masthead-side">
     <span class="masthead-ar" lang="ar" dir="rtl">أطلس السيرة</span>
-    <span class="masthead-note">Five fields · 2–8 AH</span>
+    <span class="masthead-note">Five fields live · 2–8 AH</span>
   </div>
 </header>
 
 <main class="gate" id="gate" data-battle="badr">
 
   <div class="stage" aria-hidden="true">
-    <div class="stage-layer stage-layer--badr">
-      <img class="day-frame" data-frame="0" src="assets/landing/img/badr-day-0-1400.webp" srcset="assets/landing/img/badr-day-0-800.webp 800w, assets/landing/img/badr-day-0-1400.webp 1400w" sizes="100vw" width="1400" height="875" alt="" loading="lazy" decoding="async">
-      <img class="day-frame" data-frame="1" src="assets/landing/img/badr-day-1-1400.webp" srcset="assets/landing/img/badr-day-1-800.webp 800w, assets/landing/img/badr-day-1-1400.webp 1400w" sizes="100vw" width="1400" height="875" alt="" loading="lazy" decoding="async">
-      <img class="day-frame is-on" data-frame="2" src="assets/landing/img/badr-day-2-1400.webp" srcset="assets/landing/img/badr-day-2-800.webp 800w, assets/landing/img/badr-day-2-1400.webp 1400w" sizes="100vw" width="1400" height="875" alt="" fetchpriority="high" decoding="async">
-      <img class="day-frame" data-frame="3" src="assets/landing/img/badr-day-3-1400.webp" srcset="assets/landing/img/badr-day-3-800.webp 800w, assets/landing/img/badr-day-3-1400.webp 1400w" sizes="100vw" width="1400" height="875" alt="" loading="eager" decoding="async">
-      <img class="day-frame" data-frame="4" src="assets/landing/img/badr-day-4-1400.webp" srcset="assets/landing/img/badr-day-4-800.webp 800w, assets/landing/img/badr-day-4-1400.webp 1400w" sizes="100vw" width="1400" height="875" alt="" loading="eager" decoding="async">
-      <img class="day-frame" data-frame="5" src="assets/landing/img/badr-day-5-1400.webp" srcset="assets/landing/img/badr-day-5-800.webp 800w, assets/landing/img/badr-day-5-1400.webp 1400w" sizes="100vw" width="1400" height="875" alt="" loading="lazy" decoding="async">
-    </div>
+    <div class="stage-track" id="stageTrack" tabindex="-1">
+      <div class="stage-layer stage-layer--badr" data-field="badr">
+        <img class="day-frame" data-frame="0" src="assets/landing/img/badr-day-0-1400.webp" srcset="assets/landing/img/badr-day-0-800.webp 800w, assets/landing/img/badr-day-0-1400.webp 1400w" sizes="100vw" width="1400" height="875" alt="" loading="lazy" decoding="async">
+        <img class="day-frame" data-frame="1" src="assets/landing/img/badr-day-1-1400.webp" srcset="assets/landing/img/badr-day-1-800.webp 800w, assets/landing/img/badr-day-1-1400.webp 1400w" sizes="100vw" width="1400" height="875" alt="" loading="lazy" decoding="async">
+        <img class="day-frame is-on" data-frame="2" src="assets/landing/img/badr-day-2-1400.webp" srcset="assets/landing/img/badr-day-2-800.webp 800w, assets/landing/img/badr-day-2-1400.webp 1400w" sizes="100vw" width="1400" height="875" alt="" fetchpriority="high" decoding="async">
+        <img class="day-frame" data-frame="3" src="assets/landing/img/badr-day-3-1400.webp" srcset="assets/landing/img/badr-day-3-800.webp 800w, assets/landing/img/badr-day-3-1400.webp 1400w" sizes="100vw" width="1400" height="875" alt="" loading="eager" decoding="async">
+        <img class="day-frame" data-frame="4" src="assets/landing/img/badr-day-4-1400.webp" srcset="assets/landing/img/badr-day-4-800.webp 800w, assets/landing/img/badr-day-4-1400.webp 1400w" sizes="100vw" width="1400" height="875" alt="" loading="eager" decoding="async">
+        <img class="day-frame" data-frame="5" src="assets/landing/img/badr-day-5-1400.webp" srcset="assets/landing/img/badr-day-5-800.webp 800w, assets/landing/img/badr-day-5-1400.webp 1400w" sizes="100vw" width="1400" height="875" alt="" loading="lazy" decoding="async">
+      </div>
 
-    <div class="stage-layer stage-layer--uhud">
-      <img src="assets/landing/img/uhud-flank-1400.webp" srcset="assets/landing/img/uhud-flank-800.webp 800w, assets/landing/img/uhud-flank-1400.webp 1400w" sizes="100vw" width="1400" height="875" alt="" loading="eager" decoding="async">
-    </div>
+      <div class="stage-layer stage-layer--uhud" data-field="uhud">
+        <img src="assets/landing/img/uhud-flank-1400.webp" srcset="assets/landing/img/uhud-flank-800.webp 800w, assets/landing/img/uhud-flank-1400.webp 1400w" sizes="100vw" width="1400" height="875" alt="" loading="eager" decoding="async">
+      </div>
 
-    <div class="stage-layer stage-layer--khandaq">
-      <img src="assets/landing/img/khandaq-field-1400.webp" srcset="assets/landing/img/khandaq-field-800.webp 800w, assets/landing/img/khandaq-field-1400.webp 1400w" sizes="100vw" width="1400" height="875" alt="" loading="lazy" decoding="async">
-    </div>
+      <div class="stage-layer stage-layer--khandaq" data-field="khandaq">
+        <img src="assets/landing/img/khandaq-field-1400.webp" srcset="assets/landing/img/khandaq-field-800.webp 800w, assets/landing/img/khandaq-field-1400.webp 1400w" sizes="100vw" width="1400" height="875" alt="" loading="lazy" decoding="async">
+      </div>
 
-    <div class="stage-layer stage-layer--khaybar">
-      <img src="assets/landing/img/khaybar-fort-1400.webp" srcset="assets/landing/img/khaybar-fort-800.webp 800w, assets/landing/img/khaybar-fort-1400.webp 1400w" sizes="100vw" width="1400" height="875" alt="" loading="lazy" decoding="async">
-    </div>
+      <div class="stage-layer stage-layer--khaybar" data-field="khaybar">
+        <img src="assets/landing/img/khaybar-fort-1400.webp" srcset="assets/landing/img/khaybar-fort-800.webp 800w, assets/landing/img/khaybar-fort-1400.webp 1400w" sizes="100vw" width="1400" height="875" alt="" loading="lazy" decoding="async">
+      </div>
 
-    <div class="stage-layer stage-layer--mutah">
-      <img src="assets/landing/img/mutah-field-1400.webp" srcset="assets/landing/img/mutah-field-800.webp 800w, assets/landing/img/mutah-field-1400.webp 1400w" sizes="100vw" width="1400" height="875" alt="" loading="lazy" decoding="async">
+      <div class="stage-layer stage-layer--mutah" data-field="mutah">
+        <img src="assets/landing/img/mutah-field-1400.webp" srcset="assets/landing/img/mutah-field-800.webp 800w, assets/landing/img/mutah-field-1400.webp 1400w" sizes="100vw" width="1400" height="875" alt="" loading="lazy" decoding="async">
+      </div>
     </div>
 
   </div>
 
   <div class="band">
-    <div class="field-plate" id="fieldPlate" aria-hidden="true">
-      <span class="field-plate-year" id="fieldYear">2 AH</span>
-      <span class="field-plate-name" id="fieldName">Badr <span class="field-plate-place">· the wells</span></span>
+    <div class="field-plate" id="fieldPlate" data-field="badr" aria-hidden="true">
+      <div class="field-plate-text">
+        <span class="field-plate-year" id="fieldYear">2 AH</span>
+        <span class="field-plate-name" id="fieldName">Badr <span class="field-plate-place">· the wells</span></span>
+      </div>
+      <svg class="field-plate-plan" viewBox="0 0 78 42" aria-hidden="true" focusable="false">
+        <g class="plate-plan plan--badr">
+          <path class="draw" d="M4 34c12-6 25-7 38-4s22 5 32 2"/>
+          <path class="dash" d="M6 24c7-2 13-1 20 2"/>
+          <path class="draw" d="M18 18v14M18 18h7v4h-7"/>
+          <circle cx="53" cy="31" r="2.6"/><circle cx="60" cy="30" r="2.6"/><circle cx="67" cy="32" r="2.6"/>
+        </g>
+        <g class="plate-plan plan--uhud">
+          <path class="draw" d="M46 34 56 15l6 8 5-4 8 15"/>
+          <path class="draw" d="M12 33c3-7 10-7 13 0"/>
+          <path class="dash" d="M4 37h28"/>
+          <path class="dash" d="M34 37c8-1 12-4 16-8"/>
+          <path class="draw" d="M53 20l-4 6M58 23l-4 6"/>
+        </g>
+        <g class="plate-plan plan--khandaq">
+          <path class="draw" d="M4 26h32M44 26h30M4 32h32M44 32h30"/>
+          <path class="draw" d="M16 14l4-6 4 6zM34 14l4-6 4 6zM52 14l4-6 4 6z"/>
+          <circle cx="14" cy="38" r="1.4"/><circle cx="24" cy="38" r="1.4"/><circle cx="34" cy="38" r="1.4"/><circle cx="44" cy="38" r="1.4"/><circle cx="54" cy="38" r="1.4"/><circle cx="64" cy="38" r="1.4"/>
+        </g>
+        <g class="plate-plan plan--khaybar">
+          <path class="draw" d="M4 31c14-6 26-6 38-10s22-8 32-8"/>
+          <path class="dash" d="M10 25l12-4 12-4 12-3 12-3"/>
+          <path class="draw" d="M14 25v-6h7v6zM28 21v-6h7v6zM42 17v-6h7v6zM56 14v-6h7v6z"/>
+          <path class="draw" d="M4 39v-8M8 39v-6"/>
+        </g>
+        <g class="plate-plan plan--mutah">
+          <path class="dash" d="M4 33c14-4 27-4 40 0s20 4 30 1"/>
+          <path class="draw" d="M18 32V17M18 17h8v5h-8M40 32V11M40 11h8v5h-8M62 32V19M62 19h8v5h-8"/>
+          <circle cx="10" cy="21" r="2.4"/><circle cx="70" cy="13" r="2.4"/>
+        </g>
+      </svg>
     </div>
     <div class="field-folio" aria-hidden="true"><span id="fieldFolio">first of five</span></div>
     <nav class="doors-nav" aria-label="Enter a battle model">
@@ -86,7 +121,7 @@
           <span class="door-head">
             <span class="door-id">
               <span class="door-num" aria-hidden="true"></span>
-              <span class="door-meta">The first battle · 2 AH</span>
+              <span class="door-meta">The first battle<span class="door-year">2 AH</span></span>
             </span>
             <svg class="door-plan" viewBox="0 0 78 42" aria-hidden="true" focusable="false">
               <path class="draw" d="M4 34c12-6 25-7 38-4s22 5 32 2"/>
@@ -99,6 +134,9 @@
             <span class="door-en">Badr</span>
             <span class="door-ar" lang="ar" dir="rtl">بدر</span>
           </span>
+        </span>
+        <span class="door-media" aria-hidden="true">
+          <img src="assets/landing/img/badr-day-2-1400.webp" width="1400" height="875" alt="" loading="eager" decoding="async">
         </span>
         <span class="door-cta">
           <span class="door-label">Enter Badr</span>
@@ -114,7 +152,7 @@
           <span class="door-head">
             <span class="door-id">
               <span class="door-num" aria-hidden="true"></span>
-              <span class="door-meta">The second battle · 3 AH</span>
+              <span class="door-meta">The second battle<span class="door-year">3 AH</span></span>
             </span>
             <svg class="door-plan" viewBox="0 0 78 42" aria-hidden="true" focusable="false">
               <path class="draw" d="M46 34 56 15l6 8 5-4 8 15"/>
@@ -128,6 +166,9 @@
             <span class="door-en">Uhud</span>
             <span class="door-ar" lang="ar" dir="rtl">أحد</span>
           </span>
+        </span>
+        <span class="door-media" aria-hidden="true">
+          <img src="assets/landing/img/uhud-flank-1400.webp" width="1400" height="875" alt="" loading="lazy" decoding="async">
         </span>
         <span class="door-cta">
           <span class="door-label">Enter Uhud</span>
@@ -143,7 +184,7 @@
           <span class="door-head">
             <span class="door-id">
               <span class="door-num" aria-hidden="true"></span>
-              <span class="door-meta">The third battle · 5 AH</span>
+              <span class="door-meta">The third battle<span class="door-year">5 AH</span></span>
             </span>
             <svg class="door-plan" viewBox="0 0 78 42" aria-hidden="true" focusable="false">
               <path class="draw" d="M4 26h32M44 26h30M4 32h32M44 32h30"/>
@@ -155,6 +196,9 @@
             <span class="door-en">Khandaq</span>
             <span class="door-ar" lang="ar" dir="rtl">الخندق</span>
           </span>
+        </span>
+        <span class="door-media" aria-hidden="true">
+          <img src="assets/landing/img/khandaq-field-1400.webp" width="1400" height="875" alt="" loading="lazy" decoding="async">
         </span>
         <span class="door-cta">
           <span class="door-label">Enter Khandaq</span>
@@ -170,7 +214,7 @@
           <span class="door-head">
             <span class="door-id">
               <span class="door-num" aria-hidden="true"></span>
-              <span class="door-meta">The fourth battle · 7 AH</span>
+              <span class="door-meta">The fourth battle<span class="door-year">7 AH</span></span>
             </span>
             <svg class="door-plan" viewBox="0 0 78 42" aria-hidden="true" focusable="false">
               <path class="draw" d="M4 31c14-6 26-6 38-10s22-8 32-8"/>
@@ -183,6 +227,9 @@
             <span class="door-en">Khaybar</span>
             <span class="door-ar" lang="ar" dir="rtl">خيبر</span>
           </span>
+        </span>
+        <span class="door-media" aria-hidden="true">
+          <img src="assets/landing/img/khaybar-fort-1400.webp" width="1400" height="875" alt="" loading="lazy" decoding="async">
         </span>
         <span class="door-cta">
           <span class="door-label">Enter Khaybar</span>
@@ -198,7 +245,7 @@
           <span class="door-head">
             <span class="door-id">
               <span class="door-num" aria-hidden="true"></span>
-              <span class="door-meta">The fifth battle · 8 AH</span>
+              <span class="door-meta">The fifth battle<span class="door-year">8 AH</span></span>
             </span>
             <svg class="door-plan" viewBox="0 0 78 42" aria-hidden="true" focusable="false">
               <path class="dash" d="M4 33c14-4 27-4 40 0s20 4 30 1"/>
@@ -208,8 +255,11 @@
           </span>
           <span class="door-name">
             <span class="door-en">Muʿtah</span>
-            <span class="door-ar" lang="ar" dir="rtl">مؤتہ</span>
+            <span class="door-ar" lang="ar" dir="rtl">مؤتة</span>
           </span>
+        </span>
+        <span class="door-media" aria-hidden="true">
+          <img src="assets/landing/img/mutah-field-1400.webp" width="1400" height="875" alt="" loading="lazy" decoding="async">
         </span>
         <span class="door-cta">
           <span class="door-label">Enter Muʿtah</span>
@@ -222,10 +272,23 @@
     </ol>
     </nav>
 
+    <section class="ahead" aria-labelledby="aheadTitle">
+      <h2 class="ahead-title" id="aheadTitle">
+        <svg class="ahead-mark" viewBox="0 0 20 10" aria-hidden="true" focusable="false"><path d="M1 5h15.5" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="2 2.6"/><circle cx="18.6" cy="5" r="1.1" fill="currentColor"/></svg>
+        Ahead
+      </h2>
+      <p class="ahead-line">
+        <span class="ahead-field">Ḥunayn <span class="ahead-ar" lang="ar" dir="rtl">حنين</span></span> and
+        <span class="ahead-field">Fatḥ Makkah <span class="ahead-ar" lang="ar" dir="rtl">فتح مكة</span></span> in preparation
+        <span class="ahead-sep" aria-hidden="true">·</span>
+        the <span class="ahead-field">Hijrah <span class="ahead-ar" lang="ar" dir="rtl">هجرة</span></span> under study
+      </p>
+    </section>
+
   </div>
 
 </main>
 
-<script src="assets/landing/js/landing.js?v=20261028z" defer></script>
+<script src="assets/landing/js/landing.js?v=20261028z5" defer></script>
 </body>
 </html>

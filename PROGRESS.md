@@ -1,5 +1,54 @@
 # Progress
 
+## Atlas gate — visual doors (on build z, local, not pushed)
+Every door now carries a window onto the ground it opens. The gate keeps its full-bleed field, bone
+index sheet and verdigris survey light; the register below simply shows the five fields instead of
+describing them. No scene, camera, choreography, ledger or model page changed. Cache-bust
+`?v=20261028z5` on the landing stylesheet and script.
+
+### Shipped
+- **A field window on every plate.** Each of the five doors reuses the 1400w capture the stage
+  already preloads — Badr's tents and wells, Uhud's archers' hill, the Khandaq trench lines,
+  Khaybar's fort shelf, Muʿtah's wādī — so there are no new image files and no extra sources. The
+  window is decorative (`aria-hidden`), unmounted from the type, and follows the active field.
+- **Three responsive forms.** A 44–68px strip under the name on desk (228×68 at 1440, 162×53 at
+  1024); a 115×48 stamp at the row's top right on tablet; a 54–59×34 stamp beside the enter line
+  on phone; a 22px full-width strip at the foot of each column in landscape. Tablet rows deepened
+  to 106px so the stamp clears the enter line.
+- **Touch reads without hover.** The swipe gallery stays as an enhancement, and the row stamps now
+  identify all five fields at rest: the active field's window is fully lit while the others sit
+  back. Hover or focus still previews the field, the plate, the folio and the flood.
+- **Ahead, one quiet line.** The three-field register is now a single sentence — “Ḥunayn and Fatḥ
+  Makkah in preparation · the Hijrah under study” — with Arabic inline on desk and tablet and
+  hidden on phones. No years and no links on fields that are not live.
+
+### Verification
+- Eight viewports — 1440×900, 1180×820, 1024×768, 901×768, 768×1024, 390×844, 320×800 and
+  844×390 — one screen at every one, no page scroll, no horizontal overflow, no console errors.
+  Stage / band / ahead at 1440: 900 / 329 / 44; at 768: 458 / 566 / 36; at 390: 363 / 481 / 56;
+  at 320: 344 / 456 / 56.
+- Door windows measured and checked for collision at every viewport: desk strips sit below the name
+  and above the enter line; tablet stamps clear both; phone stamps clear the arrow at 390 and 320;
+  landscape strips run under the enter line. The 320 arrow box grazes the stamp box by 1px; the
+  visible arrow is separated and the frame reads clear.
+- Hover with a real mouse move (Khandaq, then focus Khaybar) switches the field, plate, folio, flood
+  and window; the focus ring is visible. On a 390 phone the gallery swipe to Khandaq and Muʿtah
+  updates plate, folio and stamps with no errors.
+- Landing lint **0 FAIL / 4 WARN** (decorative numbering, two pre-existing `box-shadow: none`
+  resets, the standing em-dash aggregate); `inspect --app` **0 FAIL / 1 WARN** — `app-title-size`
+  flags the 36px editorial masthead, which is the approved landing scale. `node --check` clean on
+  the landing script.
+
+### Known limits
+- The windows are still photographs of the models, not live canvases; the gate reuses the stage's
+  five 1400w assets rather than adding smaller crops.
+- On landscape phones the strips are 22px deep: enough to tell the fields apart, not to survey
+  them. The plate carries the plan.
+- The gate still lists Ḥunayn, Fatḥ Makkah and the Hijrah as ahead — no routes, no years, no links
+  until those models are live.
+- The Uhud, Khandaq, Khaybar and Muʿtah ledgers remain `awaiting_owner_review`; this pass is local
+  only, no push.
+
 ## Build z — label gating repaired across all five fields (local, not pushed)
 A label that belongs to one beat could hide once and never return: the gate branches wrote
 `visibility:hidden` without resetting the label's state, so the visibility check never fired again.

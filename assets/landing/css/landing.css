@@ -174,6 +174,11 @@ svg { display: block; }
   background: var(--ink-deep);
 }
 
+.stage-track {
+  position: absolute;
+  inset: 0;
+}
+
 /* the grade: a top scrim for the masthead, a vignette, a grounded bottom */
 .stage::after {
   content: "";
@@ -247,9 +252,10 @@ svg { display: block; }
   bottom: calc(100% + 12px);
   z-index: 2;
   display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 8px 14px 9px 15px;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 18px 11px 15px;
   background: var(--bone);
   color: var(--ink);
   transition: opacity 0.18s ease;
@@ -266,6 +272,42 @@ svg { display: block; }
 }
 
 .field-plate.is-swapping { opacity: 0; }
+
+.field-plate-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* the active field's survey plan, carried by the plate */
+.field-plate-plan {
+  width: 90px;
+  height: 48px;
+  flex: none;
+  color: var(--accent-deep);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  overflow: visible;
+  opacity: 0.9;
+}
+
+.field-plate-plan .plate-plan {
+  opacity: 0;
+  transition: opacity 0.3s var(--ease);
+}
+
+.field-plate-plan .dash { stroke-dasharray: 2 3.2; }
+.field-plate-plan .draw { stroke-dasharray: none; }
+.field-plate-plan circle { fill: currentColor; stroke: none; }
+
+.field-plate[data-field="badr"] .plan--badr,
+.field-plate[data-field="uhud"] .plan--uhud,
+.field-plate[data-field="khandaq"] .plan--khandaq,
+.field-plate[data-field="khaybar"] .plan--khaybar,
+.field-plate[data-field="mutah"] .plan--mutah { opacity: 1; }
 
 .field-plate-year {
   font-size: 13px;
@@ -346,7 +388,7 @@ svg { display: block; }
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
   min-height: clamp(248px, 27svh, 286px);
   padding: clamp(20px, 2vw, 28px) clamp(18px, 1.8vw, 26px) clamp(16px, 1.5vw, 21px);
   overflow: hidden;
@@ -364,7 +406,8 @@ svg { display: block; }
 .gate[data-battle="badr"] .door--badr,
 .gate[data-battle="uhud"] .door--uhud,
 .gate[data-battle="khandaq"] .door--khandaq,
-.gate[data-battle="khaybar"] .door--khaybar {
+.gate[data-battle="khaybar"] .door--khaybar,
+.gate[data-battle="mutah"] .door--mutah {
   background: rgba(58, 98, 80, 0.045);
 }
 
@@ -459,10 +502,13 @@ svg { display: block; }
   transition: color 0.2s var(--ease) 0.32s;
 }
 
+.door-year::before { content: " · "; }
+
 .gate[data-battle="badr"] .door--badr:not(:hover):not(:focus-visible) .door-num,
 .gate[data-battle="uhud"] .door--uhud:not(:hover):not(:focus-visible) .door-num,
 .gate[data-battle="khandaq"] .door--khandaq:not(:hover):not(:focus-visible) .door-num,
-.gate[data-battle="khaybar"] .door--khaybar:not(:hover):not(:focus-visible) .door-num {
+.gate[data-battle="khaybar"] .door--khaybar:not(:hover):not(:focus-visible) .door-num,
+.gate[data-battle="mutah"] .door--mutah:not(:hover):not(:focus-visible) .door-num {
   color: var(--accent-deep);
 }
 
@@ -490,7 +536,8 @@ svg { display: block; }
 .gate[data-battle="badr"] .door--badr:not(:hover):not(:focus-visible) .door-plan,
 .gate[data-battle="uhud"] .door--uhud:not(:hover):not(:focus-visible) .door-plan,
 .gate[data-battle="khandaq"] .door--khandaq:not(:hover):not(:focus-visible) .door-plan,
-.gate[data-battle="khaybar"] .door--khaybar:not(:hover):not(:focus-visible) .door-plan {
+.gate[data-battle="khaybar"] .door--khaybar:not(:hover):not(:focus-visible) .door-plan,
+.gate[data-battle="mutah"] .door--mutah:not(:hover):not(:focus-visible) .door-plan {
   color: rgba(58, 98, 80, 0.72);
 }
 
@@ -529,11 +576,68 @@ svg { display: block; }
   transition: color 0.2s var(--ease) 0.32s;
 }
 
+/* the field window: each plate carries the ground it opens onto */
+.door-media {
+  position: relative;
+  z-index: 1;
+  display: block;
+  flex: none;
+  height: clamp(44px, 5.2vw, 68px);
+  margin-top: clamp(8px, 0.9vw, 12px);
+  overflow: hidden;
+  background: var(--bone-soft);
+}
+
+.door-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.76) contrast(1.05) brightness(0.9);
+  opacity: 0.9;
+  transition:
+    transform 0.8s var(--ease),
+    filter 0.35s var(--ease),
+    opacity 0.35s var(--ease);
+}
+
+.door-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 1px rgba(11, 16, 14, 0.17); /* taste-skill-ignore: the mounted print edge */
+}
+
+.door--badr .door-media img { object-position: 50% 70%; }
+.door--uhud .door-media img { object-position: 50% 50%; }
+.door--khandaq .door-media img { object-position: 50% 48%; }
+.door--khaybar .door-media img { object-position: 50% 50%; }
+.door--mutah .door-media img { object-position: 50% 55%; }
+
+/* the field on show is the one whose ground is fully lit */
+.gate[data-battle="badr"] .door--badr .door-media img,
+.gate[data-battle="uhud"] .door--uhud .door-media img,
+.gate[data-battle="khandaq"] .door--khandaq .door-media img,
+.gate[data-battle="khaybar"] .door--khaybar .door-media img,
+.gate[data-battle="mutah"] .door--mutah .door-media img {
+  opacity: 1;
+  filter: saturate(0.88) contrast(1.05) brightness(0.96);
+}
+
+.door:hover .door-media img,
+.door:focus-visible .door-media img {
+  opacity: 1;
+  filter: saturate(0.96) contrast(1.03) brightness(1);
+  transform: scale(1.035);
+}
+
 .door-cta {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
+  margin-top: auto;
   padding-top: clamp(12px, 1.4vw, 16px);
 }
 
@@ -587,14 +691,16 @@ svg { display: block; }
 .gate[data-battle="badr"] .door--badr:not(:hover):not(:focus-visible) .door-arrow,
 .gate[data-battle="uhud"] .door--uhud:not(:hover):not(:focus-visible) .door-arrow,
 .gate[data-battle="khandaq"] .door--khandaq:not(:hover):not(:focus-visible) .door-arrow,
-.gate[data-battle="khaybar"] .door--khaybar:not(:hover):not(:focus-visible) .door-arrow {
+.gate[data-battle="khaybar"] .door--khaybar:not(:hover):not(:focus-visible) .door-arrow,
+.gate[data-battle="mutah"] .door--mutah:not(:hover):not(:focus-visible) .door-arrow {
   color: var(--accent-deep);
 }
 
 .gate[data-battle="badr"] .door--badr:not(:hover):not(:focus-visible) .door-label,
 .gate[data-battle="uhud"] .door--uhud:not(:hover):not(:focus-visible) .door-label,
 .gate[data-battle="khandaq"] .door--khandaq:not(:hover):not(:focus-visible) .door-label,
-.gate[data-battle="khaybar"] .door--khaybar:not(:hover):not(:focus-visible) .door-label {
+.gate[data-battle="khaybar"] .door--khaybar:not(:hover):not(:focus-visible) .door-label,
+.gate[data-battle="mutah"] .door--mutah:not(:hover):not(:focus-visible) .door-label {
   color: var(--ink);
 }
 
@@ -612,6 +718,101 @@ svg { display: block; }
   outline: 2px solid var(--ink);
   outline-offset: -4px;
   box-shadow: inset 0 0 0 2px var(--bone); /* taste-skill-ignore: dual tone focus ring */
+}
+
+/* ------------------------------ ahead: three fields not yet modelled */
+
+.ahead {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: baseline;
+  gap: clamp(12px, 1.4vw, 20px);
+  padding: 10px calc(var(--edge) - var(--sheet-edge)) 11px;
+  border-top: 1px solid rgba(11, 16, 14, 0.16);
+  background: rgba(11, 16, 14, 0.018);
+}
+
+.ahead-title {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.005em;
+  color: rgba(11, 16, 14, 0.7);
+}
+
+.ahead-mark {
+  width: 18px;
+  height: 9px;
+  flex: none;
+  color: rgba(11, 16, 14, 0.4);
+}
+
+.ahead-line {
+  min-width: 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--muted-ink);
+}
+
+.ahead-field {
+  font-family: var(--serif);
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  color: rgba(11, 16, 14, 0.78);
+}
+
+.ahead-ar {
+  margin-left: 0.35em;
+  font-family: var(--arabic);
+  font-size: 0.86em;
+  color: var(--muted-ink);
+}
+
+.ahead-sep {
+  margin: 0 0.4em;
+  color: rgba(11, 16, 14, 0.32);
+}
+
+/* ------------------------------ the desk reading: one plan, stacked names */
+
+@media (min-width: 901px) {
+  .door-name {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+  }
+
+  .door-ar {
+    margin-bottom: 0;
+    font-size: clamp(18px, 1.55vw, 22px);
+    line-height: 1;
+  }
+
+  /* the plate carries the plan on a desk; the phone register keeps the small one */
+  .door-plan { display: none; }
+
+  .door-year {
+    display: block;
+    font-size: 13px;
+    line-height: 1.3;
+    color: var(--muted-ink);
+  }
+
+  .door-year::before { content: none; }
+}
+
+@media (min-width: 901px) and (max-width: 1180px) {
+  .door-cta { gap: 8px; }
+  .door-label { font-size: 11px; letter-spacing: 0.055em; white-space: nowrap; }
+  .door-arrow svg { width: 22px; height: 15px; }
 }
 
 /* ------------------------------ entrance */
@@ -681,8 +882,34 @@ svg { display: block; }
 
   .band { box-shadow: none; }
 
-  .field-plate,
+  /* touch has no hover: the field is a gallery you swipe, the plate is its caption.
+     The register below still enters on one tap. */
+  .stage-track {
+    display: flex;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .stage-track::-webkit-scrollbar { display: none; }
+
+  .gate .stage .stage-layer {
+    position: relative;
+    flex: 0 0 100%;
+    height: 100%;
+    opacity: 1;
+    transform: none;
+    transition: none;
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+  }
+
   .field-folio { display: none; }
+
+  .field-plate { padding-left: 20px; }
 
   .doors { grid-template-columns: 1fr; }
 
@@ -717,7 +944,8 @@ svg { display: block; }
   .gate[data-battle="badr"] .door--badr::after,
   .gate[data-battle="uhud"] .door--uhud::after,
   .gate[data-battle="khandaq"] .door--khandaq::after,
-  .gate[data-battle="khaybar"] .door--khaybar::after {
+  .gate[data-battle="khaybar"] .door--khaybar::after,
+  .gate[data-battle="mutah"] .door--mutah::after {
     transform: scaleY(1);
   }
 
@@ -746,13 +974,62 @@ svg { display: block; }
   }
 
   .door-arrow svg { width: 26px; height: 24px; }
-}
 
-/* the plan mark is a desktop reading of the field; the columns need the room */
-@media (min-width: 901px) and (max-width: 1120px) {
+  /* on touch the field window is a stamp: top right on a tablet, bottom right on a phone */
+  .door-media {
+    position: absolute;
+    top: 13px;
+    right: var(--edge);
+    width: clamp(98px, 15vw, 128px);
+    height: 48px;
+    margin: 0;
+  }
+
+  .door-media img {
+    filter: saturate(0.78) contrast(1.04) brightness(0.92);
+    opacity: 0.94;
+  }
+
   .door-plan { display: none; }
+
+  .ahead {
+    display: block;
+    padding: 7px var(--edge) 8px;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  .ahead-title {
+    display: inline;
+    margin-right: 8px;
+    font-size: 16px;
+  }
+
+  .ahead-mark {
+    display: inline-block;
+    width: 15px;
+    height: 8px;
+    margin-right: 6px;
+    vertical-align: 1px;
+  }
+
+  .ahead-line {
+    display: inline;
+    line-height: 1.4;
+  }
+
+  .ahead-field {
+    font-size: 15px;
+    line-height: 1.25;
+  }
 }
 
+/* the tablet row is deep enough for a field stamp above the enter line */
+@media (min-width: 701px) and (max-width: 900px) {
+  .door { min-height: 106px; }
+}
+
+/* the small plan stays with the phone register; the desk plate carries the larger one */
 @media (max-width: 700px) {
   :root {
     --head: 76px;
@@ -767,6 +1044,14 @@ svg { display: block; }
 
   .stage { min-height: 270px; }
 
+  .field-plate {
+    gap: 12px;
+    padding: 8px 13px 9px 20px;
+  }
+
+  .field-plate-name { font-size: 19px; }
+  .field-plate-plan { width: 64px; height: 34px; }
+
   .door {
     padding-top: 12px;
     padding-bottom: 14px;
@@ -778,6 +1063,17 @@ svg { display: block; }
   .door-plan { display: none; }
   .door-arrow svg { width: 26px; height: 24px; }
   .door-cta { top: 13px; bottom: auto; }
+
+  .door-media {
+    top: auto;
+    bottom: 7px;
+    width: clamp(54px, 15vw, 64px);
+    height: 34px;
+  }
+
+  .ahead { padding: 7px var(--edge) 8px; }
+  .ahead-title { font-size: 15px; }
+  .ahead-ar { display: none; }
 }
 
 @media (max-width: 380px) {
@@ -837,7 +1133,7 @@ svg { display: block; }
   .door {
     display: flex;
     min-height: 0;
-    padding: 11px 14px 12px;
+    padding: 11px 14px 24px;
   }
 
   .door-cell:first-child .door { padding-left: 14px; }
@@ -868,13 +1164,26 @@ svg { display: block; }
   }
 
   .door-plan { display: none; }
-  .door-meta { font-size: 13px; }
+  .door-meta { font-size: 11px; line-height: 1.35; }
+  .door-year { display: block; font-size: 12px; line-height: 1.3; }
+  .door-year::before { content: none; }
   .door-name { margin-top: 4px; gap: 7px; }
   .door-en { font-size: 28px; }
   .door-ar { font-size: 15px; }
   .door-cta { position: static; padding-top: 9px; }
   .door-label { display: none; }
   .door-arrow svg { width: 20px; height: 24px; }
+
+  .door-media {
+    top: auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: auto;
+    height: 22px;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
 }
 
 /* ------------------------------ reduced motion */
