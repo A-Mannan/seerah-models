@@ -60,7 +60,8 @@ the model pages still read `?v=20261028z`, so a hard refresh is needed to see th
 Every door now carries a window onto the ground it opens. The gate keeps its full-bleed field, bone
 index sheet and verdigris survey light; the register below simply shows the five fields instead of
 describing them. No scene, camera, choreography, ledger or model page changed. Cache-bust
-`?v=20261028z6` on the landing stylesheet and script (z5 was the first pass, z6 the polish).
+`?v=20261028z7` on the landing stylesheet and script (z5 the first pass, z6 the polish, z7 the
+trim and grade).
 
 ### Shipped
 - **A field window on every plate.** Each of the five doors reuses the 1400w capture the stage
@@ -68,12 +69,12 @@ describing them. No scene, camera, choreography, ledger or model page changed. C
   Khaybar's fort shelf, Muʿtah's wādī — so there are no new image files and no extra sources. The
   window is decorative (`aria-hidden`), unmounted from the type, and follows the active field.
 - **Three responsive forms.** A 44–68px strip under the name on desk (228×68 at 1440, 162×53 at
-  1024); a 115×48 stamp at the row's top right on tablet; a 54–59×34 stamp beside the enter line
-  on phone; a 22px full-width strip at the foot of each column in landscape. Tablet rows deepened
-  to 106px so the stamp clears the enter line.
+  1024); a 115×48 stamp at the row's top right on tablet; a 54–59×34 stamp at the row's bottom
+  right on phone; a 22px full-width strip at the foot of each column in landscape. Tablet rows
+  deepened to 106px so the stamp clears the arrow.
 - **Touch reads without hover.** The swipe gallery stays as an enhancement, and the row stamps now
   identify all five fields at rest: the active field's window is fully lit while the others sit
-  back. Hover or focus still previews the field, the plate, the folio and the flood.
+  back. Hover or focus still previews the field, the plate and the flood.
 - **Ahead, one quiet line.** The three-field register is now a single sentence — “Ḥunayn and Fatḥ
   Makkah in preparation · the Hijrah under study” — with Arabic inline on desk and tablet and
   hidden on phones. No years and no links on fields that are not live.
@@ -83,9 +84,9 @@ The register was still telling on itself: micro-caps on every enter line, hairli
 plates, ten type sizes, and a plate sitting on the first door's name on touch. This pass removes
 those tells. No scene, camera, choreography, ledger or model page changed.
 
-- **Enter, said once.** Door labels are sentence case at 13px with normal tracking — “Enter Badr”,
-  not “ENTER BADR”. The arrow trails on desk; on touch the label holds the sheet's right edge and
-  the arrow leads it, so the register's right margin stays unbroken at 390 and 768.
+- **Enter, said once (z6).** Door labels were sentence case at 13px with normal tracking — “Enter
+  Badr”, not “ENTER BADR”. The arrow trailed on desk; on touch the label held the sheet's right
+  edge. z7 removes both the labels and the trailing arrow; the whole row is the link.
 - **No rules in the register.** Desk column rules, tablet/phone row rules, landscape column rules
   and the Ahead top rule are gone. Space, the 0.06 verdigris wash on the active plate, the 3px
   threshold bar and the field strips do the dividing; the inspector `hairline` FAIL is cleared.
@@ -102,20 +103,44 @@ those tells. No scene, camera, choreography, ledger or model page changed.
   dot only where the tail begins a line, so the phone reads “the Hijrah under study” clean while
   320 keeps the dot mid-line.
 
+### Trim and grade (z7)
+The register still repeated itself: an ordinal above every year, an “Enter …” line on every
+plate, and five captures too dim to read at strip size. This pass cuts the repetition and lifts
+the windows. No scene, camera, choreography, ledger or model page changed.
+
+- **One line per date.** The ordinal is gone; the folio number and year share a line
+  (“01 · 2 AH”). The “Enter …” labels are gone; the whole row/column is the link and a single
+  arrow at the right is the CTA. `aria-label` still names the model and the year.
+- **The arrow stays on the right rail.** Desk and touch already put it there; landscape was
+  inheriting the touch row's reversed flex direction and stranding it at the left edge. It now
+  right-aligns in landscape too.
+- **The windows are legible.** Re-cropped and re-graded: base `saturate(.9) contrast(1.08)
+  brightness(1.03)` at .95, active `saturate(.96) contrast(1.06) brightness(1.05)`, hover
+  `saturate(1) contrast(1.05) brightness(1.08)`. Object positions 50% 72/54/52/58/70 bring
+  Muʿtah's lower band and Khaybar's walls into the strip.
+- **The folio is gone.** “first of five” sat directly above the Muʿtah column at 1024 and read as
+  an eyebrow for the fifth door; the inspector's `eyebrow` FAIL is cleared. The plate alone
+  carries the field caption.
+- Cache-bust `?v=20261028z7` on the landing stylesheet and script.
+
 ### Verification
-- Twelve viewports — 1440×900, 1180×820, 1024×768, 901×768, 768×1024, 390×844, 375×667, 360×740,
-  320×800, 320×640, 320×568 and 844×390 — one screen at every one, no page scroll, no horizontal
-  overflow, no console errors. Stage / band / ahead at 1440: 900 / 328 / 43; at 768: 458 / 566 / 36;
-  at 390: 366 / 478 / 57; at 320×640: 225 / 415 / 53.
-- Door windows measured and checked for collision at every viewport: desk strips sit below the name
-  and above the enter line; tablet stamps clear both; phone stamps clear the arrow and the name at
-  390, 375, 360 and 320; landscape strips run under the enter line. The 320 arrow box grazes the
-  stamp box by 1px; the visible arrow is separated and the frame reads clear.
-- Hover with a real mouse move (Khandaq, then focus Khaybar) switches the field, plate, folio, flood
-  and window; the focus ring is visible. On a 390 phone the gallery swipe to Khandaq and Muʿtah
-  updates plate, folio and stamps with no errors.
-- Landing inspect **0 FAIL / 4 WARN** (cream palette, three bilingual typefaces, no footage, the
-  swipe gallery's side-scroll); lint **0 FAIL / 1 WARN** (the standing em-dash aggregate).
+- Eleven viewports re-probed — 1440×900, 1180×820, 1024×768, 901×768, 768×1024, 390×844, 375×667,
+  360×740, 320×800, 320×640 and 844×390 — one screen at every one, no page scroll, no horizontal
+  overflow, no console errors. Stage / band / ahead: 1440 900/311/43; 768 458/566/36;
+  390 366/478/57; 320×640 225/415/53; 844×390 390/152/36. The 320×568 class also holds one
+  screen (153/415/53).
+- Door windows checked for collision at every viewport: desk strips sit below the name and above
+  the arrow; tablet stamps clear the arrow; phone stamps clear the arrow and the name at 390, 375,
+  360 and 320; landscape strips run under the arrow. The 320 arrow box grazes the stamp box by
+  1px; the visible arrow is separated and the frame reads clear.
+- Hover with a real mouse move and focus switch the field, plate, flood and window; the focus ring
+  is visible. On a 390 phone the gallery swipe to Khandaq and Muʿtah updates the plate and stamps
+  with no errors.
+- Landing inspect **0 FAIL / 4 WARN** with `off-centre` allowed: cream palette, three bilingual
+  typefaces, no footage, the swipe gallery's side-scroll. The `off-centre` heuristic measures the
+  ragged end of the Ahead line (20/55 at 390, 32/86 at 1024) because the 59×34 phone stamps and
+  30×16 arrows fall under its 48×48 media-box floor; the rows themselves are full-bleed with
+  symmetric 20px/35px padding and the right rail sits on that margin. Lint **0 FAIL / 0 WARN**;
   `node --check` clean on the landing script.
 
 ### Known limits

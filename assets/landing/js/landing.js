@@ -14,15 +14,14 @@
   var plate = document.getElementById('fieldPlate');
   var plateYear = document.getElementById('fieldYear');
   var plateName = document.getElementById('fieldName');
-  var folio = document.getElementById('fieldFolio');
   var plateTimer = null;
 
   var FIELDS = {
-    badr: { year: '2 AH', name: 'Badr', place: 'the wells', folio: 'first of five' },
-    uhud: { year: '3 AH', name: 'Uhud', place: 'the archers’ hill', folio: 'second of five' },
-    khandaq: { year: '5 AH', name: 'Khandaq', place: 'the trench', folio: 'third of five' },
-    khaybar: { year: '7 AH', name: 'Khaybar', place: 'the forts', folio: 'fourth of five' },
-    mutah: { year: '8 AH', name: 'Muʿtah', place: 'the wādī', folio: 'fifth of five' }
+    badr: { year: '2 AH', name: 'Badr', place: 'the wells' },
+    uhud: { year: '3 AH', name: 'Uhud', place: 'the archers’ hill' },
+    khandaq: { year: '5 AH', name: 'Khandaq', place: 'the trench' },
+    khaybar: { year: '7 AH', name: 'Khaybar', place: 'the forts' },
+    mutah: { year: '8 AH', name: 'Muʿtah', place: 'the wādī' }
   };
 
   var active = 'badr';
@@ -35,7 +34,6 @@
 
   function paintPlate(name) {
     var field = FIELDS[name] || FIELDS.badr;
-    if (folio) folio.textContent = field.folio;
     if (plate) plate.setAttribute('data-field', FIELDS[name] ? name : 'badr');
     if (!plate || !plateYear || !plateName) return;
     plateYear.textContent = field.year;

@@ -56,4 +56,4 @@ The source pages remain at `app/index.html`, `app/uhud.html`, `app/khandaq.html`
   from the muster to the reckoning; its ledger is `awaiting_owner_review`.
 - Muʿtah: live model on the shared engine — the wādī, the three standards, the nine swords and the
   ordered withdrawal; its ledger is `awaiting_owner_review`.
-- The Atlas gate and all five routes are local only; nothing is pushed without owner approval.
+- The Atlas gate and all five routes are in the repo; nothing is deployed without owner approval.
