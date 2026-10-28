@@ -181,6 +181,9 @@
       booted = !!ok;
       booting = false;
       if (booted && on) openBeds();
+      else if (on) {
+        console.warn('[sound] the audio library failed to load — files missing? ' + manifestURL);
+      }
       return booted;
     }).catch(function () {
       booting = false;

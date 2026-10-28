@@ -647,6 +647,11 @@
       dbg.className = 'debug-build';
       dbg.textContent = page.build;
       document.body.appendChild(dbg);
+      /* the audio state, where the owner can see it: ?debug=1&sound=1 then play */
+      setTimeout(function () {
+        var d = (window.SOUND && window.SOUND.debug) ? window.SOUND.debug() : null;
+        if (d) dbg.textContent += ' · sound ' + (d.mode || '?') + (d.booted ? ' booted' : ' NOT booted') + ' beds ' + d.bedsStarted;
+      }, 6000);
     }
     B.setSpeed(SPEEDS[speedIdx]);
     setPlayState(false);
