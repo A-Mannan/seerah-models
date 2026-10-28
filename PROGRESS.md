@@ -1,5 +1,22 @@
 # Progress
 
+## Build ae — the first sound library pulled site-wide (local, then pushed on owner approval)
+The owner heard build ab's library and rejected it: the sword clashes read as a ringtone,
+the crowd bed carried people talking in English, and the mixes were noisy — "unprofessional."
+The whole layer is muted while the library is rebuilt to a professional bar: empty
+`manifest.json` / `manifest.js` (nothing plays, the sampler stays healthy), the MP3s
+removed from the hosting, credits kept for the rebuild. The rebuild sources are already
+identified — Sonniss GDC professional packs mirrored on archive.org (Coll Anderson's real
+battle crowds, 344 Audio's Medieval Battle, SmartSoundFX's medieval steel, Alex Lane's
+resonant impacts) plus a stricter curation bar: no intelligible speech anywhere, no
+bell/ding character in the clashes, spectral checks on every file, and a measured mix
+before anything ships. Cache-bust `?v=20261028ae`; routes regenerated. The owner approved
+an immediate push.
+
+### Known limits
+- Every model is silent until the professional library lands.
+- The Uhud, Khandaq, Khaybar, Muʿtah and Ḥunayn ledgers remain `awaiting_owner_review`.
+
 ## Build ad — the hosted pages start in half the time (on build ac, local, not pushed)
 The owner's report: "the model pages on hosted ones feels too slow." The cost was not the model
 but the wait: an unused 252 KB ledger payload in front of Three.js, a blocking first 3D frame
