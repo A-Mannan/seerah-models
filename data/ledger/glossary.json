@@ -11,7 +11,8 @@
     "battles_and_days": [
       {"canonical": "Badr", "display_en": "Badr", "reject": ["Bedr", "Badr (Hunayn) in label", "Tabuk"], "note": "The battle/wells site; name of the battle."},
       {"canonical": "Yawm al-Furqan", "display_en": "Day of al-Furqan (The Criterion)", "reject": ["Yawmul Furqaan", "day of Furqan (without al-)"], "note": "Traditional name of Badr day; label with Quran 8:41 link ('the day of al-Furqan')."},
-      {"canonical": "Mu'tah", "display_en": "Muʿtah", "reject": ["Muta", "Mutah (bare in HUD)", "Mootah"], "note": "The expedition of Jumada al-Ula 8 AH at the village in al-Balqa' (MUT-001). HUD label 'Muʿtah'."}
+      {"canonical": "Mu'tah", "display_en": "Muʿtah", "reject": ["Muta", "Mutah (bare in HUD)", "Mootah"], "note": "The expedition of Jumada al-Ula 8 AH at the village in al-Balqa' (MUT-001). HUD label 'Muʿtah'."},
+      {"canonical": "Hunayn", "display_en": "Ḥunayn", "reject": ["Hunain (spelling)", "Honein", "Hunayn (Hunain) in HUD"], "note": "The battle of Shawwal 8 AH in the valley on the Makkah-Ta'if road (HUN-005). HUD label 'Ḥunayn'."}
     ],
     "places": [
       {"canonical": "Makkah", "reject": ["Mecca", "Makkah al-Mukarramah in HUD"], "note": "Quraish's city."},
@@ -45,7 +46,14 @@
       {"canonical": "Masharif", "reject": ["Mashareef", "Masharif (spine alt)"], "note": "Village in al-Balqa' where the armies first met before the move to Mu'tah (MUT-009, REPORTED)."},
       {"canonical": "Busra", "reject": ["Bostra", "Bosra", "Busrā"], "note": "The Syrian town to whose ruler the envoy carried the letter (MUT-002, REPORTED)."},
       {"canonical": "al-Karak", "reject": ["Karak (bare)", "Kerak"], "note": "Modern Jordanian town near the Mu'tah site; geography only, not a battle-era name (MUT-001)."},
-      {"canonical": "Juruf", "reject": ["Jurf (bare)", "Al-Juruf"], "note": "The place outside Madinah where the returning army was met (MUT-023, REPORTED)."}
+      {"canonical": "Juruf", "reject": ["Jurf (bare)", "Al-Juruf"], "note": "The place outside Madinah where the returning army was met (MUT-023, REPORTED)."},
+      {"canonical": "Awtas", "reject": ["Autas", "Awtaas"], "note": "Valley in Hawazin land near Hunayn where Malik placed the families and property (HUN-002); the pursuit and Durayd's death are set there (HUN-021, Bukhari 4323)."},
+      {"canonical": "Ta'if", "reject": ["Taif (bare)", "Al-Ta'if", "Tayef"], "note": "The walled town of Thaqif; siege of Shawwal 8 AH, duration DISPUTED 10-20 days (HUN-023)."},
+      {"canonical": "Ji'ranah", "reject": ["Jirana", "Al-Ji'ranah", "Jaranah"], "note": "The stopping place between Makkah and Ta'if where the Hunayn spoils were held and distributed (HUN-022, HUN-027); the Umrah was assumed there (HUN-031)."},
+      {"canonical": "Nakhlah", "reject": ["Nakhla (bare)", "Nakhlah al-Yamaniyah in HUD"], "note": "The track taken by fleeing enemy troops; the sirah places Durayd's death on this road, Bukhari at Awtas (HUN-021 variant)."},
+      {"canonical": "Dhat Anwat", "reject": ["Dhat al-Anwat", "Zat Anwat", "Dat Anwat"], "note": "The great green nabk tree on the Hunayn march where weapons were hung; the request for a similar tree was rebuked (HUN-009, REPORTED)."},
+      {"canonical": "Laiyah", "reject": ["Layyah", "Laiya (bare)"], "note": "Site of Malik ibn 'Awf's castle on the Ta'if road; demolished on the march (spine, REPORTED)."},
+      {"canonical": "samurah", "reject": ["Samura tree (spelling)", "Samrah (bare)", "Ridwan tree (as the call's wording)"], "note": "The tree of the Ridwan pledge at Hudaybiyah; al-'Abbas's canonical call is 'O companions of the samurah tree' (Muslim 1775b). Label 'the samurah tree' with the hadith ref."}
     ],
     "khaybar_people": [
       {"canonical": "Marhab", "reject": ["Merhab", "Marhab bin Zayd (unsourced kunya)"], "note": "Khaybar champion; duel pairing with 'Ali is REPORTED (KHY-011); no boast dialogue rendered."},
@@ -65,6 +73,22 @@
       {"canonical": "Asma' bint 'Umays", "reject": ["Asma bint Umays (bare)", "Asmaa bint Umais"], "note": "Ja'far's wife; comforted by the Prophet (PBUH) after Mu'tah (MUT-023, REPORTED). No depiction."},
       {"canonical": "Qutbah ibn Qatadah al-'Udhri", "reject": ["Qutba bin Qatada", "Qutbah (bare)"], "note": "Right wing at Mu'tah per the sirah (MUT-009, REPORTED); hidden from on-screen labels."},
       {"canonical": "'Ubadah ibn Malik al-Ansari", "reject": ["Ubayah ibn Malik", "Ubaydah ibn Malik"], "note": "Left wing at Mu'tah per the sirah; the name varies in the retellings (MUT-009, REPORTED); hidden from on-screen labels."}
+    ],
+    "hunayn_people": [
+      {"canonical": "Malik ibn 'Awf al-Nasri", "reject": ["Malik bin Awf (bare)", "An-Nasri (spine spelling)", "Malik ibn Auf"], "note": "Hawazin commander at Hunayn and Ta'if (HUN-001, HUN-023, REPORTED). On-screen as 'Malik's standard', never a figure."},
+      {"canonical": "Duraid ibn al-Simma", "reject": ["Duraid bin As-Simmah (spine)", "Durayd ibn al-Simma (alternate y)", "Duraid (bare)"], "note": "The aged war-experienced Hawazin adviser whose counsel Malik refused (HUN-003); killed in the pursuit (HUN-021, Bukhari 4323). Never depicted."},
+      {"canonical": "al-'Abbas ibn 'Abd al-Muttalib", "reject": ["Abbas (bare)", "Al-Abbas bin Abdul Muttalib"], "note": "(RA); the Prophet's uncle, loud-voiced, who gave the samurah-tree call (HUN-014, Muslim 1775a/b). Never depict; the call is carried by a standard."},
+      {"canonical": "Abu Sufyan ibn al-Harith", "reject": ["Abu Sufyan (unqualified)", "Abu Sufyan bin Al-Harith (spelling)", "Abu Sufyan ibn Harb (WRONG PERSON)"], "note": "(RA); the Prophet's cousin, holding the mule's head at the stand (HUN-013, Bukhari 4315). GLOSSARY-CRITICAL: not Abu Sufyan ibn Harb, the former Quraysh leader, who is a different man and also present at Hunayn."},
+      {"canonical": "Safwan ibn Umayyah", "reject": ["Safwan bin Omaiyah (spine)", "Safwan (bare)"], "note": "Lent the Prophet (PBUH) a hundred armours before Hunayn (HUN-008, REPORTED)."},
+      {"canonical": "'Itab ibn Usayd", "reject": ["Itab bin Usaid (spine)", "Attab ibn Usayd"], "note": "Governor of Makkah during the campaign (HUN-008, HUN-031, REPORTED)."},
+      {"canonical": "Abu 'Amir al-Ash'ari", "reject": ["Abu Amir Al-Ash'ari (bare)", "Abu 'Amir al-Ashari"], "note": "Commander sent to Awtas; killed by an arrow wound; the Prophet (PBUH) prayed for him as 'Ubaid Abu 'Amir' (HUN-021, Bukhari 4323). Never depicted."},
+      {"canonical": "Abu Musa al-Ash'ari", "reject": ["Abu Musa Ashari"], "note": "Took command at Awtas after Abu 'Amir and carried his message to the Prophet (PBUH) (HUN-021, Bukhari 4323)."},
+      {"canonical": "Zuhair ibn Sard", "reject": ["Zuhayr ibn Sard", "Zuhair bin Sard (spine)"], "note": "Head of the fourteen-man Hawazin delegation after the battle (HUN-029, REPORTED)."},
+      {"canonical": "al-Shaima' bint al-Harith", "reject": ["Shaima (bare)", "Ash-Shaima", "Shayma"], "note": "The Prophet's (PBUH) foster sister, among the captives; recognised and sent back (HUN-030, REPORTED, hidden from the field)."},
+      {"canonical": "Nawfal ibn Mu'awiyah ad-Daili", "reject": ["Nawfal bin Muawiya", "Nawfal al-Daili (bare)"], "note": "Consulted before the Ta'if siege was lifted; his fox-and-burrow comparison is sirah (HUN-026 area, REPORTED)."},
+      {"canonical": "Mas'ud ibn 'Amr al-Ghifari", "reject": ["Masud bin Amr", "Mas'ud al-Ghifari (bare)"], "note": "In charge of the spoils depot at Ji'ranah (HUN-022, REPORTED)."},
+      {"canonical": "Rabi'ah ibn Rafi'", "reject": ["Rabi'a bin Rafi", "Rabi'ah (bare)"], "note": "Named in the sirah as Durayd's killer on the Nakhlah road (HUN-021 variant). Hidden from on-screen labels."},
+      {"canonical": "Abu Bakrah", "reject": ["Abu Bakra (spelling)", "Abu Bakr (WRONG PERSON)", "Nufay' ibn al-Harith (bare)"], "note": "(RA); came down from the Ta'if wall to the Prophet (PBUH) and was freed (HUN-024, Bukhari 4326-4327); the well-wheel descent is sirah (HUN-025). GLOSSARY-CRITICAL: not Abu Bakr as-Siddiq."}
     ],
     "muslim_side": [
       {"canonical": "Muhammad (PBUH)", "reject": ["Mohammed", "Mohamed", "Muhammed", "Mahomet"], "note": "Always rendered as 'the Prophet (PBUH)'; never depicted."},

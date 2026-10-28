@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>The Seerah Atlas · Badr, Uhud, Khandaq, Khaybar and Muʿtah in 3D</title>
-<meta name="description" content="Badr, Uhud, Khandaq, Khaybar and Muʿtah as interactive 3D models. Enter the field, orbit the ground, and follow each battle's day. Ḥunayn, Fatḥ Makkah and the Hijrah are ahead.">
+<title>The Seerah Atlas · Badr, Uhud, Khandaq, Khaybar, Muʿtah and Ḥunayn in 3D</title>
+<meta name="description" content="Badr, Uhud, Khandaq, Khaybar, Muʿtah and Ḥunayn as interactive 3D models. Enter the field, orbit the ground, and follow each battle's day. Fatḥ Makkah and the Hijrah are ahead.">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#0b100e">
 <meta property="og:type" content="website">
 <meta property="og:title" content="The Seerah Atlas">
-<meta property="og:description" content="The life of the Prophet ﷺ, mapped in 3D. Five fields live: Badr, Uhud, Khandaq, Khaybar and Muʿtah. Ḥunayn, Fatḥ Makkah and the Hijrah are ahead.">
+<meta property="og:description" content="The life of the Prophet ﷺ, mapped in 3D. Six fields live: Badr, Uhud, Khandaq, Khaybar, Muʿtah and Ḥunayn. Fatḥ Makkah and the Hijrah are ahead.">
 <meta property="og:image" content="assets/landing/img/badr-day-2-1400.webp">
 <meta property="og:image:alt" content="The field of Badr at dawn, rendered as a 3D terrain model.">
 <meta name="twitter:card" content="summary_large_image">
@@ -22,8 +22,9 @@
 <link rel="preload" as="image" href="assets/landing/img/khandaq-field-1400.webp" imagesrcset="assets/landing/img/khandaq-field-800.webp 800w, assets/landing/img/khandaq-field-1400.webp 1400w" imagesizes="100vw">
 <link rel="preload" as="image" href="assets/landing/img/khaybar-fort-1400.webp" imagesrcset="assets/landing/img/khaybar-fort-800.webp 800w, assets/landing/img/khaybar-fort-1400.webp 1400w" imagesizes="100vw">
 <link rel="preload" as="image" href="assets/landing/img/mutah-field-1400.webp" imagesrcset="assets/landing/img/mutah-field-800.webp 800w, assets/landing/img/mutah-field-1400.webp 1400w" imagesizes="100vw">
+<link rel="preload" as="image" href="assets/landing/img/hunayn-field-1400.webp" imagesrcset="assets/landing/img/hunayn-field-800.webp 800w, assets/landing/img/hunayn-field-1400.webp 1400w" imagesizes="100vw">
 <link rel="stylesheet" href="assets/landing/fonts/fonts.css">
-<link rel="stylesheet" href="assets/landing/css/landing.css?v=20261028z7">
+<link rel="stylesheet" href="assets/landing/css/landing.css?v=20261028ac7">
 <script>document.documentElement.classList.add('js');</script>
 </head>
 <body>
@@ -39,7 +40,7 @@
   </h1>
   <div class="masthead-side">
     <span class="masthead-ar" lang="ar" dir="rtl">أطلس السيرة</span>
-    <span class="masthead-note">Five fields live · 2–8 AH</span>
+    <span class="masthead-note">Six fields live · 2–8 AH</span>
   </div>
 </header>
 
@@ -70,6 +71,10 @@
 
       <div class="stage-layer stage-layer--mutah" data-field="mutah">
         <img src="assets/landing/img/mutah-field-1400.webp" srcset="assets/landing/img/mutah-field-800.webp 800w, assets/landing/img/mutah-field-1400.webp 1400w" sizes="100vw" width="1400" height="875" alt="" loading="lazy" decoding="async">
+      </div>
+
+      <div class="stage-layer stage-layer--hunayn" data-field="hunayn">
+        <img src="assets/landing/img/hunayn-field-1400.webp" srcset="assets/landing/img/hunayn-field-800.webp 800w, assets/landing/img/hunayn-field-1400.webp 1400w" sizes="100vw" width="1400" height="875" alt="" loading="lazy" decoding="async">
       </div>
     </div>
 
@@ -110,6 +115,11 @@
           <path class="dash" d="M4 33c14-4 27-4 40 0s20 4 30 1"/>
           <path class="draw" d="M18 32V17M18 17h8v5h-8M40 32V11M40 11h8v5h-8M62 32V19M62 19h8v5h-8"/>
           <circle cx="10" cy="21" r="2.4"/><circle cx="70" cy="13" r="2.4"/>
+        </g>
+        <g class="plate-plan plan--hunayn">
+          <path class="draw" d="M5 9l24 25M73 9L49 34"/>
+          <path class="dash" d="M39 10v24M15 19l10 7M63 19l-10 7"/>
+          <path class="draw" d="M39 33v-8M39 25h6v3h-6"/>
         </g>
       </svg>
     </div>
@@ -263,6 +273,35 @@
         </span>
       </a>
       </li>
+
+      <li class="door-cell"><a class="door door--hunayn" href="hunayn/index.html" data-door="hunayn" aria-label="Enter the Ḥunayn model, 8 AH">
+        <span class="door-top">
+          <span class="door-head">
+            <span class="door-id">
+              <span class="door-num" aria-hidden="true"></span>
+              <span class="door-meta">8 AH</span>
+            </span>
+            <svg class="door-plan" viewBox="0 0 78 42" aria-hidden="true" focusable="false">
+              <path class="draw" d="M5 9l24 25M73 9L49 34"/>
+              <path class="dash" d="M39 10v24M15 19l10 7M63 19l-10 7"/>
+              <path class="draw" d="M39 33v-8M39 25h6v3h-6"/>
+            </svg>
+          </span>
+          <span class="door-name">
+            <span class="door-en">Ḥunayn</span>
+            <span class="door-ar" lang="ar" dir="rtl">حنين</span>
+          </span>
+        </span>
+        <span class="door-media" aria-hidden="true">
+          <img src="assets/landing/img/hunayn-field-1400.webp" width="1400" height="875" alt="" loading="lazy" decoding="async">
+        </span>
+        <span class="door-cta">
+          <span class="door-arrow" aria-hidden="true">
+            <svg width="30" height="16" viewBox="0 0 30 16" focusable="false"><path d="M0 8h27M20 1l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+          </span>
+        </span>
+      </a>
+      </li>
     </ol>
     </nav>
 
@@ -272,7 +311,6 @@
         Ahead
       </h2>
       <p class="ahead-line">
-        <span class="ahead-field">Ḥunayn <span class="ahead-ar" lang="ar" dir="rtl">حنين</span></span> and
         <span class="ahead-field">Fatḥ Makkah <span class="ahead-ar" lang="ar" dir="rtl">فتح مكة</span></span> in preparation
         <span class="ahead-tail"><span class="ahead-sep" aria-hidden="true">·</span>
         the <span class="ahead-field">Hijrah <span class="ahead-ar" lang="ar" dir="rtl">هجرة</span></span> under study</span>
@@ -283,6 +321,6 @@
 
 </main>
 
-<script src="assets/landing/js/landing.js?v=20261028ab7" defer></script>
+<script src="assets/landing/js/landing.js?v=20261028ac7" defer></script>
 </body>
 </html>

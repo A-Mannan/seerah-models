@@ -1,0 +1,601 @@
+{
+  "battle": "hunayn",
+  "title": "The Battle of Ḥunayn (Shawwāl 8 AH)",
+  "version": "1.0-graded",
+  "phase": "6",
+  "status": "awaiting_owner_review",
+  "owner_gate": "compiled 2026-10-28 for the Ḥunayn model; ledger remains awaiting owner review",
+  "compiled": "2026-10-28",
+  "app_target": "3D Seerah learning app for ages 12-25 (interactive 3D scenes; battle timeline; verse overlays)",
+  "spine_source": {
+    "work": "Raheeq al-Makhtum (MSA NIU English ed.), Saifur Rahman al-Mubarakpuri, trans. Issam Diab (Dar-us-Salam)",
+    "file": "Ḥunayn and Ṭā'if chapters read this session through the online copy at muslimconverts.com (sealed_nectar15); the local PDF was not read",
+    "hunayn_chapter_pages": "not page-verified this session — the online copy carries the chapter text without the print page numbers",
+    "citation_format": "Raheeq al-Makhtum (MSA NIU English ed.), Ḥunayn chapter (online copy)"
+  },
+  "grading_note": "Graded 2026-10-28 against the Qur'an (9:25-27, api.alquran.cloud en.sahih) and the two Sahihs read directly: Sahih al-Bukhari 4314-4337 from the Dar-us-Salam volume-5 PDF, and Sahih Muslim 1775a, 1775b, 1776a, 1777 from hadithunlocked.com (the same numbering as sunnah.com, which returned 403 this session). The canonical hadith carry the rout, the Prophet's stand and his words, al-'Abbas's call to the samurah tree, the Ansar's answer, the handful of dust, Abu Bakrah over the Ta'if wall, the ten thousand besides the tulaqa', the distribution and the leather-tent speech, and the Hawazin captives' return. The coalition, the Awtas family camp, Duraid's counsel, the 12,000, the spoils inventory, the siege length, the twenty-three men and al-Shaima' are sirah-only and are graded REPORTED. The siege length is DISPUTED and is shown as a range.",
+  "conventions": {
+    "block_tagging": "Same as badr.json: all entries HISTORY; no reflections in this phase.",
+    "honorifics": "The Prophet is referenced as 'the Prophet (PBUH)' in rendered text; Companions carry honorifics at first mention per block. No figural depiction of the Prophet (PBUH) and no facial features on any figure at all.",
+    "quote_cap": "Direct on-screen quotes <= 15 words; Quran fetched live from api.alquran.cloud.",
+    "no_harmonization": "DISPUTED entries display ranges/both versions, never merged. UNKNOWN = not yet verifiable this session; hidden by default.",
+    "secondary_sirah": "Ibn Hisham/Ibn Ishaq- and al-Waqidi-derived claims are cited via the Raheeq chapter or the logged retellings; no full Guillaume or al-Waqidi translation is owned locally.",
+    "spelling": "Hunayn, not Hunain; Ṭā'if, not Taif; Ji'ranah, not Jirana. The on-screen forms come from the glossary's canonical column."
+  },
+  "grading_policy": {
+    "CERTAIN": ">= 2 independent sources, at least one canonical (Quran > Sahih Bukhari/Muslim > other canonical collections > sirah Ibn Hisham/Ibn Ishaq, Ibn Sa'd, al-Tabari > modern critical works). Raheeq al-Makhtum alone never certifies.",
+    "REPORTED": "Solid single-chain sirah/hadith detail; accurate to attribute but from one lineage or modern retelling only; rendered with no certainty implied.",
+    "DISPUTED": "Transmitted variants conflict; app must show ranges/both versions, never harmonized.",
+    "UNKNOWN": "Cannot be verified from owned + live sources; never rendered without user approval."
+  },
+  "render_as_policy": {
+    "solid": "Canonical or >=2 independent sources; safe as primary on-screen facts, may carry direct quotes.",
+    "approx": "Reported or contested detail; render visually/ambiguously, quotes flagged, no claim of certainty.",
+    "hidden": "Do not render in current phase; visible only in an app 'scholar's mode' if the user approves."
+  },
+  "verse_anchors": [
+    {
+      "ref": "9:25",
+      "surah": "At-Tawbah",
+      "text_en_sahih": "Allah has already given you victory in many regions and [even] on the day of Hunayn, when your great number pleased you, but it did not avail you at all, and the earth was confining for you with its vastness; then you turned back, fleeing.",
+      "fetched": "2026-10-28 api.alquran.cloud en.sahih",
+      "note": "The only Qur'anic passage that names Ḥunayn. It is the model's frame for the rout: the great number is named and does not save."
+    },
+    {
+      "ref": "9:26",
+      "surah": "At-Tawbah",
+      "text_en_sahih": "Then Allah sent down His tranquillity upon His Messenger and upon the believers and sent down soldiers angels whom you did not see and punished those who disbelieved. And that is the recompense of the disbelievers.",
+      "fetched": "2026-10-28 api.alquran.cloud en.sahih",
+      "note": "The turn of the day. Rendered at the rally, after the dust, as the Qur'an's own reading of the reversal."
+    },
+    {
+      "ref": "9:27",
+      "surah": "At-Tawbah",
+      "text_en_sahih": "Then Allah will accept repentance after that for whom He wills; and Allah is Forgiving and Merciful.",
+      "fetched": "2026-10-28 api.alquran.cloud en.sahih",
+      "note": "The aftermath bridge: the Hawazin later came in and their captives were returned (HUN-029)."
+    }
+  ],
+  "entries": [
+    {
+      "id": "HUN-001",
+      "section": "prelude",
+      "tag": "HISTORY",
+      "claim": "After the conquest of Makkah, the septs of Hawazin and Thaqif — with Nasr, Jashm, Sa'd ibn Bakr and Bani Hilal of Qays 'Aylan — gathered under Malik ibn 'Awf al-Nasri and resolved to fight the Muslims.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Ḥunayn chapter (online copy)", "ref": "opening", "quote": "Ahead of these were the septs of Hawazin and Thaqif" },
+        { "work": "IslamicFinder, 'Battle of Hunain (Ghazwa Hunayn)' (live)", "ref": "background", "quote": "the tribes of Hawazin and Thaqif ... under the leadership of Malik bin Awf" }
+      ],
+      "grade": "REPORTED",
+      "variants": [
+        { "note": "The coalition is sirah only; no canonical hadith lists the tribes. The model names Hawazin and Thaqif on screen and keeps the smaller septs in the ledger.", "sources": ["researcher note"] }
+      ],
+      "render_as": "approx",
+      "notes": "Opening phase divider: 'Shawwāl 8 AH · the valley of Ḥunayn'. No enemy count is rendered."
+    },
+    {
+      "id": "HUN-002",
+      "section": "prelude",
+      "tag": "HISTORY",
+      "claim": "Malik ibn 'Awf made his people bring their wealth, women and children with them to Awtas, a valley in Hawazin land near Ḥunayn, so that the men would fight harder to defend them.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Ḥunayn chapter (online copy)", "ref": "encampment", "quote": "he made his countrypeople take their wealth, women and children with them to Awtas" },
+        { "work": "IslamicFinder, 'Battle of Hunain (Ghazwa Hunayn)' (live)", "ref": "background", "quote": "Malik took with him the women and children" }
+      ],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "Staged as a camp of tents, herds and goods behind the enemy line. No human figures in the family camp, and no faces anywhere."
+    },
+    {
+      "id": "HUN-003",
+      "section": "prelude",
+      "tag": "HISTORY",
+      "claim": "The aged Duraid ibn al-Simma warned Malik that bringing the families would disgrace them in a defeat and avail nothing in a victory; Malik rejected his counsel, and Duraid said he would not live to see the day.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Ḥunayn chapter (online copy)", "ref": "Duraid's counsel", "quote": "I swear by Allah that you are nothing but a shepherd" },
+        { "work": "IslamicFinder, 'Battle of Hunain (Ghazwa Hunayn)' (live)", "ref": "background", "quote": "Duraid bin Al-Simmah advised Malik not to take the women and children" }
+      ],
+      "grade": "REPORTED",
+      "variants": [
+        { "note": "The exchange is sirah (Ibn Hisham lineage). The model keeps Duraid off screen as a figure; the beat is a label at the Awtas camp.", "sources": ["researcher note"] }
+      ],
+      "render_as": "approx",
+      "notes": "Label beat only; the quote 'you are nothing but a shepherd' stays in the ledger, not on the field."
+    },
+    {
+      "id": "HUN-004",
+      "section": "prelude",
+      "tag": "HISTORY",
+      "claim": "Malik hid his army in the valley — on its roads, entrances and narrow places — ordering them to hurl stones and then attack any Muslims they saw.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Ḥunayn chapter (online copy)", "ref": "ambush plan", "quote": "to hide inside the valley and lurk for the Muslims on roads, entrances, narrow hiding places" },
+        { "work": "IslamicFinder, 'Battle of Hunain (Ghazwa Hunayn)' (live)", "ref": "ambush", "quote": "Malik ordered his men to hide in the valley" }
+      ],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "Terrain brief: a narrow, sloping valley with concealed bands on both flanks; the concealment is the design."
+    },
+    {
+      "id": "HUN-005",
+      "section": "prelude",
+      "tag": "HISTORY",
+      "claim": "The battle was fought in Shawwal 8 AH at Ḥunayn, a valley on the road between Makkah and Ta'if.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Ḥunayn chapter (online copy)", "ref": "campaign", "quote": "in the month (i.e. Shawwal) and in the eighth year A.H." },
+        { "work": "Sahih al-Bukhari", "ref": "4324 chapter heading (live PDF)", "quote": "The Ghazwa of At-Ta'if was in the month of Shawwal, during the 8th year" }
+      ],
+      "grade": "REPORTED",
+      "variants": [
+        { "note": "The spine itself gives the departure as 'Shawwal, the nineteenth' and the battle as 'Wednesday night the tenth of Shawwal' — an internal contradiction. No canonical hadith fixes a day. The model renders the month only, with no day number.", "sources": ["Raheeq al-Makhtum, Ḥunayn chapter", "researcher note"] },
+        { "note": "The site is a valley on the Ta'if road; the retellings do not give a usable distance. No distance is rendered.", "sources": ["researcher note"] }
+      ],
+      "render_as": "approx",
+      "notes": "Divider label: 'Shawwāl 8 AH · the valley of Ḥunayn'. Never a date like '10 Shawwāl'."
+    },
+    {
+      "id": "HUN-006",
+      "section": "muster",
+      "tag": "HISTORY",
+      "claim": "The army included the ten thousand who had shared in the conquest of Makkah, besides the tulaqa' — those who had embraced Islam on the day of the conquest.",
+      "sources": [
+        { "work": "Sahih al-Bukhari", "ref": "4333 (live PDF)", "quote": "there were ten thousand (men) besides the Tulaqa' (i.e., those who had embraced Islam on the day of the Conquest of Makkah)" },
+        { "work": "Sahih al-Bukhari", "ref": "4337 (live PDF)", "quote": "The Prophet had with him, ten thousand men" }
+      ],
+      "grade": "CERTAIN",
+      "variants": [
+        { "note": "The canonical text gives ten thousand plus the tulaqa' without a total. The sirah's total of 12,000 is a separate REPORTED entry (HUN-007).", "sources": ["Sahih al-Bukhari 4333"] }
+      ],
+      "render_as": "solid",
+      "notes": "Army label: 'the army · ten thousand of the conquest, and the newly freed'. No total on screen."
+    },
+    {
+      "id": "HUN-007",
+      "section": "muster",
+      "tag": "HISTORY",
+      "claim": "The sirah counts twelve thousand Muslims in all: the ten thousand of the conquest and two thousand Makkans who had recently embraced Islam.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Ḥunayn chapter (online copy)", "ref": "departure", "quote": "twelve thousand Muslims. Ten thousand of those had previously shared in Makkah Conquest" },
+        { "work": "IslamicFinder, 'Battle of Hunain (Ghazwa Hunayn)' (live)", "ref": "numbers", "quote": "an army of twelve thousand" }
+      ],
+      "grade": "REPORTED",
+      "variants": [
+        { "note": "The 2,000 is sirah-only, and the canonical text gives ten thousand plus the tulaqa' (HUN-006). If a single figure is ever shown, it reads 'about 12,000 · reported'.", "sources": ["Sahih al-Bukhari 4333", "researcher note"] }
+      ],
+      "render_as": "approx",
+      "notes": "Crowd staging: 12,000 instanced men at the muster, never counted aloud."
+    },
+    {
+      "id": "HUN-008",
+      "section": "muster",
+      "tag": "HISTORY",
+      "claim": "The Prophet (PBUH) borrowed a hundred armours with their equipment from Safwan ibn Umayyah and appointed 'Itab ibn Usayd as governor over Makkah.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Ḥunayn chapter (online copy)", "ref": "departure", "quote": "He borrowed a hundred armours with their equipment from Safwan bin Omaiyah" },
+        { "work": "IslamicFinder, 'Battle of Hunain (Ghazwa Hunayn)' (live)", "ref": "departure", "quote": "one hundred suits of armour were borrowed from Safwan bin Umayyah" }
+      ],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "Armour stacks at the Makkah gate of the march; no figures and no on-screen count."
+    },
+    {
+      "id": "HUN-009",
+      "section": "march",
+      "tag": "HISTORY",
+      "claim": "On the march the army passed a great green nabk tree called Dhat Anwat, where the Arabs used to hang their weapons; some asked the Prophet (PBUH) for a similar tree, and he rebuked them, comparing the request to what the people of Musa had asked.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Ḥunayn chapter (online copy)", "ref": "the march", "quote": "a great green Nabk plant, that was called Dhat-Anwat" },
+        { "work": "IslamicFinder, 'Battle of Hunain (Ghazwa Hunayn)' (live)", "ref": "the march", "quote": "Dhat Anwat" }
+      ],
+      "grade": "REPORTED",
+      "variants": [
+        { "note": "The Dhat Anwat report was not verified in a canonical collection this session; it is cited through the spine only. The model renders the tree and a brief label, no dialogue.", "sources": ["researcher note"] }
+      ],
+      "render_as": "approx",
+      "notes": "A single marker tree on the road north; label 'Dhāt Anwāṭ · reported'."
+    },
+    {
+      "id": "HUN-010",
+      "section": "march",
+      "tag": "HISTORY",
+      "claim": "Seeing how many they were, some in the army said, 'We shall not be defeated.' The Qur'an answers them: on the day of Ḥunayn your great number pleased you, but it did not avail you at all.",
+      "sources": [
+        { "work": "Qur'an 9:25 (live en.sahih)", "ref": "verse_anchors", "quote": "when your great number pleased you, but it did not avail you at all" },
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Ḥunayn chapter (online copy)", "ref": "the march", "quote": "We shall not be defeated" },
+        { "work": "Sahih al-Bukhari", "ref": "chapter heading before 4314 (live PDF)", "quote": "on the day of Hunain (battle) when you rejoiced at your great number" }
+      ],
+      "grade": "CERTAIN",
+      "variants": [
+        { "note": "The verse is canonical proof of the confidence; the exact words 'We shall not be defeated' are the sirah's. The model renders the verse, not the boast.", "sources": ["Qur'an 9:25"] }
+      ],
+      "render_as": "solid",
+      "notes": "Verse overlay on the march: 9:25, first clause only, within the quote cap."
+    },
+    {
+      "id": "HUN-011",
+      "section": "march",
+      "tag": "HISTORY",
+      "claim": "The army came to Ḥunayn by night and, just before dawn, began to descend into the valley, not knowing that the enemy lay hidden inside it.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Ḥunayn chapter (online copy)", "ref": "arrival", "quote": "before dawn the Muslims moved towards Hunain Valley ... unaware of the presence of an enemy lurking for them" },
+        { "work": "IslamicFinder, 'Battle of Hunain (Ghazwa Hunayn)' (live)", "ref": "arrival", "quote": "the Muslims entered the valley" }
+      ],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "Staging: the dawn descent, mist in the floor, the camera following the column in."
+    },
+    {
+      "id": "HUN-012",
+      "section": "ambush",
+      "tag": "HISTORY",
+      "claim": "The Hawazin sprang from the slopes and narrow places; arrows showered on the Muslims, who broke and fled. The Qur'an records it: 'then you turned back, fleeing.'",
+      "sources": [
+        { "work": "Qur'an 9:25 (live en.sahih)", "ref": "verse_anchors", "quote": "then you turned back, fleeing" },
+        { "work": "Sahih al-Bukhari", "ref": "4315 (live PDF)", "quote": "the (new converts) hasty people ran (away) and the people of Hawazin threw arrows at them" },
+        { "work": "Sahih al-Bukhari", "ref": "4321 (live PDF)", "quote": "the Muslims (with the exception of the Prophet and some of his Companions) retreated (before the enemy)" },
+        { "work": "Sahih Muslim", "ref": "1776a (live)", "quote": "some young men from among his companions ... advanced and met a party of the enemy" }
+      ],
+      "grade": "CERTAIN",
+      "variants": [
+        { "note": "The canonical reports agree on the rout. The sirah's tactical detail (the concealed positions, the stones first) is HUN-004.", "sources": ["Sahih al-Bukhari 4315", "Sahih Muslim 1776a"] }
+      ],
+      "render_as": "solid",
+      "notes": "The rout phase. Standards tilt and fall back; no impact shakes; no faces."
+    },
+    {
+      "id": "HUN-013",
+      "section": "ambush",
+      "tag": "HISTORY",
+      "claim": "The Prophet (PBUH) did not flee. He spurred his white mule toward the enemy while Abu Sufyan ibn al-Harith held its head, saying, 'I am the Prophet, no lie; I am the son of 'Abd al-Muttalib.'",
+      "sources": [
+        { "work": "Sahih al-Bukhari", "ref": "4315 (live PDF)", "quote": "I testify that the Prophet did not flee ... Abu Sufyan bin Al-Harith was holding the white mule of the Prophet by the head" },
+        { "work": "Sahih al-Bukhari", "ref": "4315 (live PDF)", "quote": "I am the Prophet without a lie, I am the son of 'Abdul-Muttalib" },
+        { "work": "Sahih Muslim", "ref": "1776a (live)", "quote": "he got down from his mule, invoked God's help, and called out: I am the Prophet. This is no untruth. I am the son of 'Abd al-Muttalib" },
+        { "work": "Sahih al-Bukhari", "ref": "4317 (live PDF)", "quote": "But Allah's Messenger did not flee" }
+      ],
+      "grade": "CERTAIN",
+      "variants": [
+        { "note": "One Bukhari chain adds that he dismounted (Isra'il and Zuhair); the sirah also has him dismount and invoke help. The model shows the mule at the station, never a figure in the Prophet's place.", "sources": ["Sahih al-Bukhari 4317", "Sahih Muslim 1776a"] }
+      ],
+      "render_as": "solid",
+      "notes": "The stand is the model's moral centre: an empty station with the white mule, the reins and the white standard; the couplet may render as a label (14 words). No depiction of the Prophet (PBUH) in any form."
+    },
+    {
+      "id": "HUN-014",
+      "section": "rally",
+      "tag": "HISTORY",
+      "claim": "The Prophet (PBUH) told al-'Abbas, who had a loud voice, to call the people of the samurah tree — the tree of the Ridwan pledge. Al-'Abbas called at the top of his voice, and they turned back as a cow turns to its calves, saying, 'Here we are, here we are!'",
+      "sources": [
+        { "work": "Sahih Muslim", "ref": "1775b (live)", "quote": "O 'Abbas, call: 'O companions of the samurah tree!'" },
+        { "work": "Sahih Muslim", "ref": "1775a (live)", "quote": "as cows come back to their calves, and said: We are present, we are present" },
+        { "work": "Sahih al-Bukhari", "ref": "4337 (live PDF)", "quote": "He turned right and said, 'O the group of Ansar!' They said, 'Labbaik ... we are with you!'" }
+      ],
+      "grade": "CERTAIN",
+      "variants": [
+        { "note": "The sirah's wording 'Where are the lancers?' is a secondary form; the canonical call is to the companions of the samurah tree. The model uses the canonical call.", "sources": ["Sahih Muslim 1775b", "Raheeq al-Makhtum"] }
+      ],
+      "render_as": "solid",
+      "notes": "Label may quote 'O companions of the samurah tree!' (6 words). The call is audio-visual: a raised standard and the returning tide, no figures."
+    },
+    {
+      "id": "HUN-015",
+      "section": "rally",
+      "tag": "HISTORY",
+      "claim": "The Prophet (PBUH) called, 'O group of the Ansar!' They answered, 'Labbayk, O Messenger of Allah, and Sa'dayk! We are under your command.' He dismounted and said, 'I am Allah's slave and His Messenger.'",
+      "sources": [
+        { "work": "Sahih al-Bukhari", "ref": "4333 (live PDF)", "quote": "the Prophet said, 'O the group of Ansar!' They replied, 'Labbaik, O Allah's Messenger, and Sa'daik! We are under your command.'" },
+        { "work": "Sahih al-Bukhari", "ref": "4333 (live PDF)", "quote": "Then the Prophet got down (from his mule) and said, 'I am Allah's slave and His Messenger.'" }
+      ],
+      "grade": "CERTAIN",
+      "variants": [],
+      "render_as": "solid",
+      "notes": "Second call beat; the Ansar standard answers from the right of the line."
+    },
+    {
+      "id": "HUN-016",
+      "section": "rally",
+      "tag": "HISTORY",
+      "claim": "About a hundred men gathered round the Prophet (PBUH) first; those who could not turn their camels flung their armour round their necks and ran toward the voice with their weapons.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Ḥunayn chapter (online copy)", "ref": "the return", "quote": "till a hundred of them gathered round the Prophet and resumed the fight" },
+        { "work": "IslamicFinder, 'Battle of Hunain (Ghazwa Hunayn)' (live)", "ref": "rally", "quote": "about one hundred Muslims gathered around him" }
+      ],
+      "grade": "REPORTED",
+      "variants": [
+        { "note": "The number is sirah-only; the canonical hadith has the return 'as cows to calves' with no count. Render 'about a hundred · reported'.", "sources": ["Sahih Muslim 1775a"] }
+      ],
+      "render_as": "approx",
+      "notes": "The rally ring: a hundred instanced men closing around the station; label 'about a hundred answer first · reported'."
+    },
+    {
+      "id": "HUN-017",
+      "section": "rally",
+      "tag": "HISTORY",
+      "claim": "Seeing the fight at its height, the Prophet (PBUH) said, 'This is the time when the battle has grown hot.'",
+      "sources": [
+        { "work": "Sahih Muslim", "ref": "1775b (live)", "quote": "This is the time when the battle has grown hot" },
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Ḥunayn chapter (online copy)", "ref": "the return", "quote": "Now the fight has grown fierce" }
+      ],
+      "grade": "CERTAIN",
+      "variants": [],
+      "render_as": "solid",
+      "notes": "Quote (10 words) as the beat before the dust; no figure."
+    },
+    {
+      "id": "HUN-018",
+      "section": "rally",
+      "tag": "HISTORY",
+      "claim": "He took a handful of dust from the ground, threw it into the enemy's faces and said, 'May these faces be deformed.' No one among the enemy escaped the dust in his eyes, and they turned back fleeing.",
+      "sources": [
+        { "work": "Sahih Muslim", "ref": "1777 (live)", "quote": "picked up a handful of dust from the ground, threw it into their (enemy) faces and said: May these faces be deformed" },
+        { "work": "Sahih Muslim", "ref": "1777 (live)", "quote": "There was no one among the enemy whose eyes were not filled with the dust from this handful" }
+      ],
+      "grade": "CERTAIN",
+      "variants": [
+        { "note": "The sirah's wording is 'May your faces be shameful'; the canonical hadith reads 'May these faces be deformed'. The model uses the canonical wording and renders a dust cloud, never faces.", "sources": ["Sahih Muslim 1777", "Raheeq al-Makhtum"] }
+      ],
+      "render_as": "solid",
+      "notes": "Particle beat; the quote (5 words) may render as a label. No facial features exist anywhere in the scene."
+    },
+    {
+      "id": "HUN-019",
+      "section": "rout",
+      "tag": "HISTORY",
+      "claim": "The enemy broke; about seventy men of Thaqif were killed, and the Muslims took their riding camels, weapons and cattle.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Ḥunayn chapter (online copy)", "ref": "the defeat", "quote": "About seventy men of Thaqif alone were killed" },
+        { "work": "IslamicFinder, 'Battle of Hunain (Ghazwa Hunayn)' (live)", "ref": "the defeat", "quote": "seventy men of Thaqif were killed" }
+      ],
+      "grade": "REPORTED",
+      "variants": [
+        { "note": "The defeat itself is canonical (Qur'an 9:25-26; HUN-020); the seventy is sirah-only and varies in the retellings. It stays a reported figure, never a scoreline.", "sources": ["researcher note"] }
+      ],
+      "render_as": "approx",
+      "notes": "Label: 'the enemy breaks · about seventy of Thaqīf, reported'."
+    },
+    {
+      "id": "HUN-020",
+      "section": "rout",
+      "tag": "HISTORY",
+      "claim": "The Qur'an reads the day as divine help: tranquillity sent down on the Messenger and the believers, unseen soldiers, the disbelievers punished; then repentance for whom He wills.",
+      "sources": [
+        { "work": "Qur'an 9:26 (live en.sahih)", "ref": "verse_anchors", "quote": "Then Allah sent down His tranquillity upon His Messenger and upon the believers" },
+        { "work": "Qur'an 9:27 (live en.sahih)", "ref": "verse_anchors", "quote": "Then Allah will accept repentance after that for whom He wills" },
+        { "work": "Sahih al-Bukhari", "ref": "chapter heading before 4314 (live PDF)", "quote": "Truly, Allah has given you victory on many battlefields, and on the day of Hunain" }
+      ],
+      "grade": "CERTAIN",
+      "variants": [],
+      "render_as": "solid",
+      "notes": "Verse overlay at the turn; 9:26 then 9:27 at the aftermath."
+    },
+    {
+      "id": "HUN-021",
+      "section": "pursuit",
+      "tag": "HISTORY",
+      "claim": "A force under Abu 'Amir al-Ash'ari was sent to Awtas; Duraid ibn al-Simma was killed there and his companions defeated. Abu 'Amir was struck by an arrow in the knee and died of it, and Abu Musa al-Ash'ari took command and carried his message to the Prophet (PBUH).",
+      "sources": [
+        { "work": "Sahih al-Bukhari", "ref": "4323 (live PDF)", "quote": "he sent Abu 'Amir as the head of an army to Autas ... Duraid was killed and Allah defeated his companions" },
+        { "work": "Sahih al-Bukhari", "ref": "4323 (live PDF)", "quote": "Abu 'Amir was shot at his knee with an arrow ... He then said, 'O son of my brother! Convey my compliments to the Prophet'" },
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Ḥunayn chapter (online copy)", "ref": "pursuit", "quote": "Abu 'Amir Al-Ash'ari, were despatched to chase the enemy" }
+      ],
+      "grade": "CERTAIN",
+      "variants": [
+        { "note": "The sirah says Durayd was overtaken on the Nakhlah track and killed by Rabi'ah ibn Rafi', while Bukhari places his death in the Awtas fighting. Both are transmitted; the model stages the pursuit and names no killer.", "sources": ["Sahih al-Bukhari 4323", "Raheeq al-Makhtum"] }
+      ],
+      "render_as": "solid",
+      "notes": "Pursuit phase: a cairn at Awtas and a label; no figure, no blood."
+    },
+    {
+      "id": "HUN-022",
+      "section": "pursuit",
+      "tag": "HISTORY",
+      "claim": "The spoils were gathered at Ji'ranah: six thousand captives, twenty-four thousand camels, over forty thousand sheep and four thousand silver ounces, with Mas'ud ibn 'Amr al-Ghifari in charge.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Ḥunayn chapter (online copy)", "ref": "spoils", "quote": "six thousand captives, twenty four thousand camels; over forty thousand sheep and four thousand silver ounces" },
+        { "work": "IslamicFinder, 'Battle of Hunain (Ghazwa Hunayn)' (live)", "ref": "spoils", "quote": "six thousand captives" }
+      ],
+      "grade": "REPORTED",
+      "variants": [
+        { "note": "The inventory is sirah-only and the retellings vary in the small figures. The model renders the depot and herd shapes, never an inventory list.", "sources": ["researcher note"] }
+      ],
+      "render_as": "approx",
+      "notes": "Ji'ranah depot: bales, penned herds, a guarded enclosure. Label 'the spoils at Ji'rānah · reported'."
+    },
+    {
+      "id": "HUN-023",
+      "section": "taif",
+      "tag": "HISTORY",
+      "claim": "The defeated Hawazin and Thaqif forces gathered in Ta'if under Malik ibn 'Awf, and the Prophet (PBUH) laid siege to the town; the sources disagree on how long the siege lasted, between ten and twenty days, and twelve Muslims were killed.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Ḥunayn chapter (online copy)", "ref": "Ta'if", "quote": "How long the siege continued, is still a matter of disagreement. It however stands between 10-20 days" },
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Ḥunayn chapter (online copy)", "ref": "Ta'if", "quote": "a number of Muslims were wounded and twelve were killed" },
+        { "work": "Sahih al-Bukhari", "ref": "4325 (live PDF)", "quote": "When Allah's Messenger besieged At-Ta'if and could not conquer its people" }
+      ],
+      "grade": "DISPUTED",
+      "variants": [
+        { "note": "Duration: 10, 15 and 20 days all appear in the retellings; the spine gives the range 10-20. The model shows the range only.", "sources": ["Raheeq al-Makhtum"] },
+        { "note": "The twelve dead is sirah-only and is not rendered on screen.", "sources": ["researcher note"] }
+      ],
+      "render_as": "approx",
+      "notes": "Walled town on a height in the far ground; siege works; label 'the siege · ten to twenty days, reported'."
+    },
+    {
+      "id": "HUN-024",
+      "section": "taif",
+      "tag": "HISTORY",
+      "claim": "Abu Bakrah came down from the wall of Ta'if to the Prophet (PBUH) and was set free.",
+      "sources": [
+        { "work": "Sahih al-Bukhari", "ref": "4326, 4327 (live PDF)", "quote": "Abu Bakra (who jumped over the wall of At-Ta'if Fort along with a few persons and came to the Prophet)" },
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Ḥunayn chapter (online copy)", "ref": "Ta'if", "quote": "One of them was Abu Bakrah who tied himself to a wall" }
+      ],
+      "grade": "CERTAIN",
+      "variants": [],
+      "render_as": "solid",
+      "notes": "The wall and the rope are a marker in the siege scene; no figure on the wall."
+    },
+    {
+      "id": "HUN-025",
+      "section": "taif",
+      "tag": "HISTORY",
+      "claim": "When the call went out that whoever came down from Ta'if was free, twenty-three men came out; each was entrusted to a Muslim to provide for, and Abu Bakrah let himself down with a well-wheel.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Ḥunayn chapter (online copy)", "ref": "Ta'if", "quote": "Twenty-three men came out" },
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Ḥunayn chapter (online copy)", "ref": "Ta'if", "quote": "let himself down by means of a small wheel" }
+      ],
+      "grade": "REPORTED",
+      "variants": [
+        { "note": "The twenty-three and the wheel are sirah-only; the canonical hadith attests only that Abu Bakrah came over the wall (HUN-024).", "sources": ["Sahih al-Bukhari 4326, 4327"] }
+      ],
+      "render_as": "approx",
+      "notes": "Off the field: the twenty-three are not staged; the gate of the town is the marker."
+    },
+    {
+      "id": "HUN-026",
+      "section": "taif",
+      "tag": "HISTORY",
+      "claim": "The siege was lifted; the Prophet (PBUH) said, 'O Allah, guide Thaqif and bring them to us as Muslims,' and the army left saying, 'Here we are, returning, repenting, worshipping.'",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Ḥunayn chapter (online copy)", "ref": "Ta'if", "quote": "O Allah, guide Thaqif and bring them to us as Muslims" },
+        { "work": "Sahih al-Bukhari", "ref": "4325 (live PDF)", "quote": "We will return (to Al-Madina) if Allah will" }
+      ],
+      "grade": "REPORTED",
+      "variants": [
+        { "note": "The supplication is sirah-only; the canonical report has the Prophet saying 'We will return, if Allah wills' and smiling at their reluctance. Both render as separate beats; no harmonisation.", "sources": ["Sahih al-Bukhari 4325", "Raheeq al-Makhtum"] }
+      ],
+      "render_as": "approx",
+      "notes": "Label: 'O Allah, guide Thaqīf · reported' (7 words)."
+    },
+    {
+      "id": "HUN-027",
+      "section": "spoils",
+      "tag": "HISTORY",
+      "claim": "At Ji'ranah the spoils were distributed: a footman received four camels and forty sheep, a horseman twelve camels and a hundred and twenty sheep; the chiefs of Quraysh received hundred-camel gifts, al-Aqra' ibn Habis and 'Uyayna ibn Hisn among them.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Ḥunayn chapter (online copy)", "ref": "distribution", "quote": "A footman's share was four camels and forty sheep, and a horseman would take twelve camels and a hundred and twenty sheep" },
+        { "work": "Sahih al-Bukhari", "ref": "4336 (live PDF)", "quote": "He gave Al-Aqra' one hundred camels and gave 'Uyaina the same" }
+      ],
+      "grade": "REPORTED",
+      "variants": [
+        { "note": "The share table and the named recipients' amounts are sirah; the hundred-camel gifts to al-Aqra' and 'Uyayna are canonical. Abu Sufyan's hundred camels and forty gold ounces is sirah-only and stays in the ledger.", "sources": ["Sahih al-Bukhari 4336", "Raheeq al-Makhtum"] }
+      ],
+      "render_as": "approx",
+      "notes": "Distribution phase: shares are staged as counted goods, never as text totals."
+    },
+    {
+      "id": "HUN-028",
+      "section": "spoils",
+      "tag": "HISTORY",
+      "claim": "The Ansar received nothing from the spoils and were hurt. The Prophet (PBUH) gathered them in a leather tent and said, 'Are you not pleased that the people go with ewes and camels while you go with the Messenger of Allah to your homes?' They wept and said they were satisfied.",
+      "sources": [
+        { "work": "Sahih al-Bukhari", "ref": "4331 (live PDF)", "quote": "Won't you be happy that the people take the wealth while you take the Prophet with you to your homes?" },
+        { "work": "Sahih al-Bukhari", "ref": "4333 (live PDF)", "quote": "Won't you be pleased that the people take the sheep and camels, and you take Allah's Messenger along with you?" },
+        { "work": "Sahih al-Bukhari", "ref": "4337 (live PDF)", "quote": "If the people took their way through a valley, and the Ansar took their way through a mountain path, surely, I would take the Ansar's mountain path" }
+      ],
+      "grade": "CERTAIN",
+      "variants": [
+        { "note": "Bukhari carries the speech twice (4331 and 4333/4337) with slightly different wording; both are canonical and agree in sense. The model quotes 4333's wording within the cap.", "sources": ["Sahih al-Bukhari 4331, 4333, 4337"] }
+      ],
+      "render_as": "solid",
+      "notes": "Moral centre of the spoils phase: a tent ring and two abstract bands; no faces, no figures."
+    },
+    {
+      "id": "HUN-029",
+      "section": "aftermath",
+      "tag": "HISTORY",
+      "claim": "The Hawazin delegation came and asked for their captives. Offered the choice of property or captives, they chose the captives, and the Prophet (PBUH) and the Muslims returned them; the sirah adds that the delegation was fourteen men led by Zuhair ibn Sard and that every captive was given a garment.",
+      "sources": [
+        { "work": "Sahih al-Bukhari", "ref": "4318, 4319 (live PDF)", "quote": "When the delegate of Hawazin came to Allah's Messenger ... asked him to return their properties and captives" },
+        { "work": "Sahih al-Bukhari", "ref": "4318 (live PDF)", "quote": "We prefer to have our captives" },
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Ḥunayn chapter (online copy)", "ref": "delegation", "quote": "They were fourteen men headed by Zuhair bin Sard" }
+      ],
+      "grade": "CERTAIN",
+      "variants": [
+        { "note": "The delegation, the choice and the return are canonical; the number fourteen, Zuhair's name and the garments are sirah-only.", "sources": ["Sahih al-Bukhari 4318, 4319", "researcher note"] }
+      ],
+      "render_as": "solid",
+      "notes": "Aftermath beat at the Ji'ranah depot: the captive lines released; label 'the captives go home · 9:27'."
+    },
+    {
+      "id": "HUN-030",
+      "section": "aftermath",
+      "tag": "HISTORY",
+      "claim": "Al-Shaima', the daughter of al-Harith and the Prophet's (PBUH) foster sister, was among the captives; he recognised her by a mark, honoured her and sent her back to her people.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Ḥunayn chapter (online copy)", "ref": "al-Shaima'", "quote": "the Messenger's foster sister was brought to the Messenger of Allah" },
+        { "work": "IslamicFinder, 'Battle of Hunain (Ghazwa Hunayn)' (live)", "ref": "al-Shaima'", "quote": "Shaima, the foster sister of the Prophet" }
+      ],
+      "grade": "REPORTED",
+      "variants": [
+        { "note": "The story is sirah-only, of the Ibn Hisham lineage, and not verifiable in the canonical collections this session. Hidden from the field: it belongs to the household, not the battlefield model.", "sources": ["researcher note"] }
+      ],
+      "render_as": "hidden",
+      "notes": "Ledger only; not rendered on screen unless the owner asks."
+    },
+    {
+      "id": "HUN-031",
+      "section": "aftermath",
+      "tag": "HISTORY",
+      "claim": "From Ji'ranah the Prophet (PBUH) performed the lesser pilgrimage, then returned to Madinah by the last six nights of Dhu al-Qa'dah 8 AH, leaving 'Itab ibn Usayd over Makkah.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Ḥunayn chapter (online copy)", "ref": "return", "quote": "His arrival to Madinah was by the last six nights of Dhul-Qa'dah, in the year 8 A.H." },
+        { "work": "IslamicFinder, 'Battle of Hunain (Ghazwa Hunayn)' (live)", "ref": "return", "quote": "he returned to Madinah" }
+      ],
+      "grade": "REPORTED",
+      "variants": [
+        { "note": "The Umrah from Ji'ranah is sirah-only; no canonical date is given for the return. The model's closing label names the road, not the day.", "sources": ["researcher note"] }
+      ],
+      "render_as": "approx",
+      "notes": "Closing label: 'the army returns to Madinah · reported'."
+    },
+    {
+      "id": "HUN-032",
+      "section": "aftermath",
+      "tag": "HISTORY",
+      "claim": "The day is remembered in the Qur'an as a rebuke of confidence in numbers and a proof of divine help: the great number availed nothing, the tranquillity came down, and repentance was opened after it.",
+      "sources": [
+        { "work": "Qur'an 9:25-27 (live en.sahih)", "ref": "verse_anchors", "quote": "then you turned back, fleeing ... Then Allah sent down His tranquillity ... Then Allah will accept repentance" },
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Ḥunayn chapter (online copy)", "ref": "the defeat", "quote": "Allah, Glory is to Him, alluded to this sudden change in the Quran" }
+      ],
+      "grade": "REPORTED",
+      "variants": [
+        { "note": "The reading is the model's closing note, not a canonical commentary; the verses themselves are canonical.", "sources": ["researcher note"] }
+      ],
+      "render_as": "approx",
+      "notes": "Closing card with 9:27, then the atlas return."
+    }
+  ],
+  "live_verification_log": {
+    "quran_endpoint": "api.alquran.cloud/v1/ayah/{c}:{v}/en.sahih — verified 2026-10-28: 9:25, 9:26, 9:27",
+    "hadith_endpoint": "Sahih al-Bukhari 4314-4337 from the Dar-us-Salam volume-5 PDF (ahadith 3649-4473, futureislam.files.wordpress.com); Sahih Muslim 1775a, 1775b, 1776a, 1777 from hadithunlocked.com (sunnah.com numbering). sunnah.com returned 403 and hadithcollection.com rate-limited this session.",
+    "verified_this_session": [
+      "bukhari:4315 — Al-Bara': the Prophet did not flee; the hasty people ran; the Hawazin threw arrows; Abu Sufyan ibn al-Harith held the white mule's head; 'I am the Prophet without a lie, I am the son of 'Abdul-Muttalib'",
+      "bukhari:4316, 4317 — the same cluster; the enemy were good archers; 'But Allah's Messenger did not flee'",
+      "bukhari:4318, 4319 — the Hawazin delegation; the choice of captives or property; the distribution delayed over ten nights; the captives returned",
+      "bukhari:4321, 4322 — Abu Qatada at Hunain; the Muslims except the Prophet and some Companions retreated; the spoils ruling",
+      "bukhari:4323 — Abu 'Amir at Awtas; Durayd killed; Abu 'Amir's arrow wound, his death and Abu Musa's succession",
+      "bukhari:4324-4327 — Ta'if in Shawwal of the 8th year; the siege; the lifted siege; Abu Bakrah over the wall",
+      "bukhari:4330-4337 — the leather-tent speech; 'ten thousand besides the Tulaqa''; the calls to the Ansar; the hundred-camel gifts to al-Aqra' and 'Uyayna; 'May Allah bestow His mercy on Musa'",
+      "bukhari chapter heading before 4314 — Qur'an 9:25-27 quoted for the Ḥunayn chapter",
+      "muslim:1775a — al-'Abbas holding the bridle; the call to the samurah tree; the return 'as cows come back to their calves'; 'We are present, we are present'",
+      "muslim:1775b — 'O 'Abbas, call: O companions of the samurah tree!'; 'O assembly of the Ansar!'; 'This is the time when the battle has grown hot'",
+      "muslim:1776a — the mule; Abu Sufyan ibn al-Harith leading it; 'he got down ... I am the Prophet. This is no untruth. I am the son of 'Abd al-Muttalib'",
+      "muslim:1777 — the handful of dust; 'May these faces be deformed'; no enemy eye without the dust",
+      "quran 9:25-27 — verbatim, en.sahih",
+      "raheeq (online chapter copy) — coalition, Awtas families, Duraid, 12,000, 100 armours, the ambush, 70 of Thaqif, the spoils inventory, Ta'if 10-20 days and 12 dead, the 23 men, Ji'ranah, the Ansar speech, the Hawazin delegation, al-Shaima', the Umrah and the return",
+      "islamicfinder — the same sirah outline with the 12,000 and the Awtas camp"
+    ],
+    "known_failures": [
+      "sunnah.com returned 403 and hadithcollection.com rate-limited from this session; the Bukhari texts were read from the Dar-us-Salam PDF (OCR typos such as 'Uunain' for Hunain are corrected only in quoting, never in sense)",
+      "the local Raheeq PDF was not read this session; the Ḥunayn chapter was read through the online copy, so page numbers are not cited",
+      "the spine itself contradicts its own dates: departure 19 Shawwal, battle 'Wednesday night the tenth of Shawwal'. The model renders the month only and the ledger keeps both variants",
+      "no canonical count exists for the enemy host; the model renders no enemy number at all",
+      "the 12,000, the 2,000 Makkans, the 100 armours, the spoils inventory, the 70 of Thaqif, the 23 men out of Ta'if, the 12 dead, the 14 delegates, the garments and al-Shaima' are sirah-only and stay REPORTED or hidden",
+      "Dhat Anwat was not verified in a canonical collection this session; it rests on the spine only",
+      "al-Waqidi's full text was not consulted directly; his detail is cited through the sirah retellings",
+      "the enemy's dead and the battle's length in hours are not asserted anywhere in the model"
+    ]
+  }
+}

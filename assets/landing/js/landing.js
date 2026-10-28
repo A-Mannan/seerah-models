@@ -21,7 +21,8 @@
     uhud: { year: '3 AH', name: 'Uhud', place: 'the archers’ hill' },
     khandaq: { year: '5 AH', name: 'Khandaq', place: 'the trench' },
     khaybar: { year: '7 AH', name: 'Khaybar', place: 'the forts' },
-    mutah: { year: '8 AH', name: 'Muʿtah', place: 'the wādī' }
+    mutah: { year: '8 AH', name: 'Muʿtah', place: 'the wādī' },
+    hunayn: { year: '8 AH', name: 'Ḥunayn', place: 'the valley' }
   };
 
   var active = 'badr';

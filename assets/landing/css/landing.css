@@ -215,7 +215,8 @@ svg { display: block; }
 .gate[data-battle="uhud"] .stage-layer--uhud,
 .gate[data-battle="khandaq"] .stage-layer--khandaq,
 .gate[data-battle="khaybar"] .stage-layer--khaybar,
-.gate[data-battle="mutah"] .stage-layer--mutah {
+.gate[data-battle="mutah"] .stage-layer--mutah,
+.gate[data-battle="hunayn"] .stage-layer--hunayn {
   opacity: 1;
   transform: scale(1.025);
 }
@@ -242,6 +243,7 @@ svg { display: block; }
 .stage-layer--khandaq img { object-position: 50% 45%; }
 .stage-layer--khaybar img { object-position: 50% 46%; }
 .stage-layer--mutah img { object-position: 50% 52%; }
+.stage-layer--hunayn img { object-position: 50% 50%; }
 
 .day-frame {
   position: absolute;
@@ -315,7 +317,8 @@ svg { display: block; }
 .field-plate[data-field="uhud"] .plan--uhud,
 .field-plate[data-field="khandaq"] .plan--khandaq,
 .field-plate[data-field="khaybar"] .plan--khaybar,
-.field-plate[data-field="mutah"] .plan--mutah { opacity: 1; }
+.field-plate[data-field="mutah"] .plan--mutah,
+.field-plate[data-field="hunayn"] .plan--hunayn { opacity: 1; }
 
 .field-plate-year {
   font-size: 13px;
@@ -367,7 +370,7 @@ svg { display: block; }
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   margin: 0;
   padding: 0;
   list-style: none;
@@ -400,7 +403,8 @@ svg { display: block; }
 .gate[data-battle="uhud"] .door--uhud,
 .gate[data-battle="khandaq"] .door--khandaq,
 .gate[data-battle="khaybar"] .door--khaybar,
-.gate[data-battle="mutah"] .door--mutah {
+.gate[data-battle="mutah"] .door--mutah,
+.gate[data-battle="hunayn"] .door--hunayn {
   background: rgba(58, 98, 80, 0.06);
 }
 
@@ -438,7 +442,8 @@ svg { display: block; }
 .gate[data-battle="uhud"] .door--uhud::after,
 .gate[data-battle="khandaq"] .door--khandaq::after,
 .gate[data-battle="khaybar"] .door--khaybar::after,
-.gate[data-battle="mutah"] .door--mutah::after {
+.gate[data-battle="mutah"] .door--mutah::after,
+.gate[data-battle="hunayn"] .door--hunayn::after {
   transform: scaleX(1);
 }
 
@@ -505,7 +510,8 @@ svg { display: block; }
 .gate[data-battle="uhud"] .door--uhud:not(:hover):not(:focus-visible) .door-num,
 .gate[data-battle="khandaq"] .door--khandaq:not(:hover):not(:focus-visible) .door-num,
 .gate[data-battle="khaybar"] .door--khaybar:not(:hover):not(:focus-visible) .door-num,
-.gate[data-battle="mutah"] .door--mutah:not(:hover):not(:focus-visible) .door-num {
+.gate[data-battle="mutah"] .door--mutah:not(:hover):not(:focus-visible) .door-num,
+.gate[data-battle="hunayn"] .door--hunayn:not(:hover):not(:focus-visible) .door-num {
   color: var(--accent-deep);
 }
 
@@ -534,7 +540,8 @@ svg { display: block; }
 .gate[data-battle="uhud"] .door--uhud:not(:hover):not(:focus-visible) .door-plan,
 .gate[data-battle="khandaq"] .door--khandaq:not(:hover):not(:focus-visible) .door-plan,
 .gate[data-battle="khaybar"] .door--khaybar:not(:hover):not(:focus-visible) .door-plan,
-.gate[data-battle="mutah"] .door--mutah:not(:hover):not(:focus-visible) .door-plan {
+.gate[data-battle="mutah"] .door--mutah:not(:hover):not(:focus-visible) .door-plan,
+.gate[data-battle="hunayn"] .door--hunayn:not(:hover):not(:focus-visible) .door-plan {
   color: rgba(58, 98, 80, 0.72);
 }
 
@@ -554,7 +561,7 @@ svg { display: block; }
 
 .door-en {
   font-family: var(--serif);
-  font-size: clamp(40px, 4.3vw, 62px);
+  font-size: clamp(36px, 4vw, 58px);
   font-weight: 400;
   line-height: 0.8;
   letter-spacing: -0.045em;
@@ -611,13 +618,15 @@ svg { display: block; }
 .door--khandaq .door-media img { object-position: 50% 52%; }
 .door--khaybar .door-media img { object-position: 50% 58%; }
 .door--mutah .door-media img { object-position: 50% 70%; }
+.door--hunayn .door-media img { object-position: 50% 52%; }
 
 /* the field on show is the one whose ground is fully lit */
 .gate[data-battle="badr"] .door--badr .door-media img,
 .gate[data-battle="uhud"] .door--uhud .door-media img,
 .gate[data-battle="khandaq"] .door--khandaq .door-media img,
 .gate[data-battle="khaybar"] .door--khaybar .door-media img,
-.gate[data-battle="mutah"] .door--mutah .door-media img {
+.gate[data-battle="mutah"] .door--mutah .door-media img,
+.gate[data-battle="hunayn"] .door--hunayn .door-media img {
   opacity: 1;
   filter: saturate(0.96) contrast(1.06) brightness(1.05);
 }
@@ -670,7 +679,8 @@ svg { display: block; }
 .gate[data-battle="uhud"] .door--uhud:not(:hover):not(:focus-visible) .door-arrow,
 .gate[data-battle="khandaq"] .door--khandaq:not(:hover):not(:focus-visible) .door-arrow,
 .gate[data-battle="khaybar"] .door--khaybar:not(:hover):not(:focus-visible) .door-arrow,
-.gate[data-battle="mutah"] .door--mutah:not(:hover):not(:focus-visible) .door-arrow {
+.gate[data-battle="mutah"] .door--mutah:not(:hover):not(:focus-visible) .door-arrow,
+.gate[data-battle="hunayn"] .door--hunayn:not(:hover):not(:focus-visible) .door-arrow {
   color: var(--accent-deep);
 }
 
@@ -795,6 +805,8 @@ svg { display: block; }
   .js .door--khaybar .door-cta { animation-delay: 0.42s; }
   .js .door--mutah .door-top { animation-delay: 0.4s; }
   .js .door--mutah .door-cta { animation-delay: 0.48s; }
+  .js .door--hunayn .door-top { animation-delay: 0.46s; }
+  .js .door--hunayn .door-cta { animation-delay: 0.54s; }
 }
 
 .door:hover .door-plan .draw,
@@ -903,7 +915,8 @@ svg { display: block; }
   .gate[data-battle="uhud"] .door--uhud::after,
   .gate[data-battle="khandaq"] .door--khandaq::after,
   .gate[data-battle="khaybar"] .door--khaybar::after,
-  .gate[data-battle="mutah"] .door--mutah::after {
+  .gate[data-battle="mutah"] .door--mutah::after,
+  .gate[data-battle="hunayn"] .door--hunayn::after {
     transform: scaleY(1);
   }
 
@@ -1085,7 +1098,7 @@ svg { display: block; }
   .masthead-ar { font-size: 15px; }
   .masthead-note { display: none; }
 
-  .doors { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .doors { grid-template-columns: repeat(6, minmax(0, 1fr)); }
 
   .door {
     display: flex;
@@ -1111,14 +1124,15 @@ svg { display: block; }
   .gate[data-battle="uhud"] .door--uhud::after,
   .gate[data-battle="khandaq"] .door--khandaq::after,
   .gate[data-battle="khaybar"] .door--khaybar::after,
-  .gate[data-battle="mutah"] .door--mutah::after {
+  .gate[data-battle="mutah"] .door--mutah::after,
+  .gate[data-battle="hunayn"] .door--hunayn::after {
     transform: scaleX(1);
   }
 
   .door-plan { display: none; }
   .door-meta { font-size: 13px; line-height: 1.35; }
   .door-name { margin-top: 4px; gap: 7px; }
-  .door-en { font-size: 28px; }
+  .door-en { font-size: clamp(22px, 3vw, 28px); }
   .door-ar { font-size: 15px; }
   .door-cta { position: static; flex-direction: row; padding-top: 9px; }
   .door-arrow svg { width: 20px; height: 24px; }

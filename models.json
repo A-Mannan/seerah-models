@@ -1,7 +1,7 @@
 {
   "name": "The Seerah Atlas",
-  "updated": "2026-10-27",
-  "order": ["badr", "uhud", "khandaq", "khaybar", "mutah"],
+  "updated": "2026-10-28",
+  "order": ["badr", "uhud", "khandaq", "khaybar", "mutah", "hunayn"],
   "models": [
     {
       "slug": "badr",
@@ -67,6 +67,19 @@
       "ledger_refs": ["MUT-003", "MUT-016", "MUT-018"],
       "plate": "assets/landing/img/mutah-field-1400.webp",
       "plate_alt": "Muʿtah in 3D: the Muslim army and the reported enemy host on either side of the dry wādī, the three command standards between them, the village on its tell and the olive groves beyond."
+    },
+    {
+      "slug": "hunayn",
+      "title": "Ḥunayn",
+      "title_ar": "حنين",
+      "hook": "The ambush broke the army. Who stood firm?",
+      "hook_ref": "HUN-013",
+      "status": "live",
+      "route": "hunayn/",
+      "ledger": "data/ledger/hunayn.json",
+      "ledger_refs": ["HUN-004", "HUN-013", "HUN-027"],
+      "plate": "assets/landing/img/hunayn-field-1400.webp",
+      "plate_alt": "Ḥunayn in 3D: the wide valley between its slopes at first light, the enemy bands gathered on the floor, the white standard and the mule at the station, and the road to Ṭāʾif beyond."
     }
   ]
 }

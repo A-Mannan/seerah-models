@@ -1,12 +1,44 @@
 # Progress
 
+## Build ac — Ḥunayn, the sixth field (on build ab, local, not pushed)
+The valley ambush in eight phases over 109 seconds: the valley before dawn, the night march in, the
+ambush by first light, the call that rallies the Anṣār at the station, the break, the siege of
+Ṭāʾif, the spoils at Jiʿrānah and the return. The 12,000 of the sirah are staged (REPORTED); the
+Hawāzin and Thaqīf carry no count on screen, because the reports fix none.
+
+### Shipped
+- **A graded ledger** — `data/ledger/hunayn.json`, 32 entries: 13 CERTAIN / 18 REPORTED / 1
+  DISPUTED, status `awaiting_owner_review`. Ṭāʾif's siege stays a 10–20 day range (DISPUTED); Awtas
+  names no killer; the spoils carry no inventory; no captive figures.
+- **The scene** — `app/js/hunayn.js` on the shared engine: the narrow valley walls, the enemy bands
+  hidden on both flanks, the station marked by a mule and white standards with no figure for the
+  Prophet ﷺ, the siege at Ṭāʾif, the depot at Jiʿrānah, faceless figures throughout.
+- **The page, route and door** — `app/hunayn.html`, descriptor `app/js/hunayn-page.js`, route
+  `hunayn/`, and a sixth gate door (8 AH · Ḥunayn · حنين) with a window onto the valley.
+- **The Atlas** — six rows in EN and UR, “here” on Ḥunayn, masthead at six fields.
+
+### Verified
+- Eight phases at 1280×900 and 390×844: zero console errors, zero out-of-bounds labels; Urdu RTL
+  with Nastaliq and Urdu numerals.
+- Gate bands at 1280/1440/1024 px: 294/308/291, no cell overflow; phone band 562 + stage 282 = 844,
+  no scroll.
+- All 12 app pages and routes boot with no 404s; the five earlier models are unchanged (badr 7/76,
+  uhud 7/74, khandaq 7/78, khaybar 6/86, mutah 7/96; Ḥunayn 8/109).
+- Perf: 6.40M tris, 126 draw calls desktop / 68 phone at t = 0.30 — the heaviest of the six because
+  it stages the largest crowd; `benchMass` 5.6–6.3 ms on the phone profile.
+- `node --check` clean on every touched script; lint 0 FAIL; inspect passes on `app/hunayn.html`.
+- Cache-bust `?v=20261028ac` on all six model pages and the gate; routes regenerated.
+
+### Limits
+- The Ḥunayn ledger stays `awaiting_owner_review`, like the four later ledgers before it.
+
 ## Build ab — real-recording sound on every model (local, not pushed)
 The owner's verdict on the old layer: "pathetic, doesn't even match the scene, non-existent."
 It was one 126-line synth: filtered noise for wind, a band-pass rumble, and three blips
 reused for swords, arrows, the Khaybar ram and even Ḥunayn's rally call — and its loudest
 cue peaked around −42 dBFS. Every model now plays real CC0 recordings, scene-matched per
 battle, with sources credited. Cache-bust `?v=20261028ab` on all model pages and the gate;
-routes regenerated (aa stays the Ḥunayn build; this is ab).
+routes regenerated (Ḥunayn follows on this sound layer in ac).
 
 ### Shipped
 - **A real SFX library** (`app/assets/audio/`, 2.0 MB total): wind, crowd, rain, storm and

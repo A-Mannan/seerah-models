@@ -1,8 +1,8 @@
 # seerah-models
 
-**The Seerah Atlas.** Five interactive, graded 3D battle models — Badr (17 Ramadan 2 AH),
-Uhud (3 AH), Khandaq (5 AH), Khaybar (7 AH) and Muʿtah (8 AH). Enter a field, orbit the ground,
-and follow the day.
+**The Seerah Atlas.** Six interactive, graded 3D battle models — Badr (17 Ramadan 2 AH),
+Uhud (3 AH), Khandaq (5 AH), Khaybar (7 AH), Muʿtah (8 AH) and Ḥunayn (Shawwāl 8 AH). Enter a
+field, orbit the ground, and follow the day.
 
 ## Run it
 
@@ -11,21 +11,21 @@ No build step. Serve the repo and open the gate:
 ```bash
 python3 -m http.server 8000
 # → http://localhost:8000/
-# direct: /badr/, /uhud/, /khandaq/, /khaybar/, /mutah/
+# direct: /badr/, /uhud/, /khandaq/, /khaybar/, /mutah/, /hunayn/
 ```
 
 Opening `index.html` from disk also works: the doors link to explicit `index.html` files.
 The source pages remain at `app/index.html`, `app/uhud.html`, `app/khandaq.html`,
-`app/khaybar.html` and `app/mutah.html`.
+`app/khaybar.html`, `app/mutah.html` and `app/hunayn.html`.
 
 ## What's inside
 
-- `index.html`, `assets/landing/` — the Atlas gate: one field, five doors, each plate carrying a
+- `index.html`, `assets/landing/` — the Atlas gate: one field, six doors, each plate carrying a
   window onto the ground it opens.
 - `app/` — the 3D experience (vanilla JS + Three.js r128, no build step)
   - `js/engine.js` — the shared engine: renderer, dawn sky, heightfield, wells, camps, palms,
     animals, instanced crowd, labels, camera director and orbit.
-  - `js/badr.js`, `js/uhud.js`, `js/khandaq.js`, `js/khaybar.js`, `js/mutah.js` — per-battle
+  - `js/badr.js`, `js/uhud.js`, `js/khandaq.js`, `js/khaybar.js`, `js/mutah.js`, `js/hunayn.js` — per-battle
     scenes, formations, choreography and the `BATTLE` API.
   - `js/shell.js`, `js/*-page.js` — page boot and UI shell: clock, timeline, speeds, language
     switching (English/اردو RTL).
@@ -46,7 +46,7 @@ The source pages remain at `app/index.html`, `app/uhud.html`, `app/khandaq.html`
 
 ## Status
 
-- The Atlas gate: five doors, each with a window onto its field, so every model is identifiable on
+- The Atlas gate: six doors, each with a window onto its field, so every model is identifiable on
   touch without hover. One screen at 1440×900, 768×1024, 390×844, 320×640 and landscape phones.
 - Badr: live model on the shared engine.
 - Uhud: live model; its ledger is `awaiting_owner_review`.
@@ -56,4 +56,7 @@ The source pages remain at `app/index.html`, `app/uhud.html`, `app/khandaq.html`
   from the muster to the reckoning; its ledger is `awaiting_owner_review`.
 - Muʿtah: live model on the shared engine — the wādī, the three standards, the nine swords and the
   ordered withdrawal; its ledger is `awaiting_owner_review`.
-- The Atlas gate and all five routes are in the repo; nothing is deployed without owner approval.
+- Ḥunayn: live model on the shared engine — the ambush in the valley, the stand at the station, the
+  call to the Anṣār, the siege of Ṭāʾif and the spoils at Jiʿrānah; its ledger is
+  `awaiting_owner_review`.
+- The Atlas gate and all six routes are in the repo; nothing is deployed without owner approval.
