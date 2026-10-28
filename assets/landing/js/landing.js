@@ -151,6 +151,23 @@
   paintPlate(active);
   schedule();
 
+  /* The last register keeps its separator; if it begins a new line, the dot would
+     read as a bullet, so drop it there. */
+  var ahead = document.querySelector('.ahead');
+  var aheadLine = ahead ? ahead.querySelector('.ahead-line') : null;
+  var aheadTail = ahead ? ahead.querySelector('.ahead-tail') : null;
+
+  function fitAhead() {
+    if (!aheadLine || !aheadTail) return;
+    var line = aheadLine.getBoundingClientRect();
+    var tail = aheadTail.getBoundingClientRect();
+    ahead.classList.toggle('ahead--orphan', tail.left - line.left < 12);
+  }
+
+  fitAhead();
+  window.addEventListener('resize', fitAhead, { passive: true });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitAhead);
+
   /* Warm the alternate fields once the page is quiet, so a door never opens onto black. */
   function warm() {
     var pictures = Array.prototype.slice.call(gate.querySelectorAll('.stage-layer img'));

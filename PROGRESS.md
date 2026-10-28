@@ -60,7 +60,7 @@ the model pages still read `?v=20261028z`, so a hard refresh is needed to see th
 Every door now carries a window onto the ground it opens. The gate keeps its full-bleed field, bone
 index sheet and verdigris survey light; the register below simply shows the five fields instead of
 describing them. No scene, camera, choreography, ledger or model page changed. Cache-bust
-`?v=20261028z5` on the landing stylesheet and script.
+`?v=20261028z6` on the landing stylesheet and script (z5 was the first pass, z6 the polish).
 
 ### Shipped
 - **A field window on every plate.** Each of the five doors reuses the 1400w capture the stage
@@ -78,28 +78,55 @@ describing them. No scene, camera, choreography, ledger or model page changed. C
   Makkah in preparation · the Hijrah under study” — with Arabic inline on desk and tablet and
   hidden on phones. No years and no links on fields that are not live.
 
+### Polish (z6)
+The register was still telling on itself: micro-caps on every enter line, hairline rules between
+plates, ten type sizes, and a plate sitting on the first door's name on touch. This pass removes
+those tells. No scene, camera, choreography, ledger or model page changed.
+
+- **Enter, said once.** Door labels are sentence case at 13px with normal tracking — “Enter Badr”,
+  not “ENTER BADR”. The arrow trails on desk; on touch the label holds the sheet's right edge and
+  the arrow leads it, so the register's right margin stays unbroken at 390 and 768.
+- **No rules in the register.** Desk column rules, tablet/phone row rules, landscape column rules
+  and the Ahead top rule are gone. Space, the 0.06 verdigris wash on the active plate, the 3px
+  threshold bar and the field strips do the dividing; the inspector `hairline` FAIL is cleared.
+- **The plate clears the name.** On touch the field plate moves to the stage's bottom-right, clear
+  of the first door's name and the “· the wells” eyebrow; the `eyebrow` FAIL is cleared.
+- **Short phones hold one screen.** A compact mode at ≤700×700 tightens door padding, floors the
+  stage at 150px, takes the name to 34–40px and the arrow to 22×20. 320×640, 375×667 and 320×568
+  hold one screen (band 415 / 423 / 415).
+- **Seven sizes, not ten.** 13 / 16 / 18 / 20 / 22 / 40 / 62. Plate name 20, masthead Arabic 18,
+  Ahead Arabic 13, Ahead field 16, landscape year 13, skip link 16.
+- **The field has weather.** A 44s alternate drift (scale 1.008 → 1.042) on the desk stage, off
+  under reduced motion; the stage transition is opacity only, so the drift is the single clock.
+- **No stranded separator.** The last Ahead register is an inline-block, and the script drops the
+  dot only where the tail begins a line, so the phone reads “the Hijrah under study” clean while
+  320 keeps the dot mid-line.
+
 ### Verification
-- Eight viewports — 1440×900, 1180×820, 1024×768, 901×768, 768×1024, 390×844, 320×800 and
-  844×390 — one screen at every one, no page scroll, no horizontal overflow, no console errors.
-  Stage / band / ahead at 1440: 900 / 329 / 44; at 768: 458 / 566 / 36; at 390: 363 / 481 / 56;
-  at 320: 344 / 456 / 56.
+- Twelve viewports — 1440×900, 1180×820, 1024×768, 901×768, 768×1024, 390×844, 375×667, 360×740,
+  320×800, 320×640, 320×568 and 844×390 — one screen at every one, no page scroll, no horizontal
+  overflow, no console errors. Stage / band / ahead at 1440: 900 / 328 / 43; at 768: 458 / 566 / 36;
+  at 390: 366 / 478 / 57; at 320×640: 225 / 415 / 53.
 - Door windows measured and checked for collision at every viewport: desk strips sit below the name
-  and above the enter line; tablet stamps clear both; phone stamps clear the arrow at 390 and 320;
-  landscape strips run under the enter line. The 320 arrow box grazes the stamp box by 1px; the
-  visible arrow is separated and the frame reads clear.
+  and above the enter line; tablet stamps clear both; phone stamps clear the arrow and the name at
+  390, 375, 360 and 320; landscape strips run under the enter line. The 320 arrow box grazes the
+  stamp box by 1px; the visible arrow is separated and the frame reads clear.
 - Hover with a real mouse move (Khandaq, then focus Khaybar) switches the field, plate, folio, flood
   and window; the focus ring is visible. On a 390 phone the gallery swipe to Khandaq and Muʿtah
   updates plate, folio and stamps with no errors.
-- Landing lint **0 FAIL / 4 WARN** (decorative numbering, two pre-existing `box-shadow: none`
-  resets, the standing em-dash aggregate); `inspect --app` **0 FAIL / 1 WARN** — `app-title-size`
-  flags the 36px editorial masthead, which is the approved landing scale. `node --check` clean on
-  the landing script.
+- Landing inspect **0 FAIL / 4 WARN** (cream palette, three bilingual typefaces, no footage, the
+  swipe gallery's side-scroll); lint **0 FAIL / 1 WARN** (the standing em-dash aggregate).
+  `node --check` clean on the landing script.
 
 ### Known limits
 - The windows are still photographs of the models, not live canvases; the gate reuses the stage's
   five 1400w assets rather than adding smaller crops.
 - On landscape phones the strips are 22px deep: enough to tell the fields apart, not to survey
   them. The plate carries the plan.
+- On phones the stamps are 54–59×34; Muʿtah's wādī capture is mostly pale ground at that size, so
+  its name carries more of the identification than its window.
+- At 568px-class heights (≤620px) the compact mode hides the field plate to hold one screen; the
+  register still names every field.
 - The gate still lists Ḥunayn, Fatḥ Makkah and the Hijrah as ahead — no routes, no years, no links
   until those models are live.
 - The Uhud, Khandaq, Khaybar and Muʿtah ledgers remain `awaiting_owner_review`; this pass is local

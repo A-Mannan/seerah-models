@@ -47,7 +47,7 @@ The source pages remain at `app/index.html`, `app/uhud.html`, `app/khandaq.html`
 ## Status
 
 - The Atlas gate: five doors, each with a window onto its field, so every model is identifiable on
-  touch without hover. One screen at 1440×900, 768×1024, 390×844, 320×800 and landscape phones.
+  touch without hover. One screen at 1440×900, 768×1024, 390×844, 320×640 and landscape phones.
 - Badr: live model on the shared engine.
 - Uhud: live model; its ledger is `awaiting_owner_review`.
 - Khandaq: live model on the shared engine — the trench, the crossing, the seven phases from the
