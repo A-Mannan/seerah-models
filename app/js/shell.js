@@ -20,7 +20,7 @@
   var ARROW = '<svg viewBox="0 0 30 16" aria-hidden="true" focusable="false"><path d="M0 8h27M20 1l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>';
   var SIGIL = '<svg viewBox="0 0 20 22" aria-hidden="true" focusable="false"><rect x="8.6" y="1" width="1.8" height="20" fill="currentColor"/><rect x="10.4" y="3" width="8.6" height="6" fill="currentColor"/></svg>';
 
-  /* the five live fields: the only shared content in the shell */
+  /* the six live fields: the only shared content in the shell */
   var ATLAS = [
     {
       key: 'badr', href: '../badr/index.html', ar: 'بدر',
@@ -51,6 +51,12 @@
       year: { en: '8 AH', ur: '۸ ہجری' },
       name: { en: 'Muʿtah', ur: 'مؤتہ' },
       place: { en: 'the dry wādī', ur: 'خشک وادی' }
+    },
+    {
+      key: 'hunayn', href: '../hunayn/index.html', ar: 'حنين',
+      year: { en: '8 AH', ur: '۸ ہجری' },
+      name: { en: 'Ḥunayn', ur: 'حنین' },
+      place: { en: 'the narrow valley', ur: 'تنگ وادی' }
     }
   ];
 
@@ -61,13 +67,13 @@
       sound: 'sound', lang: 'اردو', battles: 'battles',
       restart: 'restart', speed: 'playback speed',
       close: 'close', here: 'here',
-      homeAria: 'The Seerah Atlas — all five battles',
+      homeAria: 'The Seerah Atlas — all six battles',
       fieldKey: 'field key', tools: 'experience tools',
       timeline: 'battle timeline: drag to scrub',
       hint: 'drag to look · scroll or pinch to zoom',
       atlasKicker: 'the seerah atlas',
-      atlasTitle: 'the five fields',
-      atlasNote: '2–8 AH · five battlefields, five models',
+      atlasTitle: 'the six fields',
+      atlasNote: '2–8 AH · six battlefields, six models',
       ethic: 'Faceless figures throughout; the Prophet <span class="hon" lang="ar">ﷺ</span> is never depicted.',
       keys: '<b>space</b> play · <b>← →</b> scrub · <b>b</b> battles · <b>esc</b> close',
       brand: 'badr <em>· the battle</em>',
@@ -81,13 +87,13 @@
       sound: 'آواز', lang: 'EN', battles: 'معرکے',
       restart: 'دوبارہ شروع', speed: 'رفتار',
       close: 'بند کریں', here: 'یہاں',
-      homeAria: 'اطلسِ سیرت — پانچوں معرکے',
+      homeAria: 'اطلسِ سیرت — چھ معرکے',
       fieldKey: 'میدان کی علامات', tools: 'تجربے کے اختیارات',
       timeline: 'میدان کی ٹائم لائن: گھسیٹ کر آگے پیچھے کریں',
       hint: 'دیکھنے کے لیے گھمائیں · زوم کے لیے اسکرول یا دو انگلیوں کا اشارہ',
       atlasKicker: 'اطلسِ سیرت',
-      atlasTitle: 'پانچ میدان',
-      atlasNote: '۲–۸ ہجری · پانچ میدان، پانچ نمونے',
+      atlasTitle: 'چھ میدان',
+      atlasNote: '۲–۸ ہجری · چھ میدان، چھ نمونے',
       ethic: 'تمام شکلیں بے چہرہ ہیں؛ نبی <span class="hon" lang="ar">ﷺ</span> کو کبھی نہیں دکھایا گیا۔',
       keys: '<b>اسپیس</b> چلائیں · <b>← →</b> آگے پیچھے · <b>b</b> معرکے · <b>esc</b> بند',
       brand: 'بدر <em>· معرکۂ بدر</em>',
@@ -342,8 +348,20 @@
       start: function () { return false; }, setOn: function () {}, cue: function () {},
       melee: function () {}, volley: function () {}, isOn: function () { return false; }
     };
-    var soundOn = false;
-    try { soundOn = window.localStorage.getItem(storeKey + '-sound') === '1'; } catch (e) { soundOn = false; }
+    var soundOn = false, soundSet = false;
+    try {
+      var sv = window.localStorage.getItem(storeKey + '-sound');
+      soundSet = sv !== null;
+      soundOn = sv === '1';
+    } catch (e) { soundOn = false; }
+    /* the first play press is a real user gesture: if the visitor never chose,
+       sound comes on with it instead of the model playing mute */
+    function ensureSoundChosen() {
+      if (soundSet) return;
+      soundSet = true;
+      soundOn = true;
+      try { window.localStorage.setItem(storeKey + '-sound', '1'); } catch (e) { /* private mode */ }
+    }
     function applySound() {
       if (!soundBtn) return;
       soundBtn.setAttribute('aria-pressed', soundOn ? 'true' : 'false');
@@ -469,9 +487,11 @@
     function togglePlay() {
       if (B.isPlaying()) { B.pause(); setPlayState(false); return; }
       if (B.frac() >= 1) B.seek(0);
+      ensureSoundChosen();
       B.play();
       setPlayState(true);
       if (soundOn) S.start();
+      applySound();
     }
     /* touch fires pointerup then a synthesized click: dedupe so play never double-toggles */
     var lastPlayTap = 0;
@@ -493,10 +513,12 @@
     }
     if (resetBtn) {
       resetBtn.addEventListener('click', function () {
+        ensureSoundChosen();
         B.seek(0);
         B.play();
         setPlayState(true);
         if (soundOn) S.start();
+        applySound();
       });
     }
 

@@ -1,7 +1,7 @@
 /* Khaybar · the page descriptor. Copy, sound cues and the build tag for the shell. */
 window.BATTLE_PAGE = {
   key: 'khaybar',
-  build: 'build z · Khaybar on the shared engine',
+  build: 'build ab · Khaybar on the shared engine',
   speeds: [0.5, 1, 1.5, 2],
   copy: {
     en: {
@@ -26,26 +26,28 @@ window.BATTLE_PAGE = {
   /* the dark ground, the night march, the first forts, the siege, the duel, the quiet */
   cue: [
     { rumble: 0 },
-    { rumble: 0.12, time: 1.2 },
+    { rumble: 0.08, time: 1.2, bed: { wind: 0.6 } },
     { rumble: 0.30, time: 0.8 },
     { rumble: 0.22, time: 0.9 },
     { rumble: 0.34, time: 0.5, crack: true },
-    { rumble: 0.10, time: 1.4 }
+    { rumble: 0.10, time: 1.4, bed: { wind: 0.45, fire: 0.5 } }
   ],
   audio: {
     tick: function (c) {
-      var i = c.info.i;
-      if (i === 2 && c.info.t > 0.16 && c.info.t < 0.9) {
+      var i = c.info.i, t = c.info.t;
+      /* the first forts — arrows over the walls, the ram at the gate */
+      if (i === 2 && t > 0.16 && t < 0.9) {
         if (performance.now() - (c.B._volleyT || 0) > 620 + Math.random() * 700) {
-          c.S.volley(); c.B._volleyT = performance.now();
+          c.S.play('arrow'); c.B._volleyT = performance.now();
         }
-        if (c.info.t > 0.3 && performance.now() - (c.B._ramT || 0) > 900 + Math.random() * 600) {
-          c.S.melee(); c.B._ramT = performance.now();
+        if (t > 0.3 && performance.now() - (c.B._ramT || 0) > 1100 + Math.random() * 700) {
+          c.S.play('ram'); c.B._ramT = performance.now();
         }
       }
-      if (i === 4 && c.info.t > 0.42 && c.info.t < 0.78) {
+      /* the standard · the duel */
+      if (i === 4 && t > 0.42 && t < 0.78) {
         if (performance.now() - (c.B._clangT || 0) > 380 + Math.random() * 460) {
-          c.S.melee(); c.B._clangT = performance.now();
+          c.S.play('clash'); c.B._clangT = performance.now();
         }
       }
     }

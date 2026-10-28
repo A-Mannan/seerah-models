@@ -1,5 +1,55 @@
 # Progress
 
+## Build ab — real-recording sound on every model (local, not pushed)
+The owner's verdict on the old layer: "pathetic, doesn't even match the scene, non-existent."
+It was one 126-line synth: filtered noise for wind, a band-pass rumble, and three blips
+reused for swords, arrows, the Khaybar ram and even Ḥunayn's rally call — and its loudest
+cue peaked around −42 dBFS. Every model now plays real CC0 recordings, scene-matched per
+battle, with sources credited. Cache-bust `?v=20261028ab` on all model pages and the gate;
+routes regenerated (aa stays the Ḥunayn build; this is ab).
+
+### Shipped
+- **A real SFX library** (`app/assets/audio/`, 2.0 MB total): wind, crowd, rain, storm and
+  fire beds plus clash ×3, whoosh ×2, arrow ×3, thud ×2, ram, horn, roar, dig ×2 and
+  thunder ×2 — all Freesound CC0, license-verified per file, all `earshot realness`
+  ≥ 0.9 "real or pro-produced" (one candidate read synthesized and was dropped).
+- **A sampler engine** (`app/js/audio.js` rewritten): manifest fetch + decode pool, looped
+  beds calibrated by the manifest, one-shots with variant rotation, ±5 % pitch and ±2 dB
+  jitter, per-name rate limits; same public `S` API, plus `S.play(name)`. The per-battle
+  cue tables now fire named cues — Khaybar's ram beats fire `ram`, Ḥunayn's "the call"
+  fires `horn`, Khandaq's storm raises `rain`/`storm` and rolls `thunder`, Badr's silent
+  3-v-3 duel gets its swords.
+- **file:// fallback**: fetch is blocked on file:// pages, so the manifest ships a script
+  twin (`manifest.js`) and every file loads through media elements routed into the same
+  graph — a double-clicked `index.html` sounds the same as the served site.
+- **Sound comes on with the first play**: if the visitor never chose, pressing play (a
+  real gesture) enables sound instead of playing mute; the sound button still wins once
+  used.
+- **Makkah's descriptor already targeted this API** (`S.play`, `bed` ramps) and works
+  unchanged; the shell's cue/rumble semantics are preserved.
+
+### Verification
+- Headless probe (`.taste-skill/probe-audio.mjs`): all seven model pages boot the full
+  graph (5 beds, 9 one-shot cues with variant counts), sweep every phase, zero console
+  errors; a file:// pass on Badr and Khandaq boots through the element fallback and fires
+  one-shots (`active ≥ 1`).
+- Every shipped file measured after encode: peaks within ±1 dB of role targets (clash −4,
+  thud −5, ram −6, whoosh −9, arrow −8, dig −10, horn −10, roar −12, thunder −14 dBFS;
+  beds −14 peak, level set by manifest gains); mono-summed, antiphase guarded; loop seams
+  micro-faded. Report: `openspec/changes/battle-real-audio/verify.md`.
+- `node --check` clean on every touched script; lint **0 FAIL** (standing WARNs);
+  inspect **0 FAIL / 0 WARN** on `app/khandaq.html` with the standing allowances.
+
+### Known limits
+- Tools cannot hear taste: the five riskiest moments are listed in `verify.md` ("check by
+  ear") — Badr wells density, the sand accent, Khandaq's storm bed (crickets may read
+  through), the Khaybar ram, and wind-alone while paused.
+- Freesound previews (128 kbps mono MP3) are the shipped quality; a full-quality pass
+  needs Freesound API credentials. Openverse and Fish Audio were unreachable from this
+  machine (no key configured); heygen requires an interactive OAuth login.
+- The Uhud, Khandaq, Khaybar, Muʿtah and Ḥunayn ledgers remain `awaiting_owner_review`.
+- Build ab is committed locally only; no push until owner approval.
+
 ## Uhud pass — the ground, the wings and the hinge (on build z, local, not pushed)
 Uhud was live but un-reviewed since the engine split: the massif read as loose boulders, both armies
 as carpet-like slabs, and four of seven cameras sat inside geometry. This pass rebuilds the ground,

@@ -1,7 +1,7 @@
 /* Muʿtah · the page descriptor. Copy, sound cues and the build tag for the shell. */
 window.BATTLE_PAGE = {
   key: 'mutah',
-  build: 'build z · Muʿtah on the shared engine',
+  build: 'build ab · Muʿtah on the shared engine',
   speeds: [0.5, 1, 1.5, 2],
   copy: {
     en: {
@@ -26,29 +26,32 @@ window.BATTLE_PAGE = {
   /* the ground, the march, the field, the standards, the swords, the night, the quiet */
   cue: [
     { rumble: 0 },
-    { rumble: 0.12, time: 1.2 },
+    { rumble: 0.10, time: 1.2, bed: { wind: 0.6 } },
     { rumble: 0.24, time: 0.9 },
     { rumble: 0.32, time: 0.7 },
     { rumble: 0.38, time: 0.5, crack: true },
-    { rumble: 0.18, time: 1.3 },
-    { rumble: 0.08, time: 1.5 }
+    { rumble: 0.14, time: 1.3, bed: { wind: 0.6 } },
+    { rumble: 0.06, time: 1.5, bed: { wind: 0.5 } }
   ],
   audio: {
     tick: function (c) {
-      var i = c.info.i;
-      if (i === 3 && c.info.t > 0.16 && c.info.t < 0.9) {
-        if (performance.now() - (c.B._clashT || 0) > 480 + Math.random() * 520) {
-          c.S.melee(); c.B._clashT = performance.now();
+      var i = c.info.i, t = c.info.t;
+      /* the three standards — a small line holding, sparse */
+      if (i === 3 && t > 0.16 && t < 0.9) {
+        if (performance.now() - (c.B._clashT || 0) > 520 + Math.random() * 640) {
+          c.S.play('clash'); c.B._clashT = performance.now();
         }
       }
-      if (i === 4 && c.info.t > 0.2 && c.info.t < 0.7) {
-        if (performance.now() - (c.B._swordT || 0) > 420 + Math.random() * 480) {
-          c.S.melee(); c.B._swordT = performance.now();
+      /* the nine swords */
+      if (i === 4 && t > 0.2 && t < 0.7) {
+        if (performance.now() - (c.B._swordT || 0) > 420 + Math.random() * 560) {
+          c.S.play('clash'); c.B._swordT = performance.now();
         }
       }
-      if (i === 5 && c.info.t > 0.05 && c.info.t < 0.4) {
-        if (performance.now() - (c.B._volleyT || 0) > 900 + Math.random() * 700) {
-          c.S.volley(); c.B._volleyT = performance.now();
+      /* covering shots in the withdrawal */
+      if (i === 5 && t > 0.05 && t < 0.4) {
+        if (performance.now() - (c.B._volleyT || 0) > 900 + Math.random() * 800) {
+          c.S.play('arrow'); c.B._volleyT = performance.now();
         }
       }
     }

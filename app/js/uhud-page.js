@@ -1,7 +1,7 @@
 /* Uhud · the page descriptor. Copy, sound cues and the build tag for the shell. */
 window.BATTLE_PAGE = {
   key: 'uhud',
-  build: 'build z · Uhud on the shared engine',
+  build: 'build ab · Uhud on the shared engine',
   speeds: [0.5, 1, 1.5, 2],
   copy: {
     en: {
@@ -25,21 +25,27 @@ window.BATTLE_PAGE = {
   },
   /* the hill holds, the volleys start, the horse comes round, the field goes quiet */
   cue: [
-    { rumble: 0 }, { rumble: 0.06, time: 0.7 }, { rumble: 0.24, time: 0.8 },
-    { rumble: 0.1, time: 0.7 }, { rumble: 0.4, time: 0.4, crack: true },
-    { rumble: 0.28, time: 0.8 }, { rumble: 0, time: 1.4 }
+    { rumble: 0, sfx: 'horn' },
+    { rumble: 0.06, time: 0.7, bed: { wind: 0.6 } },
+    { rumble: 0.24, time: 0.8 },
+    { rumble: 0.1, time: 0.7 },
+    { rumble: 0.4, time: 0.4, crack: true },
+    { rumble: 0.28, time: 0.8 },
+    { rumble: 0, time: 1.4, bed: { wind: 0.5 } }
   ],
   audio: {
     tick: function (c) {
-      var i = c.info.i;
-      if (i === 2 || i === 3) {
-        if (performance.now() - (c.B._volleyT || 0) > 520 + Math.random() * 600) {
-          c.S.volley(); c.B._volleyT = performance.now();
+      var i = c.info.i, t = c.info.t;
+      /* the charge opens, and Khalid's horse comes back at the flank */
+      if (i === 2 || (i === 4 && t < 0.5)) {
+        if (performance.now() - (c.B._volleyT || 0) > 420 + Math.random() * 700) {
+          c.S.play('arrow'); c.B._volleyT = performance.now();
         }
       }
-      if (i === 4 && c.info.t > 0.4 && c.info.t < 0.9) {
-        if (performance.now() - (c.B._clangT || 0) > 300 + Math.random() * 500) {
-          c.S.melee(); c.B._clangT = performance.now();
+      /* the flank, then the turn */
+      if ((i === 4 && t > 0.35) || (i === 5 && t > 0.1 && t < 0.9)) {
+        if (performance.now() - (c.B._clangT || 0) > 300 + Math.random() * 560) {
+          c.S.play('clash'); c.B._clangT = performance.now();
         }
       }
     }
