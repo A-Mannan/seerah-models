@@ -50,8 +50,14 @@
     if (!window.THREE || !canvas) { fail(); return null; }
     var MOBILE = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) || window.innerWidth < 700;
     ENGINE.mobile = MOBILE;
-    var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: !MOBILE });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, MOBILE ? 1.5 : 2));
+    var renderer = new THREE.WebGLRenderer({
+      canvas: canvas,
+      antialias: !MOBILE,
+      /* ask a dual-GPU machine for the discrete chip; the browser may ignore it */
+      powerPreference: MOBILE ? 'default' : 'high-performance'
+    });
+    var BASE_PR = Math.min(window.devicePixelRatio || 1, MOBILE ? 1.5 : 2);
+    renderer.setPixelRatio(BASE_PR);
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFShadowMap;
     if (opts.grade !== false) {
@@ -1534,6 +1540,7 @@
     arr[o + 12] = tx; arr[o + 13] = ty; arr[o + 14] = tz; arr[o + 15] = 1;
   }
   var LOD_FLIP = 0;
+  var CROWD_DM = new THREE.Object3D();
   ENGINE.crowd = {
     all: function () { return MASS; },
     build: function (opts) {
@@ -1667,13 +1674,17 @@
         }
       }
       scene.add(men); scene.add(legsL); scene.add(legsR); scene.add(spears); scene.add(shields); scene.add(rims); scene.add(swords); scene.add(guards); scene.add(helms);
+      /* these matrices are rewritten every frame: tell the driver to expect it */
+      [men, legsL, legsR, spears, shields, rims, swords, guards, helms].forEach(function (mesh) {
+        if (mesh.instanceMatrix && mesh.instanceMatrix.setUsage) mesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+      });
       var M = { men: men, legsL: legsL, legsR: legsR, spears: spears, shields: shields, rims: rims, swords: swords, guards: guards, helms: helms, shieldsPer: shieldsPer, sq: sq, recs: recs, blocks: blocks, h: h, side: side, full: false };
       MASS.push(M);
       return M;
     },
     /* env: { ph, frac, total, fight, disp, marching, gaitHz, gaitAmp } */
     update: function (env) {
-      var dm = new THREE.Object3D();
+      var dm = CROWD_DM;
       var ph = env.ph;
       var fight = env.fight, disp = env.disp, marching = env.marching;
       var lod = !!env.lod;
@@ -1684,10 +1695,14 @@
       for (var m = 0; m < MASS.length; m++) {
         var M = MASS[m];
         var dir = M.side ? 1 : -1;
-        var anchors = [];
+        /* two flat anchor buffers, reused every frame: the old array-of-pairs
+           allocated one small array per squad per frame and fed the GC */
+        var anchorX = M._anchorX || (M._anchorX = new Float32Array(M.sq.length));
+        var anchorZ = M._anchorZ || (M._anchorZ = new Float32Array(M.sq.length));
         for (var s = 0; s < M.sq.length; s++) {
           var S = M.sq[s], u = M.blocks[S.block];
-          anchors.push([u.group.position.x + S.lx + (S.hsh - 0.5) * 1.0 * disp, u.group.position.z + S.lz + (S.hsh - 0.5) * 0.6 * disp]);
+          anchorX[s] = u.group.position.x + S.lx + (S.hsh - 0.5) * 1.0 * disp;
+          anchorZ[s] = u.group.position.z + S.lz + (S.hsh - 0.5) * 0.6 * disp;
         }
         var menArr = M.men.instanceMatrix.array;
         var legLArr = M.legsL.instanceMatrix.array;
@@ -1699,9 +1714,9 @@
         M.full = true;
         for (var i = 0; i < M.recs.length; i++) {
           if (lod && !full && (i & 1) !== parity) continue;
-          var rec = M.recs[i], a = anchors[rec.s];
-          var px = a[0] + rec.ox * (1 + 0.45 * disp) + Math.sin(rec.fp * 2.7 + now * 0.35) * 0.1 * disp;
-          var pz = a[1] + rec.oz + Math.sin(rec.fp * 1.9 + now * 0.3) * 0.14 * disp;
+          var rec = M.recs[i];
+          var px = anchorX[rec.s] + rec.ox * (1 + 0.45 * disp) + Math.sin(rec.fp * 2.7 + now * 0.35) * 0.1 * disp;
+          var pz = anchorZ[rec.s] + rec.oz + Math.sin(rec.fp * 1.9 + now * 0.3) * 0.14 * disp;
           var thrust = fight * (0.5 + 0.5 * Math.sin(now * 9 + rec.fp));
           var lunge = fight * 0.18 * thrust * dir;
           /* the hit ripple: a stagger wave travelling back through the ranks */
@@ -1724,14 +1739,14 @@
         }
         for (var s2 = 0; s2 < M.sq.length; s2++) {
           if (lod && !full && (s2 & 1) !== parity) continue;
-          var a2 = anchors[s2];
+          var ax2 = anchorX[s2], az2 = anchorZ[s2];
           var sqv = M.sq[s2], sv = 0.9 + sqv.hsh * 0.18;
           var si = s2 * M.shieldsPer;
           for (var k = 0; k < M.shieldsPer; k++) {
             var off = (k - (M.shieldsPer - 1) / 2) * 0.62;
             var face = M.side ? 0.58 : -0.58;
             var shieldLift = fight * (0.06 + 0.06 * Math.sin(now * 6 + sqv.hsh * 6));
-            dm.position.set(a2[0] + off, 0.62 * sv + shieldLift, a2[1] + face);
+            dm.position.set(ax2 + off, 0.62 * sv + shieldLift, az2 + face);
             dm.rotation.set(Math.PI / 2 - 0.08 - fight * 0.12, 0.03, 0);
             if (M.side) dm.rotation.y = Math.PI;
             dm.scale.set(sv, 1, sv);
@@ -1744,14 +1759,14 @@
             }
           }
           /* the squad's helm-rack behind the shields */
-          dm.position.set(a2[0] - (M.side ? 0.8 : -0.8), 0.14, a2[1] - (M.side ? 0.5 : -0.5));
+          dm.position.set(ax2 - (M.side ? 0.8 : -0.8), 0.14, az2 - (M.side ? 0.5 : -0.5));
           dm.rotation.set(0, 0.3 * sqv.hsh, 0);
           dm.scale.set(sv, 1, sv);
           dm.updateMatrix();
           M.helms.setMatrixAt(s2, dm.matrix);
           /* the sword held hilt-up at the front man's side */
           var swing = fight * Math.sin(now * 7 + sqv.hsh * 6);
-          dm.position.set(a2[0] + 0.4, 0.72, a2[1] + (M.side ? -0.5 : 0.5));
+          dm.position.set(ax2 + 0.4, 0.72, az2 + (M.side ? -0.5 : 0.5));
           dm.rotation.set(0.03 + swing * 0.28, 0.3, 0.04 + swing * 0.85);
           dm.updateMatrix();
           M.swords.setMatrixAt(s2, dm.matrix);
@@ -2108,20 +2123,38 @@
       if (camState.mode === 'orbit') { orbitFromCam(); orbit.target.set(0, 0, 0); }
     });
 
-    /* adaptive quality: if the device cannot hold ~22 fps, drop to 1x pixels */
-    var perfT0 = 0, perfN = 0, perfDone = false;
-    function perfTick(now, playing, renderer) {
-      if (perfDone || !playing) return;
-      if (!perfT0) { perfT0 = now; perfN = 0; return; }
+    /* adaptive quality: hold the frame rate by stepping the pixel ratio down,
+       never up. The first window waits out shader compile; a stall (tab switch,
+       resize) restarts the window instead of counting as slow frames. */
+    var perfT0 = 0, perfN = 0, perfLast = 0, perfSkipUntil = 0, perfStage = 0, perfDone = false;
+    function perfTick(now, renderer) {
+      if (perfDone || document.hidden) { perfT0 = 0; perfN = 0; return; }
+      if (!perfT0) {
+        perfT0 = now; perfN = 0; perfLast = now; perfSkipUntil = now + 1400;
+        return;
+      }
+      if (now - perfLast > 1200) { perfT0 = 0; perfN = 0; perfLast = now; return; }
+      perfLast = now;
+      if (now < perfSkipUntil) return;
       perfN++;
       var el = now - perfT0;
-      if (el < 3000) return;
-      perfDone = true;
+      if (el < 2200) return;
       var fps = perfN / (el / 1000);
-      if (MOBILE && fps < 22) {
-        renderer.setPixelRatio(1);
-        renderer.setSize(window.innerWidth, window.innerHeight, false);
-        console.log('[seerah] adaptive quality: fps ' + fps.toFixed(1) + ', pixel ratio -> 1');
+      var pr = renderer.getPixelRatio();
+      var target = MOBILE ? 26 : 45;
+      var next = pr;
+      if (fps < target) {
+        if (MOBILE) next = pr > 1.26 ? 1.25 : 1;
+        else next = pr > 1.51 ? 1.5 : (pr > 1.26 ? 1.25 : pr);
+      }
+      if (next >= pr - 0.001 || pr <= 1.001) { perfDone = true; return; }
+      renderer.setPixelRatio(next);
+      renderer.setSize(window.innerWidth, window.innerHeight, false);
+      perfStage++;
+      if (perfStage >= 3) perfDone = true;
+      perfT0 = 0; perfN = 0;
+      if (/[?&]debug=1/.test(location.search)) {
+        console.log('[seerah] adaptive quality: fps ' + fps.toFixed(1) + ', pixel ratio -> ' + next);
       }
     }
 
@@ -2164,6 +2197,7 @@
         return { fov: camera.fov, aspect: +camera.aspect.toFixed(3), p: camera.position.toArray().map(function (n) { return +n.toFixed(1); }), l: curCam.l.toArray().map(function (n) { return +n.toFixed(1); }), mode: camState.mode, tgt: orbit.target.toArray().map(function (n) { return +n.toFixed(1); }), r: +orbit.r.toFixed(1), az: +orbit.az.toFixed(2), pol: +orbit.pol.toFixed(2), goal: shotGoal ? shotGoal.p.map(function (n) { return +n.toFixed(1); }) : null, playing: clock.playing };
       },
       isExplore: function () { return camState.mode === 'orbit'; },
+      isInteracting: function () { return dragging || (performance.now() - lastInteract < 500); },
       perfTick: perfTick,
       /* paused: hand the camera to the turntable unless the user is dragging */
       autoOrbit: function (playing) {
@@ -2236,12 +2270,14 @@
     var tickCb = null;
     var placedRects = [];
     var curPhaseIdx = 0, curPhaseT = 0;
+    var shadowDirty = true;
 
     function apply(frac) {
       var info = director.phaseInfo(frac);
       curPhaseIdx = info.i;
       curPhaseT = info.t;
       o.applyFrac(frac, info);
+      shadowDirty = true;
     }
     function placeLabels() {
       if (!o.labels) return;
@@ -2269,25 +2305,47 @@
         catch (err) { console.error('[battle] tick', err); }
       }
     }
-    var lastRaf = 0;
+    var lastRaf = 0, lastPaint = 0, idleSince = 0;
     function frame(now) {
       requestAnimationFrame(frame);
+      /* paused and untouched: the turntable is a slow drift, so 30 fps is
+         visually identical and leaves the machine cool. Keep full rate for
+         the first seconds, during a drag, and while playing. */
+      var idle = !clock.playing && !director.isInteracting();
+      if (idle) {
+        if (!idleSince) idleSince = now;
+      } else {
+        idleSince = 0;
+      }
+      var idleCap = idleSince && now - idleSince > (MOBILE ? 3000 : 8000);
+      if (idleCap && now - lastPaint < 1000 / 31) return;
       /* follow wall-clock time even on slow devices: a capped dt made playback
          crawl at phone frame rates */
       var dt = Math.min(0.5, (now - clock.last) / 1000);
       clock.last = now;
       clock.dt = dt || 0.016;
       lastRaf = now;
-      director.perfTick(now, clock.playing, renderer);
+      if (!idleCap) director.perfTick(now, renderer);
       if (clock.playing) advance(dt);
       /* paused: turntable drift happens inside the orbit step */
       if (!clock.playing) director.autoOrbit();
       director.orbitStep(dt, clock.playing);
       placeLabels();
       extras(now);
+      /* shadows are lit by a fixed sun: while paused they only need one pass
+         after a seek or a pause, not a full shadow render every frame */
+      if (clock.playing) {
+        renderer.shadowMap.autoUpdate = true;
+      } else {
+        renderer.shadowMap.autoUpdate = false;
+        if (shadowDirty) { renderer.shadowMap.needsUpdate = true; shadowDirty = false; }
+      }
       renderer.render(scene, camera);
+      lastPaint = now;
     }
-    requestAnimationFrame(frame);
+    /* let the shell paint before the first 3D frame: the first render compiles
+       shaders and can block for a beat on a cold GPU */
+    requestAnimationFrame(function () { requestAnimationFrame(frame); });
     apply(clock.frac);
     /* seed the crowd before the first paint: the instanced men are placed by
        updateMass, so a paused boot would otherwise show standards without men */
@@ -2355,12 +2413,14 @@
       play: function () {
         clock.playing = true;
         clock.last = performance.now();
+        renderer.shadowMap.autoUpdate = true;
+        shadowDirty = true;
         director.setMode('phase');
         canvas.classList.remove('is-dragging');
         apply(clock.frac);
         if (o.updateMass) o.updateMass();
       },
-      pause: function () { clock.playing = false; },
+      pause: function () { clock.playing = false; shadowDirty = true; },
       isPlaying: function () { return clock.playing; },
       setSpeed: function (x) { clock.speed = x; },
       onTick: function (fn) { tickCb = fn; },

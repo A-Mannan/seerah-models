@@ -1,5 +1,52 @@
 # Progress
 
+## Build ad — the hosted pages start in half the time (on build ac, local, not pushed)
+The owner's report: "the model pages on hosted ones feels too slow." The cost was not the model
+but the wait: an unused 252 KB ledger payload in front of Three.js, a blocking first 3D frame
+that held the shell back, and a paused page that kept paying for full shadows and full frame
+rate. No geometry, crowd count, camera shot or label changed; draw calls and triangles are
+identical on every scene.
+
+### Shipped
+- **The ledger payload is off the model pages.** `app/assets/data.js` was 252 KB raw / ~60 KB
+  gzipped and nothing in the app read `window.LEDGER`; the six model pages and their routes no
+  longer load it (the file stays for the ledger build). Badr route, gzipped: 442,157 → 373,761
+  bytes.
+- **The shell paints before the first 3D frame.** One extra `requestAnimationFrame` before the
+  loop; the first render compiles shaders and used to block the UI for seconds on a cold GPU.
+  At 1 Mbps / 150 ms, Badr route DCL went 7.5–8.3 s → 4.6–4.8 s on desktop and phone, FCP
+  unchanged in range.
+- **Paused shadows are frozen.** The sun is fixed, so a paused frame gets one shadow pass after
+  a pause or a seek instead of one per frame (Badr drops from ~250 draw calls to ~190 while
+  paused).
+- **An idle cap while paused.** After 8 s on desktop / 3 s on phone the turntable drifts at
+  30 fps; play, a drag and the first seconds keep the full rate.
+- **Adaptive pixel ratio, only when measured slow.** Desktop 2 → 1.5 → 1.25 below 45 fps, phone
+  1.5 → 1.25 → 1.0 below 26 fps, never raised. A warm-up window skips the shader-compile
+  frames, a 1.2 s stall (tab switch, resize) restarts the window, and a hidden tab is ignored.
+- **Smaller engine costs.** `powerPreference: 'high-performance'` on desktop; the crowd update
+  reuses one `Object3D` and flat anchor buffers instead of allocating per frame; the instanced
+  men, legs, spears, shields, rims, swords, guards and helms are marked `DynamicDrawUsage`.
+
+### Verified
+- **Identical picture.** Draw calls and triangles match build ac on all six scenes at 1440×900
+  and 390×844 (badr 191/687,572 · uhud 92/1,665,906 · khandaq 168/5,267,184 · khaybar
+  119/811,640 · muʿtah 95/3,678,425 · ḥunayn 206/4,428,712).
+- Six scenes at 1280×800 and 390×844: play, pause, seek, phase captions, speed menu, atlas and
+  Urdu RTL all work, zero console errors.
+- Paused frame vs. a forced shadow refresh: pixel-identical under reduced motion, so the frozen
+  map is the same map.
+- `benchMass` on the heaviest crowds: khandaq 4.76 → 4.61 ms, ḥunayn 5.35 → 4.91 ms per frame.
+- `node --check` clean; lint 0 FAIL; `inspect.mjs` 0 FAIL / 0 WARN on all six pages.
+- Cache-bust `?v=20261028ad` on the six model pages and the gate; descriptors at `build ad`;
+  routes regenerated.
+
+### Limits
+- No crowd LOD, geometry or choreography change: the win is latency and idle cost, not the
+  frame cost of a full-speed play on a weak phone. There the pixel-ratio step softens the
+  image rather than dropping frames.
+- Still to do: the hosted site needs this build pushed (local only).
+
 ## Build ac — Ḥunayn, the sixth field (on build ab, local, not pushed)
 The valley ambush in eight phases over 109 seconds: the valley before dawn, the night march in, the
 ambush by first light, the call that rallies the Anṣār at the station, the break, the siege of

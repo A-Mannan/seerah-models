@@ -41,7 +41,7 @@ A pure-visual, interactive 3D seerah series. **Badr, Uhud, Khandaq, Khaybar, Mu 
 - The rigged-GLTF experiment was rejected (chibi, exposed faces); the approved figure language is the faceless procedural maquette. The hero-rig hook stays dormant in the engine.
 - Crowd and field stay procedural/instanced; the crowd must have a gait/thrust, not slide.
 - Portrait framing is part of the look: a scene may cap the shared portrait pull and supply per-shot portrait endpoints. Every phase must be re-shot at 390√ó844, not assumed from desktop.
-- Build ac is local; no push.
+- Build ad is local; no push.
 
 ## Docs roles
 - `openspec/changes/` ‚Äî the plan and checklist for the current change; archived when accepted.
@@ -60,5 +60,5 @@ A pure-visual, interactive 3D seerah series. **Badr, Uhud, Khandaq, Khaybar, Mu 
 - OpenSpec: planning artifacts live in `openspec/changes/<change>/`; implement through the apply workflow; archive when accepted.
 
 ## Current focus
-Build ac shipped ·∏§unayn as the sixth model.
+Build ad made the hosted model pages start in about half the time.
 All six battles are live on the shared engine, and the five later ledgers await owner review.
