@@ -12,7 +12,8 @@ const routes = [
   { from: 'app/index.html', to: 'badr/index.html' },
   { from: 'app/uhud.html', to: 'uhud/index.html' },
   { from: 'app/khandaq.html', to: 'khandaq/index.html' },
-  { from: 'app/khaybar.html', to: 'khaybar/index.html' }
+  { from: 'app/khaybar.html', to: 'khaybar/index.html' },
+  { from: 'app/mutah.html', to: 'mutah/index.html' }
 ];
 const forbidden = /fonts\.googleapis|fonts\.gstatic|cdnjs|jsdelivr|unpkg/i;
 

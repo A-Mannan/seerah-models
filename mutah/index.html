@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0b100e">
+<meta name="color-scheme" content="dark">
+<title>Muʿtah · The Seerah Atlas</title>
+<meta name="description" content="The expedition of Muʿtah as an interactive 3D terrain model: the Balqāʾ upland and its village, the dry wādī between the two hosts, the three standards of Zayd, Jaʿfar and ʿAbdullāh ibn Rawāḥah, the nine swords of Khālid, the ordered withdrawal and the reckoning. Faceless figures; the Prophet ﷺ is never depicted.">
+<link rel="icon" href="../assets/landing/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="../assets/landing/fonts/cormorant.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/landing/fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="../assets/landing/fonts/fonts.css?v=20261027i">
+<link rel="stylesheet" href="../app/css/style.css?v=20261027i">
+<script>document.documentElement.classList.add('js')</script>
+</head>
+<body>
+
+<div id="errBanner" class="err-banner" hidden></div>
+<script>
+  window.addEventListener('error', function (e) {
+    var b = document.getElementById('errBanner');
+    if (!b) return;
+    b.hidden = false;
+    b.textContent = 'Script error: ' + (e.message || 'unknown') + (e.filename ? ' \u2014 ' + e.filename.split('/').pop() + ':' + e.lineno : '');
+  });
+</script>
+
+<canvas id="gl" aria-label="Interactive 3D model of the expedition of Muʿtah: the Balqāʾ upland, the village of Muʿtah, the dry wādī between the Muslim army and the reported Byzantine and allied host, the three command standards, the nine broken swords of Khālid, and faceless stylized figures. The Prophet ﷺ is never depicted."></canvas>
+
+<div class="grade grade-warm"></div>
+<div class="grade grade-grain"></div>
+<div class="grade grade-vignette"></div>
+
+<header class="bar">
+  <h1 class="brand">
+    <a class="brand-link" href="../index.html" aria-label="The Seerah Atlas — all five battles" data-i18n-aria="homeAria">
+      <svg class="mark" viewBox="0 0 20 22" aria-hidden="true" focusable="false"><rect x="8.6" y="1" width="1.8" height="20" fill="currentColor"/><rect x="10.4" y="3" width="8.6" height="6" fill="currentColor"/></svg>
+      <span class="brand-name" data-i18n="brand">muʿtah <em>· the battle</em></span>
+    </a>
+  </h1>
+  <nav class="bar-tools" aria-label="Experience tools" data-i18n-aria="tools">
+    <button id="battlesBtn" class="tool tool-battles" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="atlasDialog">
+      <svg class="tool-icon" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M1.5 1.5h5v5h-5zM9.5 1.5h5v5h-5zM1.5 9.5h5v5h-5zM9.5 9.5h5v5h-5z"/></svg>
+      <span data-i18n="battles">battles</span>
+      <svg class="chev" viewBox="0 0 10 6" aria-hidden="true" focusable="false"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>
+    </button>
+    <button id="soundBtn" class="tool tool-icon-btn" type="button" aria-pressed="false" aria-label="sound off">
+      <svg class="sound-on" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M3 7.5h3L10 4v12l-4-3.5H3z" fill="currentColor"/><path d="M13 7.5c1.4 1.4 1.4 3.6 0 5M15.6 5c2.7 2.7 2.7 7.3 0 10" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      <svg class="sound-off" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M3 7.5h3L10 4v12l-4-3.5H3z" fill="currentColor"/><path d="M12.5 7.5l5 5M17.5 7.5l-5 5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      <span class="sound-label">sound off</span>
+    </button>
+    <button id="langBtn" class="tool tool-lang" type="button" aria-pressed="false" lang="ur">اردو</button>
+  </nav>
+</header>
+
+<div class="labels" id="labels"></div>
+
+<div class="legend" role="group" aria-label="field key" data-i18n-aria="fieldKey">
+    <p class="legend-row legend-m"><span class="swatch"></span><span data-i18n="legendM"><b>the Muslims</b> · about 3,000</span></p>
+    <p class="legend-row legend-q"><span class="swatch"></span><span data-i18n="legendQ"><b>the enemy host</b> · reports say 100,000–200,000</span></p>
+</div>
+
+<footer class="deck" id="deck">
+  <div class="deck-row">
+    <button id="playBtn" class="play" type="button" aria-pressed="false">
+      <span class="glyph" aria-hidden="true">
+        <svg class="i-play" viewBox="0 0 12 14" focusable="false"><path d="M1 1l10 6-10 6z"/></svg>
+        <svg class="i-pause" viewBox="0 0 12 14" focusable="false"><path d="M2 1h3v12H2zM7 1h3v12H7z"/></svg>
+      </span>
+      <span class="txt">play</span>
+    </button>
+    <div class="timeline" id="timeline" aria-label="battle timeline: drag to scrub" data-i18n-aria="timeline">
+      <div class="segs" id="segs"></div>
+      <div class="scrub-head" id="scrubHead"></div>
+    </div>
+    <div class="speed">
+      <button id="speedBtn" class="deck-btn speed-btn" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="speedMenu" aria-label="playback speed" data-i18n-aria="speed">
+        <span class="speed-val">1×</span>
+        <svg class="chev" viewBox="0 0 10 6" aria-hidden="true" focusable="false"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>
+      </button>
+      <div class="speed-menu" id="speedMenu" role="menu" aria-label="playback speed" data-i18n-aria="speed" hidden></div>
+    </div>
+    <button id="resetBtn" class="deck-btn icon-btn" type="button" aria-label="restart" data-i18n-aria="restart">
+      <svg viewBox="0 0 18 18" aria-hidden="true" focusable="false"><path d="M14.8 8.2a6.2 6.2 0 1 1-1.9-3.7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M15 2.6v4.4h-4.4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </div>
+  <div class="deck-caption">
+    <p class="deck-phase is-hint" id="deckPhase" aria-live="polite">drag to look · scroll or pinch to zoom</p>
+    <span class="deck-time" id="deckTime" dir="ltr" aria-hidden="true"><span class="t-now">0:00</span> / <span class="t-total">0:00</span></span>
+  </div>
+</footer>
+
+<noscript>
+  <p class="noscript-note">The 3D expedition needs JavaScript and WebGL. The model replays Muʿtah in seven phases: the
+  ground and the road north; the march of about 3,000; the field at the wādī; the three command standards of Zayd,
+  Jaʿfar and ʿAbdullāh ibn Rawāḥah; the nine swords of Khālid; the ordered withdrawal; the reckoning. Figures are
+  faceless; the Prophet ﷺ is never depicted. Every claim traces to data/ledger/mutah.json.</p>
+</noscript>
+
+<script src="../app/assets/three.min.js?v=20261027i"></script>
+<script src="../app/assets/data.js?v=20261027i"></script>
+<script src="../app/js/audio.js?v=20261027i" defer></script>
+<script src="../app/js/engine.js?v=20261027i" defer></script>
+<script src="../app/js/mutah.js?v=20261027i" defer></script>
+<script src="../app/js/mutah-page.js?v=20261027i" defer></script>
+<script src="../app/js/shell.js?v=20261027i" defer></script>
+</body>
+</html>

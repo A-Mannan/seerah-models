@@ -10,7 +10,8 @@
   "groups": {
     "battles_and_days": [
       {"canonical": "Badr", "display_en": "Badr", "reject": ["Bedr", "Badr (Hunayn) in label", "Tabuk"], "note": "The battle/wells site; name of the battle."},
-      {"canonical": "Yawm al-Furqan", "display_en": "Day of al-Furqan (The Criterion)", "reject": ["Yawmul Furqaan", "day of Furqan (without al-)"], "note": "Traditional name of Badr day; label with Quran 8:41 link ('the day of al-Furqan')."}
+      {"canonical": "Yawm al-Furqan", "display_en": "Day of al-Furqan (The Criterion)", "reject": ["Yawmul Furqaan", "day of Furqan (without al-)"], "note": "Traditional name of Badr day; label with Quran 8:41 link ('the day of al-Furqan')."},
+      {"canonical": "Mu'tah", "display_en": "Muʿtah", "reject": ["Muta", "Mutah (bare in HUD)", "Mootah"], "note": "The expedition of Jumada al-Ula 8 AH at the village in al-Balqa' (MUT-001). HUD label 'Muʿtah'."}
     ],
     "places": [
       {"canonical": "Makkah", "reject": ["Mecca", "Makkah al-Mukarramah in HUD"], "note": "Quraish's city."},
@@ -38,7 +39,13 @@
       {"canonical": "ar-Raji'", "reject": ["Ar-Raji (HUD ok)", "Rajee"], "note": "Valley where the army camped between Khaybar and Ghatfan (spine p.234)."},
       {"canonical": "Fadak", "reject": ["Fidak", "Faydak"], "note": "Nearby oasis that yielded without fighting (REPORTED, KHY-018); Prophet's property after him (Bukhari 6725)."},
       {"canonical": "Wadi al-Qura", "reject": ["Wadi Al Qura (missing al- ok in HUD)", "Wadi'l-Qura"], "note": "Valley of villages; post-Khaybar detachment (KHY-021, Abu Dawud 2711)."},
-      {"canonical": "Harrat Khaybar", "reject": ["Harrah (bare)", "Harra (bare)"], "note": "Volcanic tract — terrain key for the basalt look (KHY-003); not an on-screen label unless the owner approves."}
+      {"canonical": "Harrat Khaybar", "reject": ["Harrah (bare)", "Harra (bare)"], "note": "Volcanic tract — terrain key for the basalt look (KHY-003); not an on-screen label unless the owner approves."},
+      {"canonical": "al-Balqa'", "reject": ["Balqa (bare)", "Al-Balqaa"], "note": "The district east of the Jordan in geographical Syria; Mu'tah lay on its edge (MUT-001, MUT-010)."},
+      {"canonical": "Ma'an", "reject": ["Maan (bare)", "Ma'an (with straight apostrophe)"], "note": "Town on the Syrian border where the army heard the enemy numbers (MUT-007, REPORTED)."},
+      {"canonical": "Masharif", "reject": ["Mashareef", "Masharif (spine alt)"], "note": "Village in al-Balqa' where the armies first met before the move to Mu'tah (MUT-009, REPORTED)."},
+      {"canonical": "Busra", "reject": ["Bostra", "Bosra", "Busrā"], "note": "The Syrian town to whose ruler the envoy carried the letter (MUT-002, REPORTED)."},
+      {"canonical": "al-Karak", "reject": ["Karak (bare)", "Kerak"], "note": "Modern Jordanian town near the Mu'tah site; geography only, not a battle-era name (MUT-001)."},
+      {"canonical": "Juruf", "reject": ["Jurf (bare)", "Al-Juruf"], "note": "The place outside Madinah where the returning army was met (MUT-023, REPORTED)."}
     ],
     "khaybar_people": [
       {"canonical": "Marhab", "reject": ["Merhab", "Marhab bin Zayd (unsourced kunya)"], "note": "Khaybar champion; duel pairing with 'Ali is REPORTED (KHY-011); no boast dialogue rendered."},
@@ -48,6 +55,16 @@
       {"canonical": "Abu Dujanah Sammak bin Kharshah al-Ansari", "reject": ["Abu Dujana Simak (spelling variant)", "Abu Dujanah (bare in HUD)"], "note": "'Of the red ribbon' at fort 'Abi per the spine (REPORTED); same red-band figure known from Uhud tradition; spelling Simak/Sammak varies."},
       {"canonical": "Siba' bin 'Arfatah al-Ghifari", "reject": ["Siba bin Arfata (missing h/al-)"], "note": "Deputy over Madinah during the campaign (spine p.233, REPORTED)."},
       {"canonical": "Zaynab bint al-Harith", "reject": ["Zainab (bare)", "Zaynab (bare, unqualified)"], "note": "Name of the poisoned-sheep woman — REPORTED (spine p.238); her fate DISPUTED (KHY-017). Do not render the name without owner approval."}
+    ],
+    "mutah_people": [
+      {"canonical": "al-Harith ibn 'Umayr al-Azdi", "reject": ["Harith bin Umair (bare)", "Al-Harith bin Umayr Al-Azadi"], "note": "The Prophet's envoy to Busra, killed on the road; casus belli (MUT-002, REPORTED)."},
+      {"canonical": "Shurahbīl ibn 'Amr al-Ghassani", "reject": ["Sharhabeel", "Shurahbil bin Amr (missing al-)"], "note": "Governor of al-Balqa' and Byzantine ally who killed the envoy (MUT-002, REPORTED). Spelling varies; keep this form."},
+      {"canonical": "Ja'far ibn Abi Talib", "reject": ["Jafar (bare)", "Jaafar"], "note": "(RA); second commander at Mu'tah, killed after Zayd; the two-winged one (MUT-012, MUT-020). Never depict."},
+      {"canonical": "Khalid ibn al-Walid", "reject": ["Khalid bin Waleed", "Khaled"], "note": "(RA); took the banner after the three commanders; nine swords broke in his hand; the Sword of Allah (MUT-016)."},
+      {"canonical": "'Abdullah ibn Ja'far", "reject": ["Abdullah bin Jafar (bare)"], "note": "Ja'far's son; greeted by Ibn 'Umar as 'son of the two-winged one' (MUT-020); rode with the Prophet (PBUH) at Juruf (MUT-023, REPORTED)."},
+      {"canonical": "Asma' bint 'Umays", "reject": ["Asma bint Umays (bare)", "Asmaa bint Umais"], "note": "Ja'far's wife; comforted by the Prophet (PBUH) after Mu'tah (MUT-023, REPORTED). No depiction."},
+      {"canonical": "Qutbah ibn Qatadah al-'Udhri", "reject": ["Qutba bin Qatada", "Qutbah (bare)"], "note": "Right wing at Mu'tah per the sirah (MUT-009, REPORTED); hidden from on-screen labels."},
+      {"canonical": "'Ubadah ibn Malik al-Ansari", "reject": ["Ubayah ibn Malik", "Ubaydah ibn Malik"], "note": "Left wing at Mu'tah per the sirah; the name varies in the retellings (MUT-009, REPORTED); hidden from on-screen labels."}
     ],
     "muslim_side": [
       {"canonical": "Muhammad (PBUH)", "reject": ["Mohammed", "Mohamed", "Muhammed", "Mahomet"], "note": "Always rendered as 'the Prophet (PBUH)'; never depicted."},
@@ -75,8 +92,8 @@
       {"canonical": "'Ubadah ibn as-Samit", "reject": ["Ubadah bin Samet"], "note": "Spoils-dispute narrator chain (Muslim 1748b, prior session)."},
       {"canonical": "Sa'id ibn Zayd", "reject": ["Said bin Zaid"], "note": "Caravan scout with Talhah."},
       {"canonical": "Talhah ibn 'Ubaydullah", "reject": ["Talha bin Obaidullah"], "note": "Caravan scout first."},
-      {"canonical": "Zaid ibn Harithah", "reject": ["Zayd bin Haritha"], "note": "Victory herald to Madinah; al-Qaswa' rider."},
-      {"canonical": "'Abdullah ibn Rawahah", "reject": ["Abdullah bin Rawaha"], "note": "Co-herald to Madinah; rejected duel trio member."},
+      {"canonical": "Zaid ibn Harithah", "reject": ["Zayd bin Haritha"], "note": "Victory herald to Madinah; al-Qaswa' rider. Mu'tah: first commander, killed at the head of the army (MUT-011); HUD may render 'Zayd (RA)'."},
+      {"canonical": "'Abdullah ibn Rawahah", "reject": ["Abdullah bin Rawaha"], "note": "Co-herald to Madinah; rejected duel trio member. Mu'tah: third commander, killed after Ja'far (MUT-014); wept at the farewell quoting 19:71 (MUT-005)."},
       {"canonical": "Usaid ibn Hudair", "reject": ["Usayd bin Hudhayr"], "note": "Apologizing master of the Rawha' crowd."},
       {"canonical": "Usamah ibn Zaid", "reject": ["Osama"], "note": "Ruqayyah timeline narrator."},
       {"canonical": "'Awf and Mu'awwidh, sons of al-Harith", "reject": ["Muawwadh bin al-Harith (singular)"], "note": "REJECTED-duel-trio brothers; DO NOT confuse with Mu'awwidh bin al-'Afra' (Abu Jahl slayer)."},

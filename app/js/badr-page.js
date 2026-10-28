@@ -1,26 +1,26 @@
 /* Badr · the page descriptor. Copy, sound cues and the build tag for the shell. */
 window.BATTLE_PAGE = {
   key: 'badr',
-  build: 'build x · Badr on the shared engine',
+  build: 'build y · Badr on the shared engine',
   speeds: [0.5, 1, 1.5, 2],
   copy: {
     en: {
       play: 'play', pause: 'pause', replay: 'replay',
-      soundOn: 'sound on', soundOff: 'sound off', lang: 'اردو', home: 'atlas',
+      lang: 'اردو',
       brand: 'badr <em>· the battle</em>',
-      legendM: '<b>Muslims</b> · lightly equipped',
-      legendQ: '<b>Quraysh</b> · fully equipped',
-      hint: 'drag to look around · scroll to zoom',
+      legendM: '<b>Muslims</b><span class="legend-detail"> · lightly equipped</span>',
+      legendQ: '<b>Quraysh</b><span class="legend-detail"> · fully equipped</span>',
+      hint: 'drag to look · scroll or pinch to zoom',
       phases: ['the ground', '3 v 3', 'the advance', 'the wells', 'the sand', 'the rout', 'the reckoning']
     },
     ur: {
       play: 'چلائیں', pause: 'وقفہ', replay: 'دوبارہ',
-      soundOn: 'آواز آن', soundOff: 'آواز آف', lang: 'EN', home: 'سلسلہ',
-      brand: 'بدر <em>میدانِ بدر</em>',
-      legendM: '<b>مسلمان</b> · ہلکے اسلحے سے',
-      legendQ: '<b>قریش</b> · مکمل اسلحے سے',
-      hint: 'گھُمايو دیکھنے کے لیے · زوم کے لیے اسکرول',
-      phases: ['زمین', 'تین بمقابلہ تین', 'پیش قدمی', 'کنویں', 'ریت', 'شکست', 'حساب']
+      lang: 'EN',
+      brand: 'بدر <em>· معرکۂ بدر</em>',
+      legendM: '<b>مسلمان</b><span class="legend-detail"> · ہلکے اسلحے سے</span>',
+      legendQ: '<b>قریش</b><span class="legend-detail"> · مکمل اسلحے سے</span>',
+      hint: 'دیکھنے کے لیے گھمائیں · زوم کے لیے اسکرول یا دو انگلیوں کا اشارہ',
+      phases: ['زمین', 'تین کے مقابل تین', 'پیش قدمی', 'کنویں', 'ریت', 'بھگدڑ', 'حساب']
     }
   },
   /* the clash swells, the gravel cast cracks, the rout fades */

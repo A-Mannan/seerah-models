@@ -1,26 +1,26 @@
 /* Uhud · the page descriptor. Copy, sound cues and the build tag for the shell. */
 window.BATTLE_PAGE = {
   key: 'uhud',
-  build: 'build x · Uhud on the shared engine',
+  build: 'build y · Uhud on the shared engine',
   speeds: [0.5, 1, 1.5, 2],
   copy: {
     en: {
       play: 'play', pause: 'pause', replay: 'replay',
-      soundOn: 'sound on', soundOff: 'sound off', lang: 'اردو', home: 'atlas',
+      lang: 'اردو',
       brand: 'uhud <em>· the battle</em>',
-      legendM: '<b>Muslims</b> · three battalions',
-      legendQ: '<b>Quraysh</b> · horse and foot',
-      hint: 'drag to look around · scroll to zoom',
+      legendM: '<b>Muslims</b><span class="legend-detail"> · three battalions</span>',
+      legendQ: '<b>Quraysh</b><span class="legend-detail"> · horse and foot</span>',
+      hint: 'drag to look · scroll or pinch to zoom',
       phases: ['the ground', 'the archers’ hill', 'the charge', 'the spoils', 'the flank', 'the turn', 'the reckoning']
     },
     ur: {
       play: 'چلائیں', pause: 'وقفہ', replay: 'دوبارہ',
-      soundOn: 'آواز آن', soundOff: 'آواز آف', lang: 'EN', home: 'اطلس',
-      brand: 'اُحد <em>میدانِ اُحد</em>',
-      legendM: '<b>مسلمان</b> · تین دستے',
-      legendQ: '<b>قریش</b> · سوار اور پیادہ',
-      hint: 'گھُمايو دیکھنے کے لیے · زوم کے لیے اسکرول',
-      phases: ['زمین', 'تیر اندازوں کی پہاڑی', 'حملہ', 'مالِ غنیمت', 'پہلو', 'پلٹ کر وار', 'حساب']
+      lang: 'EN',
+      brand: 'اُحد <em>· معرکۂ اُحد</em>',
+      legendM: '<b>مسلمان</b><span class="legend-detail"> · تین دستے</span>',
+      legendQ: '<b>قریش</b><span class="legend-detail"> · سوار اور پیادہ</span>',
+      hint: 'دیکھنے کے لیے گھمائیں · زوم کے لیے اسکرول یا دو انگلیوں کا اشارہ',
+      phases: ['زمین', 'تیر اندازوں کی پہاڑی', 'حملہ', 'مالِ غنیمت', 'پہلو سے حملہ', 'پلٹ کر وار', 'حساب']
     }
   },
   /* the hill holds, the volleys start, the horse comes round, the field goes quiet */

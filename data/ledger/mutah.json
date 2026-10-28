@@ -1,0 +1,454 @@
+{
+  "battle": "mutah",
+  "title": "The Expedition of Muʿtah (Jumādā al-Ūlā 8 AH)",
+  "version": "1.0-graded",
+  "phase": "5",
+  "status": "awaiting_owner_review",
+  "owner_gate": "compiled 2026-10-27 for the Muʿtah model; ledger remains awaiting owner review",
+  "compiled": "2026-10-27",
+  "app_target": "3D Seerah learning app for ages 12-25 (interactive 3D scenes; battle timeline; verse overlays)",
+  "spine_source": {
+    "work": "Raheeq al-Makhtum (MSA NIU English ed.), Saifur Rahman al-Mubarakpuri, trans. Issam Diab (Dar-us-Salam)",
+    "file": "Muʿtah chapter read this session through the publisher-authorized online copy at rasoulallah.net (article 1888); the local PDF was not re-read",
+    "mutah_chapter_pages": "not page-verified this session — the online copy carries the same chapter text and its own footnotes (Za'd al-Ma'ad 2/155-156; Fath al-Bari 7/511-514)",
+    "citation_format": "Raheeq al-Makhtum (MSA NIU English ed.), Muʿtah chapter (online copy)"
+  },
+  "grading_note": "Graded 2026-10-27 against live hadith pages (Sahih al-Bukhari 4261-4266; Jami' at-Tirmidhi 3763), api.alquran.cloud (3:169; 19:71), and two independent sirah retellings. The canonical hadith carry the command succession, the three deaths, the Prophet's announcement and tears, Khalid's nine swords and Ja'far's two-winged title. The casus belli, the 3,000, the enemy numbers, the night ruse and the twelve martyrs are sirah-only and are graded REPORTED. The outcome framing is DISPUTED and must never be harmonised: Bukhari says Allah made them victorious; the sirah says the army withdrew without avenging the envoy.",
+  "conventions": {
+    "block_tagging": "Same as badr.json: all entries HISTORY; no reflections in this phase.",
+    "honorifics": "The Prophet is referenced as 'the Prophet (PBUH)' in rendered text; Companions carry honorifics at first mention per block. No figural depiction of the Prophet (PBUH) or any face.",
+    "quote_cap": "Direct on-screen quotes <= 15 words; Quran fetched live from api.alquran.cloud.",
+    "no_harmonization": "DISPUTED entries display ranges/both versions, never merged. UNKNOWN = not yet verifiable this session; hidden by default.",
+    "secondary_sirah": "Ibn Hisham/Ibn Ishaq- and al-Waqidi-derived claims are cited via the Raheeq chapter or the logged retellings; no full Guillaume or al-Waqidi translation is owned locally."
+  },
+  "grading_policy": {
+    "CERTAIN": ">= 2 independent sources, at least one canonical (Quran > Sahih Bukhari/Muslim > other canonical collections > sirah Ibn Hisham/Ibn Ishaq, Ibn Sa'd, al-Tabari > modern critical works). Raheeq al-Makhtum alone never certifies.",
+    "REPORTED": "Solid single-chain sirah/hadith detail; accurate to attribute but from one lineage or modern retelling only; rendered with no certainty implied.",
+    "DISPUTED": "Transmitted variants conflict; app must show ranges/both versions, never harmonized.",
+    "UNKNOWN": "Cannot be verified from owned + live sources; never rendered without user approval."
+  },
+  "render_as_policy": {
+    "solid": "Canonical or >=2 independent sources; safe as primary on-screen facts, may carry direct quotes.",
+    "approx": "Reported or contested detail; render visually/ambiguously, quotes flagged, no claim of certainty.",
+    "hidden": "Do not render in current phase; visible only in an app 'scholar's mode' if the user approves."
+  },
+  "verse_anchors": [
+    {
+      "ref": "3:169",
+      "surah": "Āl ʿImrān",
+      "text_en_sahih": "And never think of those who have been killed in the cause of Allah as dead. Rather, they are alive with their Lord, receiving provision,",
+      "fetched": "2026-10-27 api.alquran.cloud en.sahih",
+      "note": "The general verse of the martyrs. It is conventionally recited for Muʿtah and for all the fallen; the sources do not make it Muʿtah-specific, so the model renders it as a bridge at the memorial, not as an occasion-of-revelation claim."
+    },
+    {
+      "ref": "19:71",
+      "surah": "Maryam",
+      "text_en_sahih": "And there is none of you except he will come to it. This is upon your Lord an inevitability decreed.",
+      "fetched": "2026-10-27 api.alquran.cloud en.sahih",
+      "note": "The verse ʿAbdullāh ibn Rawāḥah is reported to have quoted when he wept at the farewell (MUT-005). The verse is verified; the attribution to that moment is sirah-only."
+    }
+  ],
+  "entries": [
+    {
+      "id": "MUT-001",
+      "section": "prelude",
+      "tag": "HISTORY",
+      "claim": "The expedition took place in Jumādā al-Ūlā 8 AH (September 629) at Muʿtah, a village in al-Balqāʾ on the edge of geographical Syria, in what is now Jordan near al-Karak.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Muʿtah chapter (online copy)", "ref": "opening", "quote": "Jumada al-ula 8 A.H. / september 629 A.D. ... Mu'tah is a village that lies on the borders of geographical Syria" },
+        { "work": "IslamicFinder, 'Battle of Mutah (Ghazwah Mutah)' (live)", "ref": "background", "quote": "near the village of Mutah (currently located near the city of Karak in Jordan)" }
+      ],
+      "grade": "REPORTED",
+      "variants": [
+        { "note": "The month is given consistently as Jumādā al-Ūlā in the live retellings; the Gregorian conversion (September 629) is conventional. No canonical hadith fixes the date.", "sources": ["researcher note"] }
+      ],
+      "render_as": "approx",
+      "notes": "Phase divider: 'Jumādā al-Ūlā, 8 AH · Muʿtah, al-Balqāʾ'. No day-number asserted."
+    },
+    {
+      "id": "MUT-002",
+      "section": "prelude",
+      "tag": "HISTORY",
+      "claim": "The Prophet (PBUH) had sent al-Ḥārith ibn ʿUmayr al-Azdī with a letter to the ruler of Buṣrā. On the road, Shuraḥbīl ibn ʿAmr al-Ghassānī, the governor of al-Balqāʾ and a Byzantine ally, intercepted and killed him.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Muʿtah chapter (online copy)", "ref": "outbreak", "quote": "intercepted by sharhabeel bin 'amr al-ghassani, the governor of al-balqa'" },
+        { "work": "MUWASALA, 'Martyrs of Mu'tah' (live)", "ref": "opening", "quote": "intercepted and killed by Shurahbil bin 'Amr Al-Ghassani" },
+        { "work": "IslamicFinder, 'Battle of Mutah' (live)", "ref": "background", "quote": "Al-Harith (R.A.) was intercepted by Shurahbil bin Amrul-Ghassani" }
+      ],
+      "grade": "REPORTED",
+      "variants": [
+        { "note": "The envoy's murder is the reported casus belli; it rests on the sirah (al-Waqidi is the earliest detailed source) and has no canonical hadith chain. The spelling Shuraḥbīl / Shurahbil / Sharhabeel varies; the glossary fixes Shuraḥbīl ibn ʿAmr al-Ghassānī.", "sources": ["researcher note"] }
+      ],
+      "render_as": "approx",
+      "notes": "On the road-north label only. No depiction of the killing; a cairn and a text label carry it."
+    },
+    {
+      "id": "MUT-003",
+      "section": "prelude",
+      "tag": "HISTORY",
+      "claim": "Grieved by the envoy's death, the Prophet (PBUH) mobilised 3,000 men for the north and gave the white banner to Zayd ibn Ḥārithah.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Muʿtah chapter (online copy)", "ref": "mobilisation", "quote": "a large army of 3000 men be mobilized" },
+        { "work": "IslamicFinder, 'Battle of Mutah' (live)", "ref": "formation", "quote": "an army ... consisted of 3,000 Muslims" }
+      ],
+      "grade": "REPORTED",
+      "variants": [
+        { "note": "The 3,000 is sirah-only; the appointment and succession are canonical (MUT-004), but the canonical text does not give the army's size. Do not print 'largest army' as a graded claim.", "sources": ["researcher note"] }
+      ],
+      "render_as": "approx",
+      "notes": "Crowd staging: 3,000 instanced men, labelled 'about 3,000 · reported'."
+    },
+    {
+      "id": "MUT-004",
+      "section": "muster",
+      "tag": "HISTORY",
+      "claim": "The Prophet (PBUH) appointed Zayd ibn Ḥārithah as commander and said that if Zayd were killed, Jaʿfar ibn Abī Ṭālib should take over, and if Jaʿfar were killed, ʿAbdullāh ibn Rawāḥah.",
+      "sources": [
+        { "work": "Sahih al-Bukhari", "ref": "4261 (live)", "quote": "If Zaid is martyred, Ja'far should take over his position" },
+        { "work": "Sahih al-Bukhari", "ref": "4262 (live)", "quote": "Zaid took the flag ... then Ja'far took it ... then Ibn Rawaha took it" }
+      ],
+      "grade": "CERTAIN",
+      "variants": [],
+      "render_as": "solid",
+      "notes": "The command-succession backbone. Three named standards, no named figures."
+    },
+    {
+      "id": "MUT-005",
+      "section": "muster",
+      "tag": "HISTORY",
+      "claim": "The army bade farewell at Madinah. ʿAbdullāh ibn Rawāḥah wept and said it was not love of the world but the verse 'there is none of you except he will come to it' (19:71); he said the party had come out seeking martyrdom.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Muʿtah chapter (online copy)", "ref": "farewell", "quote": "nor under a motive of infatuation with the glamour of life" },
+        { "work": "Qur'an 19:71 (live en.sahih)", "ref": "verse_anchors", "quote": "And there is none of you except he will come to it" },
+        { "work": "IslamicFinder, 'Battle of Mutah' (live)", "ref": "formation", "quote": "Abdullah bin Rawaha began to weep at that moment" }
+      ],
+      "grade": "REPORTED",
+      "variants": [
+        { "note": "The verse is canonical; the weeping scene and its explanation are sirah (Ibn Hishām/al-Wāqidī lineage). Render the verse as a verified anchor and the scene as reported.", "sources": ["researcher note"] }
+      ],
+      "render_as": "approx",
+      "notes": "A label at the south road in the march phase; no figure."
+    },
+    {
+      "id": "MUT-006",
+      "section": "muster",
+      "tag": "HISTORY",
+      "claim": "The Prophet (PBUH) instructed the army to fight in Allah's name without treachery or breach of covenant, not to kill a newborn, a woman, an aged man or a hermit, and not to cut trees or demolish homes.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Muʿtah chapter (online copy)", "ref": "instructions", "quote": "neither breach a covenant nor entertain treachery" },
+        { "work": "IslamicFinder, 'Battle of Mutah' (live)", "ref": "formation", "quote": "under no circumstances a new-born, woman, an ageing man or a hermit should be killed" }
+      ],
+      "grade": "REPORTED",
+      "variants": [
+        { "note": "This dispatch wording is sirah. Its substance (the protected non-combatants) is echoed in canonical war ethics, but no canonical chain carries this exact Muʿtah instruction; keep it REPORTED and quote within the cap.", "sources": ["researcher note"] }
+      ],
+      "render_as": "approx",
+      "notes": "Ethics beat for the march: 'no treachery · no women, children or aged'."
+    },
+    {
+      "id": "MUT-007",
+      "section": "march",
+      "tag": "HISTORY",
+      "claim": "At Maʿān, on the Syrian border, news came that Heraclius had gathered 100,000 Byzantine troops and 100,000 men of Lakhm, Judhām, al-Qayn, Bahra and Balī. The Muslims had not expected a host of that size.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Muʿtah chapter (online copy)", "ref": "Maʿān", "quote": "a hundred thousand troops together with another hundred thousand men" },
+        { "work": "IslamicFinder, 'Battle of Mutah' (live)", "ref": "numbers", "quote": "100,000 Greeks joined by 100,000 men from Lakhm, Judham, Al-Qayn, Bahra and Bali" }
+      ],
+      "grade": "REPORTED",
+      "variants": [
+        { "note": "The reports give 200,000 (100,000 Byzantine + 100,000 allied) as the common figure; some retellings speak of 100,000 in total. No canonical hadith gives a count. The model renders 'reports say 100,000–200,000' and stages a maquette host, never a literal 200,000.", "sources": ["researcher note"] },
+        { "note": "The staging of a 6,000-man instanced mass is a design compression, not a historical count.", "sources": ["researcher note"] }
+      ],
+      "render_as": "approx",
+      "notes": "Enemy unit label: 'the enemy host · reports say 100,000–200,000'."
+    },
+    {
+      "id": "MUT-008",
+      "section": "march",
+      "tag": "HISTORY",
+      "claim": "The Muslims spent two nights debating whether to write to Madinah for orders. ʿAbdullāh ibn Rawāḥah urged them on: what they disliked was the very thing they had come seeking — martyrdom; they fought with the religion Allah had honoured them with, and either victory or martyrdom was good.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Muʿtah chapter (online copy)", "ref": "counsel", "quote": "dart to win either of the two, victory or martyrdom" },
+        { "work": "IslamicFinder, 'Battle of Mutah' (live)", "ref": "counsel", "quote": "Both prospects are fine: Victory or martyrdom" }
+      ],
+      "grade": "REPORTED",
+      "variants": [],
+      "render_as": "approx",
+      "notes": "Label beat only; quote within 15 words: 'Victory or martyrdom' (3 words) may render with attribution."
+    },
+    {
+      "id": "MUT-009",
+      "section": "field",
+      "tag": "HISTORY",
+      "claim": "The army moved to Mashārif in al-Balqāʾ, then withdrew to Muʿtah and encamped. Qutbah ibn Qatādah al-ʿUdhrī led the right wing and ʿUbādah (or Ubayyah) ibn Mālik al-Anṣārī the left.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Muʿtah chapter (online copy)", "ref": "dispositions", "quote": "changed direction towards Mu'tah where they encamped" },
+        { "work": "IslamicFinder, 'Battle of Mutah' (live)", "ref": "dispositions", "quote": "the right wing led by Qutbah Ibn Qatadah" }
+      ],
+      "grade": "REPORTED",
+      "variants": [
+        { "note": "The wing commanders' names rest on the sirah alone and the left commander's name varies (ʿUbādah / Ubayyah / ʿUbaydah). Keep them off the model's labels unless the owner approves; the wing positions are staged without names.", "sources": ["researcher note"] }
+      ],
+      "render_as": "hidden",
+      "notes": "Hidden: no on-screen names for the wings; the formations carry the shape."
+    },
+    {
+      "id": "MUT-010",
+      "section": "field",
+      "tag": "HISTORY",
+      "claim": "The field is a stony upland plain in al-Balqāʾ: the village of Muʿtah on a low rise, a shallow wādī between the two hosts, olive country and dry wheat stubble, with the highlands of geographical Syria beyond.",
+      "sources": [
+        { "work": "IslamicFinder, 'Battle of Mutah' (live)", "ref": "place", "quote": "near the village of Mutah (currently located near the city of Karak in Jordan)" },
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Muʿtah chapter (online copy)", "ref": "place", "quote": "Mu'tah is a village that lies on the borders of geographical Syria" }
+      ],
+      "grade": "REPORTED",
+      "variants": [
+        { "note": "The wādī, the olive groves and the stubble are a terrain stylisation keyed to the Balqāʾ highlands, not a survey. No source describes the battle-day ground in detail; no on-screen claim of a surveyed site.", "sources": ["researcher note"] }
+      ],
+      "render_as": "approx",
+      "notes": "Terrain brief for the heightfield: pale limestone, dry wādī, olive groves, village tell, distant ridges."
+    },
+    {
+      "id": "MUT-011",
+      "section": "battle",
+      "tag": "HISTORY",
+      "claim": "Zayd ibn Ḥārithah carried the standard and was killed. The sirah says he fell among the spears, bleeding, still advancing.",
+      "sources": [
+        { "work": "Sahih al-Bukhari", "ref": "4262 (live)", "quote": "Zaid took the flag ... and was martyred" },
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Muʿtah chapter (online copy)", "ref": "Zayd's death", "quote": "until he fell, fatally stabbed" },
+        { "work": "IslamicFinder, 'Battle of Mutah' (live)", "ref": "Zayd's death", "quote": "died from loss of blood among the spears of the enemy" }
+      ],
+      "grade": "CERTAIN",
+      "variants": [
+        { "note": "The death is canonical; the manner (spears, blood loss) is sirah detail and is rendered as a fallen standard, not a wound effect.", "sources": ["researcher note"] }
+      ],
+      "render_as": "solid",
+      "notes": "First standard falls. No figure; no blood."
+    },
+    {
+      "id": "MUT-012",
+      "section": "battle",
+      "tag": "HISTORY",
+      "claim": "Jaʿfar ibn Abī Ṭālib took the standard after Zayd and was killed. He was found among the fallen with many wounds, none of them in his back.",
+      "sources": [
+        { "work": "Sahih al-Bukhari", "ref": "4262 (live)", "quote": "then Ja'far took it and was martyred" },
+        { "work": "Sahih al-Bukhari", "ref": "4261 (live)", "quote": "he counted fifty wounds in his body ... none of those wounds was in his back" }
+      ],
+      "grade": "CERTAIN",
+      "variants": [
+        { "note": "The same hadith reports 'over ninety wounds' in the second half of Ibn ʿUmar's account; the two counts sit side by side in the transmitted text. The model says 'fifty wounds counted' and flags the other count in the ledger, not on screen.", "sources": ["Sahih al-Bukhari 4261"] }
+      ],
+      "render_as": "solid",
+      "notes": "Second standard falls. The 'none in his back' line is the moral centre: he did not turn."
+    },
+    {
+      "id": "MUT-013",
+      "section": "battle",
+      "tag": "HISTORY",
+      "claim": "In the sirah's account, Jaʿfar's right hand was cut off, then his left; he clasped the standard with his arms until he was killed. He is reported to have refused water while fasting.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Muʿtah chapter (online copy)", "ref": "Jaʿfar's stand", "quote": "until his right hand was cut off ... he clasped the banner with both arms" },
+        { "work": "MUWASALA, 'Martyrs of Mu'tah' (live)", "ref": "Jaʿfar's stand", "quote": "until it was cut off. He seized the standard with his left hand until that too was cut off" }
+      ],
+      "grade": "REPORTED",
+      "variants": [
+        { "note": "The arm sequence is sirah, not in the canonical hadith. Do not stage a graphic amputation; the falling standard carries the beat. The refused-water detail is single-retelling and stays off screen.", "sources": ["researcher note"] }
+      ],
+      "render_as": "approx",
+      "notes": "Label: 'the standard is cut from his hands · reported'."
+    },
+    {
+      "id": "MUT-014",
+      "section": "battle",
+      "tag": "HISTORY",
+      "claim": "ʿAbdullāh ibn Rawāḥah took the standard after Jaʿfar and was killed, fighting on horseback and reciting verses.",
+      "sources": [
+        { "work": "Sahih al-Bukhari", "ref": "4262 (live)", "quote": "then Ibn Rawaha took it and was martyred" },
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Muʿtah chapter (online copy)", "ref": "Ibn Rawāḥah's death", "quote": "fight bravely on his horseback while reciting enthusiastic verses" }
+      ],
+      "grade": "CERTAIN",
+      "variants": [
+        { "note": "The death is canonical; the horse and the verses are sirah. No verse text is rendered.", "sources": ["researcher note"] }
+      ],
+      "render_as": "solid",
+      "notes": "Third standard falls."
+    },
+    {
+      "id": "MUT-015",
+      "section": "battle",
+      "tag": "HISTORY",
+      "claim": "The Prophet (PBUH) told the people in Madinah of the three deaths before the news arrived, and his eyes shed tears. He said the flag was then taken by 'a sword among the swords of Allah' — Khalid — and that Allah made them victorious.",
+      "sources": [
+        { "work": "Sahih al-Bukhari", "ref": "4262 (live)", "quote": "At that time the Prophet's eyes were shedding tears" },
+        { "work": "Sahih al-Bukhari", "ref": "4262 (live)", "quote": "a Sword amongst the Swords of Allah (i.e. Khalid) and Allah made them victorious" }
+      ],
+      "grade": "CERTAIN",
+      "variants": [
+        { "note": "'Allah made them victorious' sits in the same canonical report as the withdrawal narrative of MUT-017; the model shows both and does not resolve them (MUT-018).", "sources": ["Sahih al-Bukhari 4262"] }
+      ],
+      "render_as": "solid",
+      "notes": "The home-front announcement and the Sword of Allah title. No depiction; labels only."
+    },
+    {
+      "id": "MUT-016",
+      "section": "battle",
+      "tag": "HISTORY",
+      "claim": "Khalid ibn al-Walīd took the banner after the three commanders fell. He reported that nine swords broke in his hand that day and only a Yemeni sword remained.",
+      "sources": [
+        { "work": "Sahih al-Bukhari", "ref": "4265, 4266 (live)", "quote": "nine swords were broken in my hand, and nothing was left ... except a Yemenite sword" },
+        { "work": "Sahih al-Bukhari", "ref": "4262 (live)", "quote": "Then the flag was taken by a Sword amongst the Swords of Allah" }
+      ],
+      "grade": "CERTAIN",
+      "variants": [],
+      "render_as": "solid",
+      "notes": "Signature beat: nine broken swords on the ground around the rising standard. Weapon-masses only."
+    },
+    {
+      "id": "MUT-017",
+      "section": "battle",
+      "tag": "HISTORY",
+      "claim": "At night Khalid shifted the flanks and brought up the rear so that at dawn the enemy saw what looked like fresh reinforcements. The Byzantines hesitated, and the Muslims withdrew in order toward Madinah rather than press the field.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Muʿtah chapter (online copy)", "ref": "withdrawal", "quote": "reshuffled the right and left flanks ... a fully organized and well-planned withdrawal" },
+        { "work": "IslamicFinder, 'Battle of Mutah' (live)", "ref": "withdrawal", "quote": "Khalid positioned his men in such a way that they appeared to look greater in number" }
+      ],
+      "grade": "REPORTED",
+      "variants": [
+        { "note": "The ruse is sirah (Ibn Isḥāq/al-Wāqidī); no canonical hadith describes it. The hadith's 'Allah made them victorious' (MUT-015) is not a description of a battlefield rout; the model stages the ordered withdrawal and labels both reports (MUT-018).", "sources": ["researcher note"] }
+      ],
+      "render_as": "approx",
+      "notes": "Night-to-dawn beat; the army pulls back, the enemy holds. No rout."
+    },
+    {
+      "id": "MUT-018",
+      "section": "result",
+      "tag": "HISTORY",
+      "claim": "The outcome is framed two ways in the transmitted material. The canonical report says Allah made the Muslims victorious. The sirah says the army withdrew to Madinah and did not avenge the envoy, and presents the expedition as a strategic success in reputation rather than a conquest.",
+      "sources": [
+        { "work": "Sahih al-Bukhari", "ref": "4262 (live)", "quote": "Allah made them (i.e. the Muslims) victorious" },
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Muʿtah chapter (online copy)", "ref": "outcome", "quote": "the battle did not satisfy the muslims' objective, namely avenging al-harith's murder" }
+      ],
+      "grade": "DISPUTED",
+      "variants": [
+        { "note": "Victory-side: Bukhari 4262. Withdrawal-side: the sirah's ordered retreat and unmet objective (Raheeq; IslamicFinder). The model must show both, never merge them into 'a victory' or 'a defeat'.", "sources": ["live_verification_log 2026-10-27"] }
+      ],
+      "render_as": "approx",
+      "notes": "Labels: 'the report calls it a victory' and 'the army withdraws in order' — both visible in the withdrawal phase."
+    },
+    {
+      "id": "MUT-019",
+      "section": "result",
+      "tag": "HISTORY",
+      "claim": "The Muslims lost twelve men, according to the sirah; some retellings say fifteen. Byzantine losses are not given, though the reports describe them as heavy.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Muʿtah chapter (online copy)", "ref": "losses", "quote": "the muslims sustained twelve martyrs" },
+        { "work": "IslamicFinder, 'Battle of Mutah' (live)", "ref": "losses", "quote": "The Muslims sustained twelve martyrs (some sources say 15)" }
+      ],
+      "grade": "REPORTED",
+      "variants": [
+        { "note": "Twelve is the common figure; fifteen appears in some retellings. Byzantine casualties are unknown. The memorial shows twelve stones and the label 'twelve by the reports'.", "sources": ["researcher note"] }
+      ],
+      "render_as": "approx",
+      "notes": "Memorial stones at the field; no body count claim for the enemy."
+    },
+    {
+      "id": "MUT-020",
+      "section": "result",
+      "tag": "HISTORY",
+      "claim": "Jaʿfar (RA) became known as 'the two-winged one': Ibn ʿUmar used to greet Jaʿfar's son with 'Peace be upon you, O son of the two-winged person.'",
+      "sources": [
+        { "work": "Sahih al-Bukhari", "ref": "4264 (live)", "quote": "O the son of two-winged person" },
+        { "work": "Jami' at-Tirmidhi", "ref": "3763 (live)", "quote": "I saw Ja'far flying in Paradise with the angels" }
+      ],
+      "grade": "CERTAIN",
+      "variants": [],
+      "render_as": "solid",
+      "notes": "The title is canonical in two collections. Render the title at the memorial, never as depicted wings."
+    },
+    {
+      "id": "MUT-021",
+      "section": "result",
+      "tag": "HISTORY",
+      "claim": "The Prophet (PBUH) reported seeing Jaʿfar flying in Paradise with the angels; other reports say his two wings were dyed with blood.",
+      "sources": [
+        { "work": "Jami' at-Tirmidhi", "ref": "3763 (live)", "quote": "I saw Ja'far flying in Paradise with the angels" },
+        { "work": "al-Mu'jam al-Kabir (via Hadith Answers, live)", "ref": "14776", "quote": "Your father is flying with the Angels in the sky" }
+      ],
+      "grade": "REPORTED",
+      "variants": [
+        { "note": "The flying vision is a single canonical chain (Tirmidhi 3763); the blood-dyed wings detail is in al-Ḥākim and al-Muʿjam al-Kabīr, graded ḥasan by Ibn Ḥajar and al-Haythamī. Keep REPORTED; no visual wings.", "sources": ["live_verification_log 2026-10-27"] }
+      ],
+      "render_as": "approx",
+      "notes": "Label only: 'Jaʿfar (RA) · the two wings'."
+    },
+    {
+      "id": "MUT-022",
+      "section": "result",
+      "tag": "HISTORY",
+      "claim": "When the news reached Madinah, the Prophet (PBUH) sat with sorrow plain on his face; ʿĀ'ishah described it, and the women of Jaʿfar were weeping.",
+      "sources": [
+        { "work": "Sahih al-Bukhari", "ref": "4263 (live)", "quote": "Allah's Apostle sat with sorrow explicit on his face" }
+      ],
+      "grade": "CERTAIN",
+      "variants": [],
+      "render_as": "solid",
+      "notes": "Sober home-front beat; no depiction, no re-enactment of the weeping."
+    },
+    {
+      "id": "MUT-023",
+      "section": "result",
+      "tag": "HISTORY",
+      "claim": "The Prophet (PBUH) went to Jaʿfar's house, comforted his wife Asmā' bint ʿUmays, cared for Jaʿfar's sons for three days, and went out to meet the returning army with ʿAbdullāh ibn Jaʿfar riding with him at Juruf outside Madinah.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Muʿtah chapter (online copy)", "ref": "return", "quote": "he went out to meet it with 'Abdullah riding with him" },
+        { "work": "MUWASALA, 'Martyrs of Mu'tah' (live)", "ref": "household", "quote": "He kept them with him for three days" },
+        { "work": "IslamicFinder, 'Battle of Mutah' (live)", "ref": "return", "quote": "gathered at a place called Juruf, outside Madinah" }
+      ],
+      "grade": "REPORTED",
+      "variants": [
+        { "note": "The household and Juruf details are sirah (Ibn Sa'd/Ibn Hishām lineage); Bukhari 4263 independently attests the Prophet's sorrow and the weeping household, not the three days or the meeting. No depiction of the Prophet (PBUH).", "sources": ["researcher note"] }
+      ],
+      "render_as": "approx",
+      "notes": "Labels on the south road only: 'the army returns' and 'the Prophet (PBUH) meets them · reported'."
+    },
+    {
+      "id": "MUT-024",
+      "section": "aftermath",
+      "tag": "HISTORY",
+      "claim": "The expedition did not take a city or avenge the envoy, but it checked the northern tribes, raised the Muslims' reputation on the Byzantine frontier, and preceded the later northern campaigns.",
+      "sources": [
+        { "work": "Raheeq al-Makhtum (MSA NIU English ed.), Muʿtah chapter (online copy)", "ref": "aftermath", "quote": "it resulted in a far-ranging impact" },
+        { "work": "IslamicFinder, 'Battle of Mutah' (live)", "ref": "outcome", "quote": "it resulted in a far-ranging impact and attached to the Muslims a great reputation" }
+      ],
+      "grade": "REPORTED",
+      "variants": [
+        { "note": "This is the sirah's retrospective assessment, not a canonical claim; keep it as a closing note, not as a scoreline.", "sources": ["researcher note"] }
+      ],
+      "render_as": "approx",
+      "notes": "Closing label: 'the northern road stays open · reported'."
+    }
+  ],
+  "live_verification_log": {
+    "quran_endpoint": "api.alquran.cloud/v1/ayah/{c}:{v}/en.sahih — verified 2026-10-27: 3:169, 19:71",
+    "hadith_endpoint": "hadithcollection.com (Sahih al-Bukhari vol. 5, book 59, nos. 560-565, the same numbering as sunnah.com 4261-4266); sunnah.com itself timed out from this session",
+    "verified_this_session": [
+      "bukhari:4261 — the appointment of Zayd, then Ja'far, then ʿAbdullāh ibn Rawāḥah; Ibn ʿUmar counted fifty wounds on Jaʿfar, none in his back; the same report gives over ninety wounds",
+      "bukhari:4262 — the Prophet announced the three deaths before the news; his eyes shed tears; the flag passed to 'a sword among the swords of Allah'; 'Allah made them victorious'",
+      "bukhari:4263 — ʿĀ'ishah: the Prophet sat with sorrow plain on his face; the women of Jaʿfar were weeping",
+      "bukhari:4264 — Ibn ʿUmar greeted Jaʿfar's son: 'Peace be upon you, O son of the two-winged person'",
+      "bukhari:4265, 4266 — Khalid: nine swords broke in his hand at Muʿtah; only a Yemenite sword remained",
+      "tirmidhi:3763 — 'I saw Ja'far flying in Paradise with the angels'",
+      "quran 3:169 — the general martyrs verse (not Muʿtah-specific); 19:71 — the verse Ibn Rawāḥah is reported to have quoted",
+      "raheeq (online chapter copy) — envoy, 3,000, Maʿān, 100,000 + 100,000, Mashārif, the three deaths, the ruse, the withdrawal, twelve martyrs, the return",
+      "islamicfinder — the same sirah outline with the 12/15 martyr variant",
+      "muwasala — Jaʿfar's stand, the two wings, the household"
+    ],
+    "known_failures": [
+      "sunnah.com and sounah.com returned timeouts/Cloudflare from this session; the hadith texts above were read on hadithcollection.com (same numbering) and cross-checked against search snippets of sunnah.com",
+      "the local Raheeq PDF was not read this session; the Muʿtah chapter was read through the online copy at rasoulallah.net, so page numbers are not cited",
+      "no canonical count exists for the 3,000 or for the 100,000/200,000 enemy host; both stay REPORTED",
+      "al-Waqidi's full text was not consulted directly; his ruse and envoy detail are cited through the sirah retellings",
+      "the Prophet's sight of the battlefield (Ibn Kathīr) was not verified and is not rendered"
+    ]
+  }
+}

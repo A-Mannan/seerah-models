@@ -3,10 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>The Seerah Atlas · Badr, Uhud, Khandaq and Khaybar in 3D</title>
-<meta name="description" content="Badr, Uhud, Khandaq and Khaybar as interactive 3D models. Enter the field, orbit the ground, and follow each battle's day.">
+<title>The Seerah Atlas · Badr, Uhud, Khandaq, Khaybar and Muʿtah in 3D</title>
+<meta name="description" content="Badr, Uhud, Khandaq, Khaybar and Muʿtah as interactive 3D models. Enter the field, orbit the ground, and follow each battle's day.">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#0b100e">
+<meta property="og:type" content="website">
+<meta property="og:title" content="The Seerah Atlas">
+<meta property="og:description" content="The life of the Prophet ﷺ, mapped in 3D. Five battlefields: Badr, Uhud, Khandaq, Khaybar and Muʿtah.">
+<meta property="og:image" content="assets/landing/img/badr-day-2-1400.webp">
+<meta property="og:image:alt" content="The field of Badr at dawn, rendered as a 3D terrain model.">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="assets/landing/favicon.svg" type="image/svg+xml">
 <link rel="preload" href="assets/landing/fonts/cormorant.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/landing/fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
@@ -15,8 +21,9 @@
 <link rel="preload" as="image" href="assets/landing/img/uhud-flank-1400.webp" imagesrcset="assets/landing/img/uhud-flank-800.webp 800w, assets/landing/img/uhud-flank-1400.webp 1400w" imagesizes="100vw">
 <link rel="preload" as="image" href="assets/landing/img/khandaq-field-1400.webp" imagesrcset="assets/landing/img/khandaq-field-800.webp 800w, assets/landing/img/khandaq-field-1400.webp 1400w" imagesizes="100vw">
 <link rel="preload" as="image" href="assets/landing/img/khaybar-fort-1400.webp" imagesrcset="assets/landing/img/khaybar-fort-800.webp 800w, assets/landing/img/khaybar-fort-1400.webp 1400w" imagesizes="100vw">
+<link rel="preload" as="image" href="assets/landing/img/mutah-field-1400.webp" imagesrcset="assets/landing/img/mutah-field-800.webp 800w, assets/landing/img/mutah-field-1400.webp 1400w" imagesizes="100vw">
 <link rel="stylesheet" href="assets/landing/fonts/fonts.css">
-<link rel="stylesheet" href="assets/landing/css/landing.css">
+<link rel="stylesheet" href="assets/landing/css/landing.css?v=20261027i">
 <script>document.documentElement.classList.add('js');</script>
 </head>
 <body>
@@ -24,10 +31,16 @@
 
 <header class="masthead">
   <h1 class="masthead-lockup">
-    <a class="masthead-mark" href="index.html">The Seerah Atlas</a>
+    <a class="masthead-mark" href="index.html" aria-label="The Seerah Atlas — home">
+      <svg class="masthead-sigil" viewBox="0 0 20 22" aria-hidden="true" focusable="false"><rect x="8.6" y="1" width="1.8" height="20"/><rect x="10.4" y="3" width="8.6" height="6"/></svg>
+      <span>The Seerah Atlas</span>
+    </a>
     <span class="masthead-sub">The life of the Prophet <span class="hon" lang="ar">ﷺ</span>, mapped in 3D.</span>
   </h1>
-  <span class="masthead-ar" lang="ar" dir="rtl">أطلس السيرة</span>
+  <div class="masthead-side">
+    <span class="masthead-ar" lang="ar" dir="rtl">أطلس السيرة</span>
+    <span class="masthead-note">Five fields · 2–8 AH</span>
+  </div>
 </header>
 
 <main class="gate" id="gate" data-battle="badr">
@@ -53,13 +66,35 @@
     <div class="stage-layer stage-layer--khaybar">
       <img src="assets/landing/img/khaybar-fort-1400.webp" srcset="assets/landing/img/khaybar-fort-800.webp 800w, assets/landing/img/khaybar-fort-1400.webp 1400w" sizes="100vw" width="1400" height="875" alt="" loading="lazy" decoding="async">
     </div>
+
+    <div class="stage-layer stage-layer--mutah">
+      <img src="assets/landing/img/mutah-field-1400.webp" srcset="assets/landing/img/mutah-field-800.webp 800w, assets/landing/img/mutah-field-1400.webp 1400w" sizes="100vw" width="1400" height="875" alt="" loading="lazy" decoding="async">
+    </div>
+
   </div>
 
   <div class="band">
-    <nav class="doors" id="doors" aria-label="Enter a battle model" tabindex="-1">
-      <a class="door door--badr" href="badr/index.html" data-door="badr" aria-label="Enter the Badr model — the first battle, 2 AH">
+    <div class="field-plate" id="fieldPlate" aria-hidden="true">
+      <span class="field-plate-year" id="fieldYear">2 AH</span>
+      <span class="field-plate-name" id="fieldName">Badr <span class="field-plate-place">· the wells</span></span>
+    </div>
+    <div class="field-folio" aria-hidden="true"><span id="fieldFolio">first of five</span></div>
+    <nav class="doors-nav" aria-label="Enter a battle model">
+    <ol class="doors" id="doors" tabindex="-1">
+      <li class="door-cell"><a class="door door--badr" href="badr/index.html" data-door="badr" aria-label="Enter the Badr model — the first battle, 2 AH">
         <span class="door-top">
-          <span class="door-meta">The first battle · 2 AH</span>
+          <span class="door-head">
+            <span class="door-id">
+              <span class="door-num" aria-hidden="true"></span>
+              <span class="door-meta">The first battle · 2 AH</span>
+            </span>
+            <svg class="door-plan" viewBox="0 0 78 42" aria-hidden="true" focusable="false">
+              <path class="draw" d="M4 34c12-6 25-7 38-4s22 5 32 2"/>
+              <path class="dash" d="M6 24c7-2 13-1 20 2"/>
+              <path class="draw" d="M18 18v14M18 18h7v4h-7"/>
+              <circle cx="53" cy="31" r="2.6"/><circle cx="60" cy="30" r="2.6"/><circle cx="67" cy="32" r="2.6"/>
+            </svg>
+          </span>
           <span class="door-name">
             <span class="door-en">Badr</span>
             <span class="door-ar" lang="ar" dir="rtl">بدر</span>
@@ -72,10 +107,23 @@
           </span>
         </span>
       </a>
+      </li>
 
-      <a class="door door--uhud" href="uhud/index.html" data-door="uhud" aria-label="Enter the Uhud model — the second battle, 3 AH">
+      <li class="door-cell"><a class="door door--uhud" href="uhud/index.html" data-door="uhud" aria-label="Enter the Uhud model — the second battle, 3 AH">
         <span class="door-top">
-          <span class="door-meta">The second battle · 3 AH</span>
+          <span class="door-head">
+            <span class="door-id">
+              <span class="door-num" aria-hidden="true"></span>
+              <span class="door-meta">The second battle · 3 AH</span>
+            </span>
+            <svg class="door-plan" viewBox="0 0 78 42" aria-hidden="true" focusable="false">
+              <path class="draw" d="M46 34 56 15l6 8 5-4 8 15"/>
+              <path class="draw" d="M12 33c3-7 10-7 13 0"/>
+              <path class="dash" d="M4 37h28"/>
+              <path class="dash" d="M34 37c8-1 12-4 16-8"/>
+              <path class="draw" d="M53 20l-4 6M58 23l-4 6"/>
+            </svg>
+          </span>
           <span class="door-name">
             <span class="door-en">Uhud</span>
             <span class="door-ar" lang="ar" dir="rtl">أحد</span>
@@ -88,10 +136,21 @@
           </span>
         </span>
       </a>
+      </li>
 
-      <a class="door door--khandaq" href="khandaq/index.html" data-door="khandaq" aria-label="Enter the Khandaq model — the third battle, 5 AH">
+      <li class="door-cell"><a class="door door--khandaq" href="khandaq/index.html" data-door="khandaq" aria-label="Enter the Khandaq model — the third battle, 5 AH">
         <span class="door-top">
-          <span class="door-meta">The third battle · 5 AH</span>
+          <span class="door-head">
+            <span class="door-id">
+              <span class="door-num" aria-hidden="true"></span>
+              <span class="door-meta">The third battle · 5 AH</span>
+            </span>
+            <svg class="door-plan" viewBox="0 0 78 42" aria-hidden="true" focusable="false">
+              <path class="draw" d="M4 26h32M44 26h30M4 32h32M44 32h30"/>
+              <path class="draw" d="M16 14l4-6 4 6zM34 14l4-6 4 6zM52 14l4-6 4 6z"/>
+              <circle cx="14" cy="38" r="1.4"/><circle cx="24" cy="38" r="1.4"/><circle cx="34" cy="38" r="1.4"/><circle cx="44" cy="38" r="1.4"/><circle cx="54" cy="38" r="1.4"/><circle cx="64" cy="38" r="1.4"/>
+            </svg>
+          </span>
           <span class="door-name">
             <span class="door-en">Khandaq</span>
             <span class="door-ar" lang="ar" dir="rtl">الخندق</span>
@@ -104,10 +163,22 @@
           </span>
         </span>
       </a>
+      </li>
 
-      <a class="door door--khaybar" href="khaybar/index.html" data-door="khaybar" aria-label="Enter the Khaybar model — the fourth battle, 7 AH">
+      <li class="door-cell"><a class="door door--khaybar" href="khaybar/index.html" data-door="khaybar" aria-label="Enter the Khaybar model — the fourth battle, 7 AH">
         <span class="door-top">
-          <span class="door-meta">The fourth battle · 7 AH</span>
+          <span class="door-head">
+            <span class="door-id">
+              <span class="door-num" aria-hidden="true"></span>
+              <span class="door-meta">The fourth battle · 7 AH</span>
+            </span>
+            <svg class="door-plan" viewBox="0 0 78 42" aria-hidden="true" focusable="false">
+              <path class="draw" d="M4 31c14-6 26-6 38-10s22-8 32-8"/>
+              <path class="dash" d="M10 25l12-4 12-4 12-3 12-3"/>
+              <path class="draw" d="M14 25v-6h7v6zM28 21v-6h7v6zM42 17v-6h7v6zM56 14v-6h7v6z"/>
+              <path class="draw" d="M4 39v-8M8 39v-6"/>
+            </svg>
+          </span>
           <span class="door-name">
             <span class="door-en">Khaybar</span>
             <span class="door-ar" lang="ar" dir="rtl">خيبر</span>
@@ -120,12 +191,41 @@
           </span>
         </span>
       </a>
+      </li>
+
+      <li class="door-cell"><a class="door door--mutah" href="mutah/index.html" data-door="mutah" aria-label="Enter the Muʿtah model — the fifth battle, 8 AH">
+        <span class="door-top">
+          <span class="door-head">
+            <span class="door-id">
+              <span class="door-num" aria-hidden="true"></span>
+              <span class="door-meta">The fifth battle · 8 AH</span>
+            </span>
+            <svg class="door-plan" viewBox="0 0 78 42" aria-hidden="true" focusable="false">
+              <path class="dash" d="M4 33c14-4 27-4 40 0s20 4 30 1"/>
+              <path class="draw" d="M18 32V17M18 17h8v5h-8M40 32V11M40 11h8v5h-8M62 32V19M62 19h8v5h-8"/>
+              <circle cx="10" cy="21" r="2.4"/><circle cx="70" cy="13" r="2.4"/>
+            </svg>
+          </span>
+          <span class="door-name">
+            <span class="door-en">Muʿtah</span>
+            <span class="door-ar" lang="ar" dir="rtl">مؤتہ</span>
+          </span>
+        </span>
+        <span class="door-cta">
+          <span class="door-label">Enter Muʿtah</span>
+          <span class="door-arrow" aria-hidden="true">
+            <svg width="30" height="16" viewBox="0 0 30 16" focusable="false"><path d="M0 8h27M20 1l7 7-7 7" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+          </span>
+        </span>
+      </a>
+      </li>
+    </ol>
     </nav>
 
   </div>
 
 </main>
 
-<script src="assets/landing/js/landing.js" defer></script>
+<script src="assets/landing/js/landing.js?v=20261027i" defer></script>
 </body>
 </html>

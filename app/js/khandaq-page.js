@@ -1,26 +1,26 @@
 /* Khandaq · the page descriptor. Copy, sound cues and the build tag for the shell. */
 window.BATTLE_PAGE = {
   key: 'khandaq',
-  build: 'build x · Khandaq on the shared engine',
+  build: 'build y · Khandaq on the shared engine',
   speeds: [0.5, 1, 1.5, 2],
   copy: {
     en: {
       play: 'play', pause: 'pause', replay: 'replay',
-      soundOn: 'sound on', soundOff: 'sound off', lang: 'اردو', home: 'atlas',
+      lang: 'اردو',
       brand: 'khandaq <em>· the battle</em>',
-      legendM: '<b>Muslims</b> · about three thousand',
-      legendQ: '<b>Confederates</b> · about ten thousand',
-      hint: 'drag to look around · scroll to zoom',
+      legendM: '<b>Muslims</b><span class="legend-detail"> · about three thousand</span>',
+      legendQ: '<b>Confederates</b><span class="legend-detail"> · about ten thousand</span>',
+      hint: 'drag to look · scroll or pinch to zoom',
       phases: ['the ground', 'the trench', 'the siege', 'the crossing', 'the covenant', 'the storm', 'the reckoning']
     },
     ur: {
       play: 'چلائیں', pause: 'وقفہ', replay: 'دوبارہ',
-      soundOn: 'آواز آن', soundOff: 'آواز آف', lang: 'EN', home: 'اطلس',
-      brand: 'خندق <em>میدانِ خندق</em>',
-      legendM: '<b>مسلمان</b> · تقریباً تین ہزار',
-      legendQ: '<b>احزاب</b> · تقریباً دس ہزار',
-      hint: 'گھُمايو دیکھنے کے لیے · زوم کے لیے اسکرول',
-      phases: ['زمین', 'خندق', 'محاصرہ', 'گزرگاہ', 'عہد', 'طوفان', 'حساب']
+      lang: 'EN',
+      brand: 'خندق <em>· معرکۂ خندق</em>',
+      legendM: '<b>مسلمان</b><span class="legend-detail"> · تقریباً تین ہزار</span>',
+      legendQ: '<b>احزاب</b><span class="legend-detail"> · تقریباً دس ہزار</span>',
+      hint: 'دیکھنے کے لیے گھمائیں · زوم کے لیے اسکرول یا دو انگلیوں کا اشارہ',
+      phases: ['زمین', 'خندق', 'محاصرہ', 'عبور', 'عہد', 'طوفان', 'حساب']
     }
   },
   /* picks, struck earth, the volleys, the duel, the broken pact, the storm, the quiet */

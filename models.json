@@ -1,7 +1,7 @@
 {
   "name": "The Seerah Atlas",
   "updated": "2026-10-27",
-  "order": ["badr", "uhud", "khandaq", "khaybar"],
+  "order": ["badr", "uhud", "khandaq", "khaybar", "mutah"],
   "models": [
     {
       "slug": "badr",
@@ -54,6 +54,19 @@
       "ledger_refs": ["KHY-008", "KHY-009", "KHY-015"],
       "plate": "assets/landing/img/khaybar-fort-1400.webp",
       "plate_alt": "Khaybar in 3D: a chain of stone forts on the dark shelf above palm groves, the Muslim camp below and the chief fort al-Qamūṣ to the east."
+    },
+    {
+      "slug": "mutah",
+      "title": "Muʿtah",
+      "title_ar": "مؤتة",
+      "hook": "Three standards fell. Who carried the banner?",
+      "hook_ref": "MUT-016",
+      "status": "live",
+      "route": "mutah/",
+      "ledger": "data/ledger/mutah.json",
+      "ledger_refs": ["MUT-003", "MUT-016", "MUT-018"],
+      "plate": "assets/landing/img/mutah-field-1400.webp",
+      "plate_alt": "Muʿtah in 3D: the Muslim army and the reported enemy host on either side of the dry wādī, the three command standards between them, the village on its tell and the olive groves beyond."
     }
   ]
 }

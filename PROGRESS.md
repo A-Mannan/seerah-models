@@ -1,5 +1,41 @@
 # Progress
 
+## Build y — warm shell, five-field atlas, Atlas gate third pass (local, not pushed)
+The model pages return to warm ink and brass; the Atlas gate is rebuilt around one full-bleed
+field and a floating bone index sheet; the shared atlas now lists five fields with Muʿtah. No scene
+geometry, choreography, camera shot or ledger changed. Cache-bust `?v=20261027i` on all five model
+pages and the gate; routes regenerated.
+
+### Shipped
+- **Warm model shell.** Ink `#14120f`, brass `#c8a84b`, Cormorant at 34/29/25px, a brass play
+  button and translucent bar, deck and legend. The cold green/mint palette and thin English type
+  are gone.
+- **Five-field atlas.** The shell lists Badr, Uhud, Khandaq, Khaybar and Muʿtah with years, places
+  and a `here` marker; the sheet is a real `<nav>`, opens from `b` or the bar, and navigates to the
+  five routes. Muʿtah is reachable end-to-end from the atlas.
+- **Urdu copy pass.** Context-correct terms: `battles` → معرکے, brand → معرکۂ <field>, `field key`
+  → میدان کی علامات, `sound on/off` → آواز چالو/بند; phases now read بھگدڑ (rout), پہلو سے حملہ
+  (flank), عبور (crossing), رات کا کوچ / شمال کا کوچ (marches) and پرچم · مبارزت (standard · duel);
+  the pinch hint no longer transliterates “pinch”.
+- **Atlas gate v3.** Full-bleed field, masthead over the scene, a floating bone index sheet with
+  numbered plates, a worded folio and register hairlines; hover/focus previews the field and touch
+  taps through. One screen at 1440×900, 768×1024, 390×844 and 320×800.
+
+### Verification
+- Official app inspect **0 FAIL / 0 WARN** on `/khandaq/` and `/mutah/`; landing inspect **0 FAIL /
+  0 WARN** with the standing gate allowances. `node --check` clean on every touched script.
+- Lint **0 FAIL / 12 WARN**, all pre-existing overlay glass/shadows, the atlas kicker and the
+  standing em-dash aggregate.
+- Urdu RTL at 1440×900 and 390×844: no horizontal overflow, no clipped bar/deck controls; the five
+  atlas rows and the ethics line fit the phone sheet after a 3px row trim. Phase names and numerals
+  verified on all five pages.
+- Fifth door: atlas → `/mutah/` lands with the shell, the seven phases and no console errors.
+
+### Known limits
+- The Muʿtah ledger is still `awaiting_owner_review`; the five-field copy mirrors that status.
+- The atlas sheet scrolls on very short phones when Urdu line-height expands; content is reachable,
+  not clipped.
+
 ## Build x — the lean pass: no crowd in the phone depth pass, labels cached (local, not pushed)
 The crowd now draws into the depth pass on desktop only, rocks fold into the static merge, and the
 label pass stops forcing layout. No composition, choreography or copy changed. Cache-bust
