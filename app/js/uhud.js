@@ -75,16 +75,16 @@
 
   /* the archers' hill: a flat-topped rocky spur, 8 m, shelfed like the massif
      and broken by two rock shoulders so it never reads as a dune */
-  var HILL = { x: 42, z: -14, h: 10.0, top: 9.0, skirt: 19.0 };
+  var HILL = { x: 54, z: -10, h: 9.5, top: 8.0, skirt: 16.0 };
   function hillAt(x, z) {
     var dh = Math.hypot(x - HILL.x, (z - HILL.z) * 0.94);
     var y = HILL.h * smoothN(HILL.skirt - dh, 0, HILL.skirt - HILL.top);
     var shelf = 2.0, s = y / shelf, q = Math.floor(s), f = s - q;
     y = (q + Math.pow(f, 2.4)) * shelf;
-    var flank = smoothN(dh, 6.5, HILL.skirt - 1.0);
+    var flank = smoothN(dh, HILL.top - 1.5, HILL.skirt - 1.0);
     y += (fbm(x * 0.19 + 3.1, z * 0.19 + 7.7, 3) - 0.5) * 3.4 * flank;
-    y += 2.6 * Math.exp(-Math.pow((x - 33.5) / 6.0, 2) - Math.pow((z + 21.5) / 5.5, 2));
-    y += 1.8 * Math.exp(-Math.pow((x - 50.5) / 5.5, 2) - Math.pow((z + 8.0) / 6.5, 2));
+    y += 2.6 * Math.exp(-Math.pow((x - 45.5) / 6.0, 2) - Math.pow((z - 17.5) / 5.5, 2));
+    y += 1.8 * Math.exp(-Math.pow((x - 62.5) / 5.5, 2) - Math.pow((z + 4.0) / 6.5, 2));
     return Math.max(0, y);
   }
 
@@ -163,8 +163,13 @@
    [50, -46, 1.0], [56, -46, 1.6], [72, -47, 1.3], [-72, -45, 1.2], [88, -46, 1.1]
   ].forEach(function (r) { boulder(r[0], r[1], r[2]); });
 
-  /* four stones on the hill's skirts; the crest stays clear for the archers */
-  [[30.5, -19.5, 1.0], [53.5, -20.5, 0.9], [51.0, -5.0, 0.8], [33.0, -4.0, 0.9]
+  /* four stones on the hill's skirts and six on the crest rim: the spur reads
+     as rock, and the archers still stand on clear ground */
+  [[42.5, -15.5, 1.0], [65.5, -16.5, 0.9], [63.0, -1.0, 0.8], [45.0, 0.0, 0.9]
+  ].forEach(function (r) { boulder(r[0], r[1], r[2]); });
+  [[47.0, -17.4, 0.55], [51.0, -18.6, 0.45], [56.4, -18.8, 0.5], [60.2, -16.2, 0.42],
+   [61.2, -10.6, 0.5], [59.0, -5.4, 0.45], [53.2, -1.8, 0.5], [47.4, -2.6, 0.42],
+   [43.0, -8.0, 0.55], [44.4, -13.6, 0.4]
   ].forEach(function (r) { boulder(r[0], r[1], r[2]); });
 
   props.pebbleField(220, -40, -20, 88, 46);
@@ -324,11 +329,11 @@
   }
   /* five squads on the crest in two ranks, facing the approach from the south */
   var ARCHERS = [
-    archerSquad(10, 38.4, -16.6, 5, 0.74, 0.78, -0.16),
-    archerSquad(10, 42.2, -17.8, 5, 0.74, 0.78, -0.08),
-    archerSquad(10, 46.0, -18.4, 5, 0.74, 0.78, 0.02),
-    archerSquad(10, 40.2, -14.2, 5, 0.74, 0.78, -0.12),
-    archerSquad(10, 44.4, -15.0, 5, 0.74, 0.78, -0.04)
+    archerSquad(10, 48.8, -13.0, 5, 0.92, 0.88, -0.16),
+    archerSquad(10, 53.4, -14.4, 5, 0.92, 0.88, -0.08),
+    archerSquad(10, 58.0, -15.0, 5, 0.92, 0.88, 0.02),
+    archerSquad(10, 50.6, -9.8, 5, 0.92, 0.88, -0.12),
+    archerSquad(10, 55.4, -10.6, 5, 0.92, 0.88, -0.04)
   ];
 
   /* ------------------------------ cavalry.
@@ -368,7 +373,7 @@
   khalid.k = 'cav';
   var ikrimahHorse = cavalrySquadron(10, 5, 1.9, 2.7, true);
   ikrimahHorse.k = 'cavWest';
-  khalid.group.position.set(56, heightAt(56, 4), 4);
+  khalid.group.position.set(78, heightAt(78, 6), 6);
   ikrimahHorse.group.position.set(-56, heightAt(-56, 18), 18);
 
   /* ------------------------------ the lines.
@@ -512,8 +517,8 @@
   var graveStone = new THREE.MeshLambertMaterial({ color: 0x6d6354 });
   var graveMound = new THREE.MeshLambertMaterial({ color: 0xab9575 });
   for (var gv = 0; gv < 18; gv++) {
-    var gx = -9 + (gv % 6) * 2.4 + (Math.floor(gv / 6) % 2) * 0.8;
-    var gz = -43.0 - Math.floor(gv / 6) * 2.1;
+    var gx = 26 + (gv % 6) * 2.4 + (Math.floor(gv / 6) % 2) * 0.8;
+    var gz = -41.0 - Math.floor(gv / 6) * 1.8;
     var mound = new THREE.Mesh(new THREE.SphereGeometry(0.62, 6, 4, 0, Math.PI * 2, 0, Math.PI / 2), graveMound);
     mound.scale.set(1, 0.22, 0.62);
     mound.position.set(gx, heightAt(gx, gz) + 0.03, gz);
@@ -543,12 +548,12 @@
   function mkLabel(txt, cls) { return ENGINE.labels.mkLabel(labelBox, txt, cls); }
   var LAND = [
     { w: [-30, heightAt(-30, -84) + 7, -84], t: 'Mount Uḥud', e: 'UHUD-010', k: 'mount', cls: 'is-land-name is-far' },
-    { w: [42, heightAt(42, -14) + 2.6, -14], t: 'the archers’ hill', e: 'UHUD-011', k: 'hill', cls: 'is-tap', ph: [0, 1, 3, 4] },
-    { w: [20.0, heightAt(20.0, -42.4) + 5.2, -42.4], t: 'the Prophet’s station (PBUH)', e: 'UHUD-039', k: 'prophet', cls: 'is-tap is-event', ph: [5, 6] },
+    { w: [54, heightAt(54, -10) + 2.6, -10], t: 'the archers’ hill', e: 'UHUD-011', k: 'hill', cls: 'is-tap', ph: [0, 1, 3, 4] },
+    { w: [20.0, heightAt(20.0, -42.4) + 5.2, -42.4], t: 'the Prophet’s station (PBUH)', e: 'UHUD-039', k: 'prophet', cls: 'is-tap is-event', ph: [5] },
     { w: [20.4, heightAt(20.4, -43.8) + 1.5, -43.8], t: 'al-Mihras · the water at the defile', e: 'UHUD-036', k: 'mihras', cls: 'is-land', ph: [5, 6] },
-    { w: [-46, heightAt(-46, 52) + 3, 52], t: 'the Quraysh camp', e: 'UHUD-004', k: 'qcamp', cls: 'is-land-name', ph: [0, 3, 6] },
+    { w: [-46, heightAt(-46, 52) + 3, 52], t: 'the Quraysh camp', e: 'UHUD-004', k: 'qcamp', cls: 'is-land-name', ph: [0, 3] },
     { w: [-42, heightAt(-42, -33) + 2.2, -33], t: 'the Muslim camp', e: 'UHUD-010', k: 'mcamp', cls: 'is-land-name', ph: [0, 5] },
-    { w: [-3, heightAt(-3, -43.6) + 1.6, -43.6], t: 'the graves of the martyrs · 70', e: 'UHUD-032', k: 'graves', cls: 'is-tap is-event', ph: [6] },
+    { w: [33, heightAt(33, -43) + 1.6, -43], t: 'the graves of the martyrs · 70', e: 'UHUD-032', k: 'graves', cls: 'is-tap is-event', ph: [6] },
     { w: [0, 10, 118], t: 'Madinah · beyond the pass', e: 'UHUD-010', k: 'madinah', cls: 'is-land-name is-far', ph: [0] }
   ];
   var LANDL = LAND.map(function (l) {
@@ -571,11 +576,11 @@
   scene.add(mLineEntry.group);
   UNIT_DEFS.push({ u: mLineEntry, side: 0, labelY: 4.6, priority: 3, ph: [0], event: true });
   var EVENT_MARKS = [
-    { key: 'archers', label: 'the archers · 50 · ʻAbdullāh ibn Jubayr (RA)', x: 42, y: 12.4, z: -16, ph: [1, 2, 3], tRange: [0, 0.6], priority: 3 },
-    { key: 'orders', label: 'hold the hill, whatever happens', x: 42, y: 11.2, z: -16, ph: [1], tRange: [0.26, 0.9], priority: 3 },
-    { key: 'leave', label: '40 leave the hill · 9 stay', x: 42, y: 12.0, z: -16, ph: [3], tRange: [0.2, 1], priority: 4 },
-    { key: 'wheel', label: 'Khalid wheels the empty hill', x: 40, y: 8.0, z: -2, ph: [4], tRange: [0.06, 0.62], priority: 4 },
-    { key: 'rear', label: 'the rear is struck', x: 24, y: 5.0, z: -24, ph: [4], tRange: [0.52, 1], priority: 4 },
+    { key: 'archers', label: 'the archers · 50 · ʻAbdullāh ibn Jubayr (RA)', x: 54, y: 12.4, z: -12, ph: [1, 2, 3], tRange: [0, 0.6], priority: 3 },
+    { key: 'orders', label: 'hold the hill, whatever happens', x: 54, y: 11.2, z: -12, ph: [1], tRange: [0.26, 0.9], priority: 3 },
+    { key: 'leave', label: '40 leave the hill · 9 stay', x: 54, y: 12.0, z: -12, ph: [3], tRange: [0.2, 1], priority: 4 },
+    { key: 'wheel', label: 'Khalid wheels the empty hill', x: 62, y: 9.0, z: -18, ph: [4], tRange: [0.06, 0.62], priority: 4 },
+    { key: 'rear', label: 'the rear is struck', x: 26, y: 5.0, z: -32, ph: [4], tRange: [0.52, 1], priority: 4 },
     { key: 'station', label: 'the station holds (PBUH)', x: 20.0, y: 5.6, z: -42.4, ph: [5], tRange: [0.16, 0.98], priority: 4 },
     { key: 'qdead', label: '22–37 Quraysh killed', x: -6, y: 3.2, z: 30, ph: [6], priority: 4 }
   ];
@@ -638,13 +643,24 @@
 
   /* ------------------------------ arrows: the archers' volleys */
   particles.arrows.makePool(props.makeArrow, 54);
+  /* spent arrows: a dark shaft and head, no pale fletching — at maquette
+     distance the fletching alone reads as a field of little flags */
+  var stuckShaft = new THREE.CylinderGeometry(0.012, 0.016, 0.5, 4);
+  var stuckHead = new THREE.ConeGeometry(0.03, 0.1, 4);
+  var stuckM = new THREE.MeshLambertMaterial({ color: 0x4b4133 });
   var stuckArrows = new THREE.Group();
-  for (var sa = 0; sa < 40; sa++) {
-    var arw = props.makeArrow();
-    var ax = 4 + Math.random() * 34, az = 4 + Math.random() * 22;
-    arw.position.set(ax, heightAt(ax, az) + 0.24, az);
-    arw.rotation.x = 1.05 + Math.random() * 0.5;
-    arw.rotation.z = (Math.random() - 0.5) * 0.8;
+  for (var sa = 0; sa < 20; sa++) {
+    var arw = new THREE.Group();
+    var sh = new THREE.Mesh(stuckShaft, stuckM);
+    sh.position.y = 0.25;
+    arw.add(sh);
+    var hd = new THREE.Mesh(stuckHead, stuckM);
+    hd.position.y = 0.55;
+    arw.add(hd);
+    var ax = -6 + Math.random() * 34, az = 8 + Math.random() * 22;
+    arw.position.set(ax, heightAt(ax, az) - 0.06, az);
+    arw.rotation.x = 0.24 + Math.random() * 0.3;
+    arw.rotation.z = (Math.random() - 0.5) * 0.5;
     stuckArrows.add(arw);
   }
   stuckArrows.visible = false;
@@ -703,31 +719,34 @@
   /* one continuous move per shot; cuts are motivated, never a wall in frame */
   var SHOTS = {
     ground: [
-      { t0: 0, t1: 1.001, p0: [108, 86, 138], p1: [78, 54, 96], l0: [0, 18, -30], l1: [0, 8, -34] }
+      { t0: 0, t1: 1.001, p0: [104, 84, 144], p1: [82, 58, 108], l0: [0, 14, -4], l1: [0, 6, -18],
+        portrait: { p0: [40, 60, 96], p1: [30, 44, 70], l0: [0, 4, -26], l1: [0, 2, -36] } }
     ],
     archers: [
-      { t0: 0, t1: 0.52, p0: [24, 9.5, 6], p1: [30, 8.6, -2], l0: [42, 9.6, -15], l1: [42, 9.4, -16] },
-      { t0: 0.52, t1: 1.001, p0: [35, 12.5, -8], p1: [37, 11.5, -14], l0: [45, 10.0, -17], l1: [47, 9.8, -19] }
+      { t0: 0, t1: 0.52, p0: [45, 16, 16], p1: [49, 14, 8], l0: [56, 10.4, -11], l1: [56, 9.8, -12] },
+      { t0: 0.52, t1: 1.001, p0: [43, 13.5, 3], p1: [47, 12, -4], l0: [56, 10.0, -13], l1: [58, 9.8, -15] }
     ],
     charge: [
-      { t0: 0, t1: 0.58, p0: [2, 11, -50], p1: [0, 6.8, -32], l0: [0, 2.6, 6], l1: [0, 1.6, 20] },
+      { t0: 0, t1: 0.58, p0: [2, 7, -42], p1: [0, 5.2, -32], l0: [0, 2.4, 6], l1: [0, 1.8, 14] },
       { t0: 0.58, t1: 1.001, p0: [32, 6.4, -22], p1: [26, 5.4, -14], l0: [-2, 1.6, 12], l1: [-2, 1.4, 18] }
     ],
     spoils: [
-      { t0: 0, t1: 0.55, p0: [20, 10, 4], p1: [26, 9, -4], l0: [40, 7.4, -14], l1: [42, 6.8, -16] },
-      { t0: 0.55, t1: 1.001, p0: [30, 8, 6], p1: [22, 5.5, 12], l0: [2, 2.0, 16], l1: [-2, 1.6, 22] }
+      { t0: 0, t1: 0.55, p0: [38, 26, 24], p1: [44, 22, 16], l0: [54, 6, -6], l1: [54, 5, -10] },
+      { t0: 0.55, t1: 1.001, p0: [32, 8, 8], p1: [24, 6, 14], l0: [0, 2.2, 18], l1: [-6, 1.8, 26] }
     ],
     flank: [
-      { t0: 0, t1: 0.5, p0: [60, 6.5, 12], p1: [52, 5.8, 2], l0: [40, 3.2, -8], l1: [32, 2.8, -14] },
-      { t0: 0.5, t1: 1.001, p0: [28, 11, -40], p1: [20, 8, -32], l0: [8, 2.2, -16], l1: [2, 1.8, -10] }
+      { t0: 0, t1: 0.5, p0: [60, 34, 32], p1: [52, 26, 20], l0: [64, 3, -16], l1: [58, 3, -24] },
+      { t0: 0.5, t1: 1.001, p0: [34, 12, -44], p1: [24, 9, -40], l0: [10, 2.2, -24], l1: [6, 1.8, -20] }
     ],
     turn: [
       { t0: 0, t1: 0.46, p0: [-36, 11, -30], p1: [-20, 8, -20], l0: [10, 4, -38], l1: [14, 3, -40] },
       { t0: 0.46, t1: 1.001, p0: [36, 8, -47], p1: [32, 7, -44], l0: [19, 2.8, -42], l1: [18, 2.4, -43] }
     ],
     reckoning: [
-      { t0: 0, t1: 0.42, p0: [88, 64, 98], p1: [60, 40, 62], l0: [0, 8, -12], l1: [0, 5, -26] },
-      { t0: 0.42, t1: 1.001, p0: [22, 20, -24], p1: [13, 13, -34], l0: [-4, 1.4, -44], l1: [-4, 1.0, -46] }
+      { t0: 0, t1: 0.42, p0: [88, 64, 98], p1: [60, 40, 62], l0: [0, 8, -12], l1: [0, 5, -26],
+        portrait: { p0: [76, 52, 86], p1: [56, 34, 60], l0: [0, 6, -18], l1: [0, 4, -30] } },
+      { t0: 0.42, t1: 1.001, p0: [60, 6, -22], p1: [50, 4.5, -32], l0: [31, 2.6, -42], l1: [30, 2.4, -45],
+        portrait: { p0: [46, 10, -22], p1: [38, 8, -30], l0: [33, 3.4, -42], l1: [32, 3.0, -44] } }
     ]
   };
   var IMPACTS = [
@@ -736,9 +755,9 @@
     { ph: 5, t: 0.28, amp: 0.06 }
   ];
   var PRESETS = {
-    ground: { p: [76, 50, 92], l: [0, 8, -34] },
+    ground: { p: [88, 62, 116], l: [0, 6, -18] },
     aerial: { p: [40, 120, 96], l: [0, 0, -18] },
-    hill: { p: [56, 16, 12], l: [42, 9, -15] },
+    hill: { p: [42, 15, 12], l: [54, 9, -11] },
     line: { p: [24, 7, 6], l: [0, 1.6, -12] },
     mountain: { p: [30, 10, -20], l: [4, 10, -62] },
     camp: { p: [-16, 8, 40], l: [-46, 2, 52] }
@@ -814,7 +833,7 @@
       }
       /* down the south-west slope into the vacated ground, clear of the
          Quraysh line, which has already broken for its camp */
-      var tx = 24 + a * 3.4, tz = 4 + (a % 2) * 5.0;
+      var tx = 46 + a * 3.2, tz = 14 + (a % 2) * 6.0;
       var bx = sq.home[0] + (tx - sq.home[0]) * leave;
       var bz = sq.home[1] + (tz - sq.home[1]) * leave;
       var gy = heightAt(bx, bz) + 0.02;
@@ -824,15 +843,15 @@
 
     /* cavalry: the wheel around the empty hill, the rear, the press, the withdrawal */
     var kp;
-    if (i < 2) kp = [56, 4];
+    if (i < 2) kp = [78, 6];
     else if (i === 2) {
       var probe = Math.sin(clamp01(t) * Math.PI * 2);
-      kp = [56 - probe * 4.0, 4 + probe * 6.0];
-    } else if (i === 3) kp = [56, 4];
+      kp = [78 - probe * 5.0, 6 + probe * 6.0];
+    } else if (i === 3) kp = [78, 6];
     else if (i === 4) {
-      kp = pathAt([[56, 4], [52, -8], [46, -22], [34, -30], [20, -31], [8, -26], [4, -20]], easeIO(clamp01((t - 0.05) / 0.9)));
-    } else if (i === 5) kp = pathAt([[4, -20], [0, -12], [-4, -4]], easeIO(t));
-    else kp = pathAt([[-4, -4], [10, 12], [30, 28]], easeIO(t));
+      kp = pathAt([[78, 6], [74, -6], [64, -24], [46, -34], [28, -34], [20, -32]], easeIO(clamp01((t - 0.05) / 0.9)));
+    } else if (i === 5) kp = pathAt([[20, -32], [16, -25], [12, -18]], easeIO(t));
+    else kp = pathAt([[12, -18], [26, 0], [44, 18]], easeIO(t));
     khalid.group.position.set(kp[0], heightAt(kp[0], kp[1]), kp[1]);
     khalid.group.rotation.y = i === 4 ? -1.05 * easeIO(clamp01((t - 0.05) / 0.6)) : 0;
 
@@ -853,7 +872,7 @@
     /* arrows: the archers' volleys through the charge and the first spoils */
     var volley = (i === 1 && t > 0.62) || (i === 2 && t < 0.8) || (i === 3 && t < 0.2);
     if (volley && !reduce) particles.arrows.spawn(clock.dt || 0, clock.speed, function (ar) {
-      ar.from.set(38 + Math.random() * 9, heightAt(42, -16) + 1.6 + Math.random() * 1.2, -18 + Math.random() * 5);
+      ar.from.set(50 + Math.random() * 9, heightAt(54, -10) + 1.6 + Math.random() * 1.2, -14 + Math.random() * 6);
       ar.to.set(-30 + Math.random() * 52, 0.9, 6 + Math.random() * 18);
     });
     particles.arrows.update(clock.dt || 0);
@@ -890,7 +909,7 @@
       frac: clock.frac,
       total: TOTAL,
       fight: fight,
-      disp: ph === 2 ? 0.9 : ph === 3 ? 1.1 : ph === 4 ? 0.7 : ph === 5 ? 0.85 : ph === 6 ? 0.3 : 0,
+      disp: ph === 2 ? 0.9 : ph === 3 ? 2.4 : ph === 4 ? 0.7 : ph === 5 ? 0.85 : ph === 6 ? 0.3 : 0,
       marching: marching,
       gaitHz: ph === 5 ? 1.35 : ph === 3 ? 0.95 : ph === 2 ? 0.7 : 1.0,
       gaitAmp: marching ? (ph === 5 ? 0.62 : 0.5) : (fight > 0 ? 0 : 0.04),
@@ -918,6 +937,7 @@
   ENGINE.runner(ctx, {
     phases: PHASES, shots: SHOTS, impacts: IMPACTS, presets: PRESETS,
     director: director,
+    portrait: { cap: 1.4 },
     labels: { units: ULABS, landmarks: LANDL },
     applyFrac: applyFrac,
     updateMass: updateMass,

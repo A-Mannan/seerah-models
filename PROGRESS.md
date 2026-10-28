@@ -1,5 +1,61 @@
 # Progress
 
+## Uhud pass — the ground, the wings and the hinge (on build z, local, not pushed)
+Uhud was live but un-reviewed since the engine split: the massif read as loose boulders, both armies
+as carpet-like slabs, and four of seven cameras sat inside geometry. This pass rebuilds the ground,
+re-seats the formations at division scale, re-authors all seven shots and adds a portrait frame.
+Badr's look and timings are untouched. Cache-bust is left to the next build cut, which is in flight;
+the model pages still read `?v=20261028z`, so a hard refresh is needed to see this pass.
+
+### Shipped
+- **Mount Uḥud is a massif, not a pile.** The escarpment is a real heightfield form across the north
+  — a stepped wall (rock shelves quantised in 3.4 m bands) from a talus foot near z = −47 to a
+  broken crest near z = −84, with a saddle at the pass. `ENGINE.heightfield` gained an optional
+  `colorAt` hook so the massif and the hill cap paint as stone while the plain keeps the sand ramp;
+  Badr passes nothing and is unchanged.
+- **The archers' hill is a rocky spur.** A flat-topped, shelfed lobe at (54, −10), 9.5 m high, with
+  a boulder rim, two rock shoulders and a clear crest for the fifty archers (UHUD-011). The bow is
+  now a full strung bow — grip, curved limbs, nock-to-nock string — on a hooded, faceless figure.
+- **Formations at division scale.** About 700 Muslims in three battalions (Muhājirūn, Aws, Khazraj)
+  and about 3,000 Quraysh in three wings with the ʻAbd ad-Dār standard in front of the centre
+  (UHUD-002/007/014/017). `ENGINE.crowd.build` gained `divFiles`/`divPitch` so any battle can lay
+  out divisions with real gaps instead of one slab; the deep Quraysh ranks keep rims, belts, shields
+  and the spear hedge.
+- **The hinge reads.** The hill empties: forty squads walk off the crest, nine and their leader stay
+  (UHUD-022). The camera holds the bare top for the wheel, and Khalid's horse sweeps round the
+  outside of the hill to the Muslim rear (UHUD-023).
+- **The station.** At the defile, a band standard stands at the centre of an empty ring of seven
+  faceless Companions facing outward (UHUD-025/027/039) — never a figure for the Prophet ﷺ. The
+  graves of the martyrs are a small field at the mountain foot (UHUD-032/034).
+- **Seven authored shots.** Establishing crane over the whole field; the hill crest; the charge from
+  behind the Muslim line; the emptying hill then the spoil ground; the wheel; the rolled-back line
+  and the station; the quiet field and the graves. `portrait: {cap: 1.4}` plus explicit portrait
+  endpoints for the ground and reckoning shots, so 390×844 frames the field's depth instead of
+  shrinking it.
+- **First-frame crowd fix (shared).** `ENGINE.runner` now seeds `updateMass()` before the first
+  paint; previously a paused boot showed standards without men until the first play or seek. All
+  five battles inherit the fix.
+
+### Verification
+- `node --check` clean on `engine.js`, `uhud.js`, `shell.js`; Badr re-probed after the engine change
+  with no console errors and unchanged phase table.
+- Uhud lint **0 FAIL / 12 WARN** (the shared shell's glass, resting shadows, atlas kicker and em-dash
+  aggregate — none introduced here); inspect on `app/uhud.html` **0 FAIL / 0 WARN**.
+- Desktop 1440×900: every phase at 0.15/0.4/0.7/0.8 — **81–99 draw calls / 1.66–1.68 M triangles**;
+  `benchMass` 2.4–4.0 ms at 1× (single headless runs spike to 6–10 ms; headless RAF is not a perf
+  signal). Phone 390×844: every phase, no console errors, `benchMass` 1.2–4.0 ms.
+- Historical fit: every on-screen label maps to a ledger entry; the Quraysh dead stay the DISPUTED
+  range 22–37 (UHUD-033), the archers' split is 40/9 (UHUD-022), and the station is a standard in an
+  empty ring, never a figure (UHUD-039).
+
+### Known limits
+- The hill is still a smooth sand form between its rock rim and shelf steps; it reads at maquette
+  distance, not as a surveyed spur.
+- The three Quraysh wings keep visible gaps through the charge; the gaps are the division rhythm,
+  not a historical claim.
+- The one emblematic beat the model cannot stage — Ḥamzah's killing and the mutilation — stays in
+  the ledger and off the field, as the series' restraint rule requires.
+
 ## Atlas gate — visual doors (on build z, local, not pushed)
 Every door now carries a window onto the ground it opens. The gate keeps its full-bleed field, bone
 index sheet and verdigris survey light; the register below simply shows the five fields instead of

@@ -2289,6 +2289,9 @@
     }
     requestAnimationFrame(frame);
     apply(clock.frac);
+    /* seed the crowd before the first paint: the instanced men are placed by
+       updateMass, so a paused boot would otherwise show standards without men */
+    if (o.updateMass) o.updateMass();
     director.applyCamera(curPhaseIdx, curPhaseT, true);
     placeLabels();
 
