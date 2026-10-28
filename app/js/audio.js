@@ -279,7 +279,7 @@
       if (ctx) {
         if (ctx.state === 'suspended') ctx.resume();
         boot();
-        ramp(master, 0.35, 0.8);
+        ramp(master, 0.5, 0.8);
         openBeds();
       }
     },

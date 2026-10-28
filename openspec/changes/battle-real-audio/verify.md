@@ -44,11 +44,20 @@ turns on. Master 0.35 (−9.1 dB). Verified end-to-end in a headless browser:
 
 | bed | gain | default | use |
 | --- | --- | --- | --- |
-| wind | 0.65 | 1.0 | always on, the field's base |
-| crowd | 2.6 | 0.0 | the cue tables' `rumble` values |
-| rain | 1.0 | 0.0 | Khandaq storm |
-| storm | 1.4 | 0.0 | low rumble under Khandaq storm |
-| fire | 1.8 | 0.0 | Khaybar reckoning, Ḥunayn spoils |
+| wind | 0.9 | 1.0 | always on, the field's base |
+| crowd | 4.0 | 0.0 | the cue tables' `rumble` values |
+| rain | 1.6 | 0.0 | Khandaq storm |
+| storm | 2.0 | 0.0 | low rumble under Khandaq storm |
+| fire | 2.2 | 0.0 | Khaybar reckoning, Ḥunayn spoils |
+
+Master 0.5 (−6 dB). A 12 s simulated Badr wells/sand mix (wind + crowd at
+`rumble` 0.42 + clash/arrows/whoosh at their tick rates through the same
+chain) measures **−29.7 LUFS integrated, −10.1 dBTP, LRA 10.8** — present on
+a phone speaker with clean headroom. The first calibration (master 0.35,
+crowd 2.6) measured ≈ −45 LUFS and was replaced.
+
+A stored pre-ab sound choice (the old synth days' "off") is cleared once
+(`-sound-reset-ab` marker), so the first play press turns sound on.
 
 ## Check by ear (the five moments the numbers cannot settle)
 

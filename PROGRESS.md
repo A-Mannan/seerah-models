@@ -54,9 +54,11 @@ routes regenerated (Ḥunayn follows on this sound layer in ac).
 - **file:// fallback**: fetch is blocked on file:// pages, so the manifest ships a script
   twin (`manifest.js`) and every file loads through media elements routed into the same
   graph — a double-clicked `index.html` sounds the same as the served site.
-- **Sound comes on with the first play**: if the visitor never chose, pressing play (a
-  real gesture) enables sound instead of playing mute; the sound button still wins once
-  used.
+- **Sound comes on with the first play**: if the visitor never chose — or their choice
+  predates this rebuild — pressing play (a real gesture) enables sound; the old synth-era
+  preference is cleared once (`-sound-reset-ab`), and the sound button still wins after.
+  Calibrated by measurement, not by ear: a simulated wells/sand mix measures −29.7 LUFS
+  (−10.1 dBTP) through the exact engine chain (master 0.5, bed gains 0.9/4.0/1.6/2.0/2.2).
 - **Makkah's descriptor already targeted this API** (`S.play`, `bed` ramps) and works
   unchanged; the shell's cue/rumble semantics are preserved.
 

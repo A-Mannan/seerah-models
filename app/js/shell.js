@@ -350,6 +350,13 @@
     };
     var soundOn = false, soundSet = false;
     try {
+      /* the sound layer was rebuilt (build ab): a choice made under the old
+         synth does not describe what the visitor wants for real recordings —
+         clear it once, so the first play press turns sound on */
+      if (!window.localStorage.getItem(storeKey + '-sound-reset-ab')) {
+        window.localStorage.removeItem(storeKey + '-sound');
+        window.localStorage.setItem(storeKey + '-sound-reset-ab', '1');
+      }
       var sv = window.localStorage.getItem(storeKey + '-sound');
       soundSet = sv !== null;
       soundOn = sv === '1';

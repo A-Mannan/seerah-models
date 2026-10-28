@@ -2,27 +2,27 @@
  "beds": {
   "wind": {
    "file": "wind.mp3",
-   "gain": 0.65,
+   "gain": 0.9,
    "default": 1.0
   },
   "crowd": {
    "file": "crowd.mp3",
-   "gain": 2.6,
+   "gain": 4.0,
    "default": 0.0
   },
   "rain": {
    "file": "rain.mp3",
-   "gain": 1.0,
+   "gain": 1.6,
    "default": 0.0
   },
   "storm": {
    "file": "storm.mp3",
-   "gain": 1.4,
+   "gain": 2.0,
    "default": 0.0
   },
   "fire": {
    "file": "fire.mp3",
-   "gain": 1.8,
+   "gain": 2.2,
    "default": 0.0
   }
  },
