@@ -1,7 +1,7 @@
 /* Badr · the page descriptor. Copy, sound cues and the build tag for the shell. */
 window.BATTLE_PAGE = {
   key: 'badr',
-  build: 'build y · Badr on the shared engine',
+  build: 'build z · Badr on the shared engine',
   speeds: [0.5, 1, 1.5, 2],
   copy: {
     en: {

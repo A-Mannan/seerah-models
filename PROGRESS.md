@@ -1,12 +1,45 @@
 # Progress
 
-## Build y — warm shell, five-field atlas, Atlas gate third pass (local, not pushed)
-The model pages return to warm ink and brass; the Atlas gate is rebuilt around one full-bleed
-field and a floating bone index sheet; the shared atlas now lists five fields with Muʿtah. No scene
-geometry, choreography, camera shot or ledger changed. Cache-bust `?v=20261027i` on all five model
-pages and the gate; routes regenerated.
+## Build z — label gating repaired across all five fields (local, not pushed)
+A label that belongs to one beat could hide once and never return: the gate branches wrote
+`visibility:hidden` without resetting the label's state, so the visibility check never fired again.
+They now clear the state and screen spot, and a returning label snaps to its anchor instead of
+gliding in from a stale position. No scene, camera, copy or ledger changed. Cache-bust
+`?v=20261028z` on all five model pages and the gate; routes regenerated.
 
 ### Shipped
+- **Gate state reset.** All six gate branches — unit `hideAfterPhase`, `hideBeforePhase`, `ph` and
+  `tRange`, plus landmark `ph` and `tRange` — clear `visState` and `sx` when they hide a label.
+- **Snap on return.** A label coming back from hidden re-enters at its projected anchor; labels that
+  stay visible keep the 0.3 smoothing. A seek can no longer leave a stale smoothed position in the
+  collision pass.
+
+### Verification
+- Repro probe: Muʿtah phase 3 in Urdu at phaseT 0.55 shows the three standards and both Rawāḥah
+  event labels — previously lost after an EN→UR switch and a seek.
+- Visible labels per phase across all five battles — Badr [7,7,7,8,10,10,12]; Uhud [6,3,2,2,2,4,4];
+  Khandaq [3,3,2,5,6,3,2]; Khaybar [8,8,4,3,5,5]; Muʿtah [6,3,5,6,3,5,4] — zero console errors.
+- `node --check` clean on every touched script. Lint **0 FAIL / 12 WARN** (pre-existing overlay
+  glass/shadows, the atlas kicker and the standing em-dash aggregate); inspect **0 FAIL / 0 WARN**
+  on `app/mutah.html`.
+
+### Known limits
+- Labels that become visible still enter through the 0.3 smoothing; only the hide→show path snaps.
+- The Uhud, Khandaq, Khaybar and Muʿtah ledgers remain `awaiting_owner_review`.
+- Build z is committed locally only; no push until owner approval.
+
+## Build y — warm shell, five-field atlas, Atlas gate third pass (local, not pushed)
+The model pages return to warm ink and brass; the Atlas gate is rebuilt around one full-bleed
+field and a floating bone index sheet; the shared atlas now lists five fields with Muʿtah. The
+shell and gate are UI work; the fifth model itself is logged below. Cache-bust `?v=20261027i` on
+all five model pages and the gate; routes regenerated.
+
+### Shipped
+- **Muʿtah, the fifth model.** A graded ledger of 24 entries (8 CERTAIN, 15 REPORTED, 1 DISPUTED)
+  from Raheeq al-Makhtum; the dry wādī, the village on its tell and the olive groves, the reported
+  enemy host, the three command standards and the ordered withdrawal; seven phases over 96 s with
+  one continuous shot each; a page, a `/mutah/` route and the fifth Atlas door with its captured
+  field plate.
 - **Warm model shell.** Ink `#14120f`, brass `#c8a84b`, Cormorant at 34/29/25px, a brass play
   button and translucent bar, deck and legend. The cold green/mint palette and thin English type
   are gone.
@@ -22,6 +55,10 @@ pages and the gate; routes regenerated.
   taps through. One screen at 1440×900, 768×1024, 390×844 and 320×800.
 
 ### Verification
+- **Muʿtah end to end.** Seven phases re-shot at 1440×900 and checked at 390×844, English and
+  Urdu RTL; the `/mutah/` route boots with 7 phases, 95 draw calls and 51 labels, no console
+  errors. Phase 3 carries all three standards and both Rawāḥah beats after the row was tightened
+  to ±9.
 - Official app inspect **0 FAIL / 0 WARN** on `/khandaq/` and `/mutah/`; landing inspect **0 FAIL /
   0 WARN** with the standing gate allowances. `node --check` clean on every touched script.
 - Lint **0 FAIL / 12 WARN**, all pre-existing overlay glass/shadows, the atlas kicker and the

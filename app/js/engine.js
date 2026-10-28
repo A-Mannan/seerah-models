@@ -1800,13 +1800,14 @@
       var measV = w + ':' + LABEL_FONT_V;
       for (var q = 0; q < list.length; q++) {
         var it = list[q];
-        /* a name that belongs to one beat hides after it; the field keeps the standards */
-        if (isUnit && it.u.hideAfterPhase !== undefined && env.phaseIdx > it.u.hideAfterPhase) { it.el.style.visibility = 'hidden'; continue; }
-        if (isUnit && it.u.hideBeforePhase !== undefined && env.phaseIdx < it.u.hideBeforePhase) { it.el.style.visibility = 'hidden'; continue; }
-        if (isUnit && it.u.ph && it.u.ph.indexOf(env.phaseIdx) < 0) { it.el.style.visibility = 'hidden'; continue; }
-        if (isUnit && it.u.tRange && (env.phaseT < it.u.tRange[0] || env.phaseT > it.u.tRange[1])) { it.el.style.visibility = 'hidden'; continue; }
-        if (!isUnit && it.ph && it.ph.indexOf(env.phaseIdx) < 0) { it.el.style.visibility = 'hidden'; continue; }
-        if (!isUnit && it.tRange && (env.phaseT < it.tRange[0] || env.phaseT > it.tRange[1])) { it.el.style.visibility = 'hidden'; continue; }
+        /* a name that belongs to one beat hides after it; the field keeps the standards.
+           a gated label forgets its screen spot, so it reappears at its anchor */
+        if (isUnit && it.u.hideAfterPhase !== undefined && env.phaseIdx > it.u.hideAfterPhase) { it.el.style.visibility = 'hidden'; it.visState = false; it.sx = undefined; continue; }
+        if (isUnit && it.u.hideBeforePhase !== undefined && env.phaseIdx < it.u.hideBeforePhase) { it.el.style.visibility = 'hidden'; it.visState = false; it.sx = undefined; continue; }
+        if (isUnit && it.u.ph && it.u.ph.indexOf(env.phaseIdx) < 0) { it.el.style.visibility = 'hidden'; it.visState = false; it.sx = undefined; continue; }
+        if (isUnit && it.u.tRange && (env.phaseT < it.u.tRange[0] || env.phaseT > it.u.tRange[1])) { it.el.style.visibility = 'hidden'; it.visState = false; it.sx = undefined; continue; }
+        if (!isUnit && it.ph && it.ph.indexOf(env.phaseIdx) < 0) { it.el.style.visibility = 'hidden'; it.visState = false; it.sx = undefined; continue; }
+        if (!isUnit && it.tRange && (env.phaseT < it.tRange[0] || env.phaseT > it.tRange[1])) { it.el.style.visibility = 'hidden'; it.visState = false; it.sx = undefined; continue; }
         var txt = it.el.textContent;
         if (it.lw === undefined || it.lwV !== measV || it.lwTxt !== txt) {
           it.lw = it.el.offsetWidth || 60;
@@ -1820,10 +1821,13 @@
         var v = (isUnit ? base.clone().add(new THREE.Vector3(0, lY, 0)) : it.v.clone());
         v = v.project ? v.project(camera) : v;
         var sx = (v.x * 0.5 + 0.5) * w, sy = (-v.y * 0.5 + 0.5) * h;
-        /* smoothed screen positions keep the labels from vibrating */
-        if (it.sx === undefined) { it.sx = sx; it.sy = sy; }
-        it.sx += (sx - it.sx) * 0.3;
-        it.sy += (sy - it.sy) * 0.3;
+        /* smoothed screen positions keep the labels from vibrating; a label
+           coming back from hidden snaps to its anchor instead of gliding in */
+        if (it.sx === undefined || it.visState === false) { it.sx = sx; it.sy = sy; }
+        else {
+          it.sx += (sx - it.sx) * 0.3;
+          it.sy += (sy - it.sy) * 0.3;
+        }
         sx = it.sx; sy = it.sy;
         /* landmarks near the edge keep their label on screen */
         if (!isUnit) {

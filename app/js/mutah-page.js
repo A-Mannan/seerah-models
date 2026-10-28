@@ -1,7 +1,7 @@
 /* Muʿtah · the page descriptor. Copy, sound cues and the build tag for the shell. */
 window.BATTLE_PAGE = {
   key: 'mutah',
-  build: 'build y · Muʿtah on the shared engine',
+  build: 'build z · Muʿtah on the shared engine',
   speeds: [0.5, 1, 1.5, 2],
   copy: {
     en: {
